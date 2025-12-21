@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -186,15 +187,15 @@ button#printBtn:hover {
   
   /* تصغير المربعات بنسبة 25% للحقول الأساسية */
   .section:not(.optional) {
-    min-height: 90px !important; /* تصغير 25% من 120px */
-    max-height: 100px !important; /* تصغير 25% من 130px */
+    min-height: 90px !important;
+    max-height: 100px !important;
     font-size: 9pt !important;
   }
   
   /* تصغير المربعات الاختيارية بنسبة 50% */
   .section.optional {
-    min-height: 60px !important; /* تصغير 50% من 120px */
-    max-height: 70px !important; /* تصغير 50% من 130px */
+    min-height: 60px !important;
+    max-height: 70px !important;
     font-size: 8pt !important;
   }
 }
@@ -233,7 +234,7 @@ button#printBtn:hover {
   padding: 8px;
   text-align: center;
   font-size: 9pt;
-  min-height: 50px; /* تصغير */
+  min-height: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -279,8 +280,8 @@ button#printBtn:hover {
   border: 1px solid #0a3b40;
   padding: 8px;
   font-size: 9pt;
-  min-height: 90px; /* تصغير 25% من 120px */
-  max-height: 100px; /* تصغير 25% من 130px */
+  min-height: 90px;
+  max-height: 100px;
   border-radius: 6px;
   background: white;
   overflow: hidden;
@@ -312,8 +313,8 @@ button#printBtn:hover {
   border: 1px dashed #e6b800;
   padding: 6px;
   font-size: 8pt;
-  min-height: 60px; /* تصغير 50% من 120px */
-  max-height: 70px; /* تصغير 50% من 130px */
+  min-height: 60px;
+  max-height: 70px;
   border-radius: 6px;
   background: #fff8cc;
   overflow: hidden;
@@ -356,6 +357,7 @@ button#printBtn:hover {
   border-radius: 4px;
 }
 
+/* منطقة التوقيعات المعدلة */
 .signatures {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -365,15 +367,29 @@ button#printBtn:hover {
   text-align: center;
 }
 
-.signatures div {
-  min-height: 60px;
+.signature-box {
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
-.line {
-  border-bottom: 1px dashed #000;
-  height: 20px;
-  margin-top: 8px;
+.signature-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+  min-height: 20px;
+}
+
+/* خط التوقيع المتقطع */
+.signature-line {
+  border-bottom: 2px dotted #000;
+  height: 25px;
+  margin-top: 10px;
   width: 100%;
+  text-align: center;
+  font-size: 8pt;
+  color: #666;
+  letter-spacing: 5px;
 }
 
 /* تحسينات عامة */
@@ -458,8 +474,14 @@ button#printBtn:hover {
     margin-top: 15px;
   }
   
-  .signatures div {
-    min-height: 50px;
+  .signature-box {
+    min-height: 70px;
+  }
+  
+  .signature-line {
+    height: 22px;
+    margin-top: 8px;
+    letter-spacing: 4px;
   }
 }
 
@@ -633,9 +655,16 @@ button#printBtn:hover {
   <!-- سيتم إضافة الصور هنا -->
 </div>
 
+<!-- منطقة التوقيعات المعدلة -->
 <div class="signatures">
-  <div><div id="teacher">أحمد محمد</div><div class="line"></div>توقيع المعلم</div>
-  <div><div id="principal">خالد عبدالله</div><div class="line"></div>توقيع مدير المدرسة</div>
+  <div class="signature-box">
+    <div class="signature-name" id="teacher">أحمد محمد</div>
+    <div class="signature-line">. . . . . . . . . . . . . . . . . . . . .</div>
+  </div>
+  <div class="signature-box">
+    <div class="signature-name" id="principal">خالد عبدالله</div>
+    <div class="signature-line">. . . . . . . . . . . . . . . . . . . . .</div>
+  </div>
 </div>
 </div>
 
