@@ -93,8 +93,7 @@ button{
   }
   
   .report-content {
-    height: calc(100vh - 1.6cm);
-    overflow: hidden;
+  
   }
   
   .header{
@@ -1048,4 +1047,4 @@ window.onbeforeprint = loadHijri;
 </script>
 
 </body>
-</html>
+</html
