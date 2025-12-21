@@ -83,8 +83,8 @@ button{
     background:white;
     padding:0;
     margin:0;
-    font-size: 12pt;
-    line-height: 1.5;
+    font-size: 11pt;
+    line-height: 1.6;
   }
   
   .tool{
@@ -101,7 +101,7 @@ button{
   /* إعدادات الصفحة */
   @page {
     size: A4;
-    margin: 1.2cm;
+    margin: 0.8cm;
   }
   
   .header{
@@ -142,8 +142,8 @@ button{
     background:linear-gradient(135deg,#e8f5e9,#f4fbf6);
     border-right:5px solid #2e7d32;
     border-radius:8px;
-    padding:12px 15px;
-    margin-bottom: 15px;
+    padding:8px 10px;
+    margin-bottom: 10px;
     page-break-inside: avoid;
     text-align:center;
     line-height:1.7;
@@ -151,22 +151,22 @@ button{
   
   .goal-section strong{
     color:#1b5e20;
-    margin-bottom:8px;
+    margin-bottom:6px;
     display:block;
-    font-size: 13pt;
+    font-size: 12pt;
   }
 
   .section{
     border:1px solid #ccc;
-    padding:12px;
-    font-size:12pt;
+    padding:8px;
+    font-size:10pt;
     page-break-inside: avoid;
   }
   
   .section strong{
     display:block;
     border-bottom:1px solid #0a3b40;
-    margin-bottom:8px;
+    margin-bottom:6px;
     padding-bottom: 5px;
     font-size: 13pt;
   }
@@ -174,7 +174,7 @@ button{
   .grid2{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:15px;
+    gap:10px;
     margin-bottom: 15px;
   }
   
@@ -1107,4 +1107,4 @@ window.onbeforeprint = loadHijri;
 </script>
 
 </body>
-</html>
+</htm
