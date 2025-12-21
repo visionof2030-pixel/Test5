@@ -146,7 +146,7 @@ button#printBtn:hover {
   body {
     background: white;
     padding: 0;
-    font-size: 11pt !important;
+    font-size: 10pt !important;
   }
   
   .tool {
@@ -155,7 +155,7 @@ button#printBtn:hover {
   
   .report {
     display: block !important;
-    font-size: 11pt !important;
+    font-size: 10pt !important;
     max-width: 210mm;
     margin: 0 auto;
     padding: 0;
@@ -171,7 +171,7 @@ button#printBtn:hover {
 
   .images img {
     height: auto;
-    max-height: 120px;
+    max-height: 100px;
     width: 100%;
     object-fit: contain;
   }
@@ -185,77 +185,85 @@ button#printBtn:hover {
     page-break-inside: avoid;
   }
   
-  .section {
-    min-height: 100px !important;
-    max-height: 120px !important;
-    font-size: 10pt !important;
+  /* تصغير المربعات بنسبة 25% للحقول الأساسية */
+  .section:not(.optional) {
+    min-height: 90px !important; /* تصغير 25% من 120px */
+    max-height: 100px !important; /* تصغير 25% من 130px */
+    font-size: 9pt !important;
+  }
+  
+  /* تصغير المربعات الاختيارية بنسبة 50% */
+  .section.optional {
+    min-height: 60px !important; /* تصغير 50% من 120px */
+    max-height: 70px !important; /* تصغير 50% من 130px */
+    font-size: 8pt !important;
   }
 }
 
-/* ===== التقرير - التصميم الأصلي ===== */
+/* ===== التقرير - مع تصغير المربعات ===== */
 .header {
   background: #0a3b40;
   color: white;
   text-align: center;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  font-size: 12pt;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  font-size: 11pt;
 }
 
 .header div {
-  margin: 4px 0;
+  margin: 3px 0;
   font-weight: bold;
 }
 
 .header .hijri {
-  font-size: 10pt;
-  margin-top: 6px;
+  font-size: 9pt;
+  margin-top: 4px;
   font-weight: normal;
 }
 
 .top-info {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .box {
-  border: 2px solid #0a3b40;
-  padding: 10px;
+  border: 1px solid #0a3b40;
+  padding: 8px;
   text-align: center;
-  font-size: 10pt;
-  min-height: 60px;
+  font-size: 9pt;
+  min-height: 50px; /* تصغير */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
+  border-radius: 6px;
   background: #f8f9fa;
 }
 
 .box strong {
   display: block;
-  margin-bottom: 5px;
-  font-size: 11pt;
+  margin-bottom: 4px;
+  font-size: 10pt;
   color: #0a3b40;
 }
 
 .goal-section {
   background: #e8f5e9;
-  border-right: 4px solid #2e7d32;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 15px;
+  border-right: 3px solid #2e7d32;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 12px;
   text-align: center;
-  font-size: 10pt;
+  font-size: 9pt;
 }
 
 .goal-section strong {
   display: block;
-  margin-bottom: 8px;
-  font-size: 11pt;
+  margin-bottom: 6px;
+  font-size: 10pt;
   color: #0a3b40;
 }
 
@@ -263,133 +271,110 @@ button#printBtn:hover {
 .grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-bottom: 15px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
-.section {
-  border: 2px solid #0a3b40;
-  padding: 12px;
-  font-size: 10pt;
-  min-height: 120px;
-  max-height: 130px;
-  border-radius: 8px;
+/* الحقول الأساسية: تصغير بنسبة 25% */
+.section:not(.optional) {
+  border: 1px solid #0a3b40;
+  padding: 8px;
+  font-size: 9pt;
+  min-height: 90px; /* تصغير 25% من 120px */
+  max-height: 100px; /* تصغير 25% من 130px */
+  border-radius: 6px;
   background: white;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-.section strong {
+.section:not(.optional) strong {
   display: block;
-  border-bottom: 2px solid #0a3b40;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  font-size: 11pt;
+  border-bottom: 1px solid #0a3b40;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  font-size: 10pt;
   color: #0a3b40;
   flex-shrink: 0;
+  line-height: 1.2;
 }
 
-.section div:not(strong) {
-  line-height: 1.5;
+.section:not(.optional) div:not(strong) {
+  line-height: 1.4;
   flex-grow: 1;
   overflow: hidden;
-  font-size: 10pt;
+  font-size: 9pt;
+  max-height: 70px;
 }
 
-.optional {
+/* الحقول الاختيارية: تصغير بنسبة 50% */
+.section.optional {
+  border: 1px dashed #e6b800;
+  padding: 6px;
+  font-size: 8pt;
+  min-height: 60px; /* تصغير 50% من 120px */
+  max-height: 70px; /* تصغير 50% من 130px */
+  border-radius: 6px;
   background: #fff8cc;
-  border: 2px dashed #e6b800;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.section.optional strong {
+  display: block;
+  border-bottom: 1px dashed #e6b800;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  font-size: 9pt;
+  color: #0a3b40;
+  flex-shrink: 0;
+  line-height: 1.1;
+}
+
+.section.optional div:not(strong) {
+  line-height: 1.3;
+  flex-grow: 1;
+  overflow: hidden;
+  font-size: 8pt;
+  max-height: 45px;
 }
 
 .images {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin: 15px 0;
+  gap: 12px;
+  margin: 12px 0;
 }
 
 .images img {
   width: 100%;
   height: auto;
-  max-height: 150px;
+  max-height: 120px;
   object-fit: cover;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 .signatures {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  margin-top: 25px;
-  font-size: 10pt;
+  gap: 30px;
+  margin-top: 20px;
+  font-size: 9pt;
   text-align: center;
 }
 
 .signatures div {
-  min-height: 70px;
+  min-height: 60px;
 }
 
 .line {
-  border-bottom: 2px dashed #000;
-  height: 25px;
-  margin-top: 10px;
+  border-bottom: 1px dashed #000;
+  height: 20px;
+  margin-top: 8px;
   width: 100%;
-}
-
-/* تحسينات خاصة للطباعة في صفحة واحدة */
-@media print {
-  .goal-section {
-    padding: 8px;
-    margin-bottom: 10px;
-  }
-  
-  .goal-section div {
-    font-size: 10pt;
-    line-height: 1.4;
-  }
-  
-  .section {
-    padding: 8px;
-    min-height: 100px;
-    max-height: 110px;
-  }
-  
-  .section div:not(strong) {
-    font-size: 9.5pt;
-    line-height: 1.4;
-  }
-  
-  .images {
-    gap: 10px;
-    margin: 10px 0;
-  }
-  
-  .images img {
-    max-height: 120px;
-  }
-  
-  .signatures {
-    gap: 30px;
-    margin-top: 15px;
-  }
-  
-  /* تقليل المسافات لتوفير المساحة */
-  .header {
-    padding: 8px;
-    margin-bottom: 10px;
-  }
-  
-  .top-info {
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-  
-  .box {
-    padding: 6px;
-    min-height: 50px;
-  }
 }
 
 /* تحسينات عامة */
@@ -410,14 +395,94 @@ button#printBtn:hover {
 #goal, #desc1, #desc2, #desc3, #desc4, #challenges, #strengths,
 #target, #count, #reportTitle, #school, #edu,
 #teacher, #principal {
-  line-height: 1.5;
+  line-height: 1.4;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
 
 /* معالجة خاصة لإجراءات التنفيذ */
 #desc2 {
-  line-height: 1.4 !important;
+  line-height: 1.3 !important;
+}
+
+/* تحسينات الطباعة لتوفير المساحة */
+@media print {
+  /* تقليل المسافات أكثر للطباعة */
+  .header {
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .top-info {
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  
+  .box {
+    padding: 6px;
+    min-height: 45px;
+  }
+  
+  .goal-section {
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .grid2 {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .section:not(.optional) {
+    padding: 6px;
+    min-height: 85px;
+    max-height: 95px;
+  }
+  
+  .section.optional {
+    padding: 5px;
+    min-height: 55px;
+    max-height: 65px;
+  }
+  
+  .images {
+    gap: 8px;
+    margin: 8px 0;
+  }
+  
+  .images img {
+    max-height: 100px;
+  }
+  
+  .signatures {
+    gap: 20px;
+    margin-top: 15px;
+  }
+  
+  .signatures div {
+    min-height: 50px;
+  }
+}
+
+/* تحسينات للعرض على الشاشة */
+@media screen {
+  .section:not(.optional) {
+    transition: all 0.2s ease;
+  }
+  
+  .section:not(.optional):hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+  
+  .section.optional {
+    transition: all 0.2s ease;
+  }
+  
+  .section.optional:hover {
+    box-shadow: 0 2px 8px rgba(230,184,0,0.2);
+    transform: translateY(-1px);
+  }
 }
 </style>
 </head>
@@ -753,7 +818,7 @@ function initializeHijriDate() {
   }
 }
 
-// طباعة التقرير مع ضبط للحفاظ على صفحة واحدة
+// طباعة التقرير
 function printReport() {
   // التحقق من تعبئة الحقول الأساسية
   const requiredFields = ['goal', 'desc1', 'desc2', 'desc3', 'desc4'];
@@ -790,7 +855,7 @@ function printReport() {
   }
 }
 
-// تحسين التقرير ليكون في صفحة واحدة مع الحفاظ على التصميم الأصلي
+// تحسين التقرير ليكون في صفحة واحدة
 function optimizeForSinglePage() {
   // تقليل حجم الخط للنصوص الطويلة
   const adjustFontSize = (element, maxLength, smallSize, normalSize) => {
@@ -803,20 +868,28 @@ function optimizeForSinglePage() {
   
   // ضبط حجم خط الهدف التربوي
   const goalElement = document.getElementById('goal');
-  adjustFontSize(goalElement, 80, '10pt', '11pt');
+  adjustFontSize(goalElement, 80, '9pt', '10pt');
   
-  // ضبط أحجام الخطوط للحقول
-  const fields = ['desc1', 'desc2', 'desc3', 'desc4', 'challenges', 'strengths'];
-  fields.forEach(field => {
+  // ضبط أحجام الخطوط للحقول الأساسية
+  const mainFields = ['desc1', 'desc2', 'desc3', 'desc4'];
+  mainFields.forEach(field => {
     const element = document.getElementById(field);
-    adjustFontSize(element, 30, '9.5pt', '10pt');
+    adjustFontSize(element, 30, '8.5pt', '9pt');
+  });
+  
+  // ضبط أحجام الخطوط للحقول الاختيارية (أصغر)
+  const optionalFields = ['challenges', 'strengths'];
+  optionalFields.forEach(field => {
+    const element = document.getElementById(field);
+    adjustFontSize(element, 15, '7.5pt', '8pt');
   });
   
   // تقليل المسافات إذا لزم الأمر
   const sections = document.querySelectorAll('.section div:not(strong)');
   sections.forEach(section => {
     if (section.scrollHeight > section.clientHeight) {
-      section.style.lineHeight = '1.3';
+      section.style.lineHeight = '1.2';
+      section.style.paddingTop = '2px';
     }
   });
 }
