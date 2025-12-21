@@ -27,41 +27,44 @@ body {
   text-align: center;
   color: #0a3b40;
   margin-bottom: 20px;
+  font-size: 18px;
 }
 
 label {
   font-weight: 700;
-  margin-top: 15px;
+  margin-top: 12px;
   display: block;
   color: #0a3b40;
+  font-size: 13px;
 }
 
 input, textarea, select {
   width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 8px;
+  padding: 8px;
+  margin-top: 4px;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: 13px;
   box-sizing: border-box;
 }
 
 textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 60px;
+  font-size: 12px;
 }
 
 .small-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin: 15px 0;
+  gap: 8px;
+  margin: 12px 0;
 }
 
 .auto-row {
   display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 6px;
+  margin-top: 6px;
 }
 
 .auto-btn {
@@ -69,9 +72,9 @@ textarea {
   background: #e0f2f1;
   border: 1px solid #0a3b40;
   color: #0a3b40;
-  font-size: 13px;
-  padding: 8px;
-  border-radius: 6px;
+  font-size: 11px;
+  padding: 6px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -84,6 +87,7 @@ textarea {
   background: #fdecea;
   border: 1px solid #c62828;
   color: #c62828;
+  font-size: 11px;
 }
 
 .clear-btn:hover {
@@ -91,14 +95,14 @@ textarea {
 }
 
 button#printBtn {
-  margin-top: 20px;
-  padding: 12px;
+  margin-top: 15px;
+  padding: 10px;
   width: 100%;
   background: #0a3b40;
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
+  border-radius: 8px;
+  font-size: 14px;
   cursor: pointer;
   transition: background 0.3s;
 }
@@ -110,31 +114,33 @@ button#printBtn:hover {
 .checkbox-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 15px 0;
-  padding: 12px;
+  gap: 8px;
+  margin: 10px 0;
+  padding: 8px;
   background: #f5f9ff;
-  border-radius: 8px;
+  border-radius: 6px;
+  font-size: 12px;
 }
 
 .checkbox-row input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   margin: 0;
 }
 
 .optional-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin: 15px 0;
+  gap: 10px;
+  margin: 10px 0;
 }
 
 .optional-field {
   background: #fff8cc;
   border: 1px dashed #e6b800;
-  padding: 12px;
-  border-radius: 6px;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 12px;
 }
 
 /* ===== الطباعة ===== */
@@ -142,11 +148,17 @@ button#printBtn:hover {
   display: none;
 }
 
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
 @media print {
   body {
     background: white;
     padding: 0;
-    font-size: 12pt !important;
+    font-size: 10pt !important;
+    margin: 0;
   }
   
   .tool {
@@ -155,9 +167,10 @@ button#printBtn:hover {
   
   .report {
     display: block !important;
-    font-size: 12pt !important;
-    max-width: 210mm;
-    margin: 0 auto;
+    font-size: 10pt !important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   .section,
@@ -170,7 +183,7 @@ button#printBtn:hover {
 
   .images img {
     height: auto;
-    max-height: 150px;
+    max-height: 120px;
     width: 100%;
     object-fit: contain;
   }
@@ -178,167 +191,225 @@ button#printBtn:hover {
   .optional {
     display: block !important;
   }
+  
+  /* منع قطع الصفحة داخل المحتوى */
+  .grid2 {
+    page-break-inside: avoid;
+  }
 }
 
-/* ===== التقرير ===== */
+/* ===== التقرير - تصميم صفحة واحدة ===== */
 .header {
   background: #0a3b40;
   color: white;
   text-align: center;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 10px;
+  font-size: 10pt;
+  border-radius: 4px;
 }
 
 .header div {
-  margin: 5px 0;
+  margin: 3px 0;
   font-weight: bold;
 }
 
 .header .hijri {
-  font-size: 12pt;
-  margin-top: 8px;
+  font-size: 9pt;
+  margin-top: 4px;
   font-weight: normal;
 }
 
 .top-info {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .box {
-  border: 2px solid #0a3b40;
-  padding: 12px;
+  border: 1px solid #0a3b40;
+  padding: 6px;
   text-align: center;
-  font-size: 11pt;
-  min-height: 70px;
+  font-size: 9pt;
+  min-height: 45px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
+  border-radius: 4px;
   background: #f8f9fa;
 }
 
 .box strong {
   display: block;
-  margin-bottom: 8px;
-  font-size: 12pt;
+  margin-bottom: 4px;
+  font-size: 10pt;
   color: #0a3b40;
 }
 
 .goal-section {
   background: #e8f5e9;
-  border-right: 5px solid #2e7d32;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
+  border-right: 3px solid #2e7d32;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 10px;
   text-align: center;
+  font-size: 9pt;
 }
 
 .goal-section strong {
   display: block;
-  margin-bottom: 10px;
-  font-size: 13pt;
+  margin-bottom: 5px;
+  font-size: 10pt;
   color: #0a3b40;
 }
 
+/* شبكة الحقول الصغيرة */
 .grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
+/* تصغير حجم مربعات الحقول */
 .section {
-  border: 2px solid #0a3b40;
-  padding: 15px;
-  font-size: 11pt;
-  min-height: 150px;
-  border-radius: 8px;
+  border: 1px solid #0a3b40;
+  padding: 6px;
+  font-size: 9pt;
+  min-height: 80px; /* تصغير الارتفاع */
+  max-height: 100px; /* تحديد أقصى ارتفاع */
+  border-radius: 4px;
   background: white;
+  overflow: hidden;
+  page-break-inside: avoid;
 }
 
 .section strong {
   display: block;
-  border-bottom: 2px solid #0a3b40;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  font-size: 12pt;
+  border-bottom: 1px solid #0a3b40;
+  margin-bottom: 5px;
+  padding-bottom: 3px;
+  font-size: 10pt;
   color: #0a3b40;
+  line-height: 1.2;
 }
 
 .section div:not(strong) {
-  line-height: 1.6;
-  min-height: 100px;
+  line-height: 1.3;
+  font-size: 9pt;
+  max-height: 60px;
+  overflow: hidden;
 }
 
 .optional {
   background: #fff8cc;
-  border: 2px dashed #e6b800;
+  border: 1px dashed #e6b800;
 }
 
 .images {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin: 10px 0;
+  page-break-inside: avoid;
 }
 
 .images img {
   width: 100%;
   height: auto;
-  max-height: 200px;
+  max-height: 100px;
   object-fit: cover;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .signatures {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  margin-top: 40px;
-  font-size: 11pt;
+  gap: 30px;
+  margin-top: 15px;
+  font-size: 9pt;
   text-align: center;
+  page-break-inside: avoid;
 }
 
 .signatures div {
-  min-height: 100px;
+  min-height: 50px;
 }
 
 .line {
-  border-bottom: 2px dashed #000;
-  height: 30px;
-  margin-top: 15px;
+  border-bottom: 1px dashed #000;
+  height: 20px;
+  margin-top: 8px;
   width: 100%;
 }
 
 /* إصلاح العرض */
 #fields {
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 #fields label {
-  margin-top: 20px;
+  margin-top: 12px;
+  font-size: 12px;
 }
 
 #fields textarea {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  min-height: 50px;
 }
 
 /* تحسينات للنصوص */
 #goal, #desc1, #desc2, #desc3, #desc4, #challenges, #strengths,
 #target, #count, #reportTitle, #school, #edu,
 #teacher, #principal {
-  line-height: 1.6;
+  line-height: 1.3;
   word-wrap: break-word;
   overflow-wrap: break-word;
   font-size: inherit;
+}
+
+/* تحسينات خاصة لإجراءات التنفيذ */
+#desc2 {
+  line-height: 1.2 !important;
+  font-size: 8pt !important;
+}
+
+/* تحسين المسافات العامة */
+.tool > * {
+  margin-bottom: 8px;
+}
+
+/* تقليل المسافة بين الحقول */
+#fields > div {
+  margin-bottom: 5px;
+}
+
+/* تصميم متجاوب للشاشات الصغيرة */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .tool {
+    padding: 15px;
+  }
+  
+  .small-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .optional-fields {
+    grid-template-columns: 1fr;
+  }
+  
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
@@ -346,25 +417,25 @@ button#printBtn:hover {
 <body>
 
 <div class="tool">
-<h2>أداة إعداد التقارير التعليمية - نموذج تجريبي</h2>
+<h2>أداة إعداد التقارير التعليمية - صفحة واحدة</h2>
 
 <label>إدارة التعليم</label>
 <select id="eduSelect" onchange="sync('edu',this.value)">
   <option value="">اختر إدارة التعليم</option>
   <option value="الإدارة العامة للتعليم بمنطقة مكة المكرمة">الإدارة العامة للتعليم بمنطقة مكة المكرمة</option>
-  <option value="الإدارة العامة للتعليم بمنطقة الرياض">الإدارة العامة للتعليم بمنطقة الرياض</option>
+  <option value="الإدارة العامة للتعليم بمنطقة الرياض" selected>الإدارة العامة للتعليم بمنطقة الرياض</option>
 </select>
 
 <label>اسم المدرسة</label>
-<input id="schoolInput" placeholder="أدخل اسم المدرسة" oninput="sync('school',this.value)">
+<input id="schoolInput" placeholder="أدخل اسم المدرسة" oninput="sync('school',this.value)" value="مدرسة النموذجية الابتدائية">
 
 <div class="small-grid">
 <select id="reportSelect" onchange="syncReport()">
   <option value="">اختر التقرير</option>
-  <option value="تقرير نشاط إثرائي">تقرير نشاط إثرائي</option>
+  <option value="تقرير نشاط إثرائي" selected>تقرير نشاط إثرائي</option>
 </select>
-<input id="targetInput" placeholder="المستهدفون (مثال: طلاب الصف الثالث)" oninput="sync('target',this.value)">
-<input id="countInput" placeholder="العدد (مثال: 25 طالب)" oninput="sync('count',this.value)">
+<input id="targetInput" placeholder="المستهدفون" oninput="sync('target',this.value)" value="طلاب الصف الثالث">
+<input id="countInput" placeholder="العدد" oninput="sync('count',this.value)" value="25 طالب">
 </div>
 
 <!-- الحقول الأساسية -->
@@ -377,7 +448,7 @@ button#printBtn:hover {
   </div>
 
   <label>وصف مختصر (5 كلمات)</label>
-  <textarea id="desc1Input" placeholder="أدخل وصف مختصر للنشاط" oninput="sync('desc1',this.value)"></textarea>
+  <textarea id="desc1Input" placeholder="أدخل وصف مختصر" oninput="sync('desc1',this.value)"></textarea>
   <div class="auto-row">
     <button class="auto-btn" onclick="fill('desc1')">نص تلقائي</button>
     <button class="auto-btn clear-btn" onclick="clearText('desc1')">مسح النص</button>
@@ -410,9 +481,9 @@ button#printBtn:hover {
   <div class="optional-field">
     <div class="checkbox-row">
       <input type="checkbox" id="includeChallenges" checked onchange="toggleOptional('challenges')">
-      <label for="includeChallenges" style="margin:0">تضمين "التحديات" في التقرير</label>
+      <label for="includeChallenges" style="margin:0">تضمين "التحديات"</label>
     </div>
-    <textarea id="challengesInput" rows="2" placeholder="التحديات (كلمتين)" oninput="sync('challenges',this.value)"></textarea>
+    <textarea id="challengesInput" rows="1" placeholder="التحديات (كلمتين)" oninput="sync('challenges',this.value)"></textarea>
     <div class="auto-row">
       <button class="auto-btn" onclick="fill('challenges')">نص تلقائي</button>
       <button class="auto-btn clear-btn" onclick="clearText('challenges')">مسح النص</button>
@@ -422,9 +493,9 @@ button#printBtn:hover {
   <div class="optional-field">
     <div class="checkbox-row">
       <input type="checkbox" id="includeStrengths" checked onchange="toggleOptional('strengths')">
-      <label for="includeStrengths" style="margin:0">تضمين "نقاط القوة" في التقرير</label>
+      <label for="includeStrengths" style="margin:0">تضمين "نقاط القوة"</label>
     </div>
-    <textarea id="strengthsInput" rows="2" placeholder="نقاط القوة (كلمتين)" oninput="sync('strengths',this.value)"></textarea>
+    <textarea id="strengthsInput" rows="1" placeholder="نقاط القوة (كلمتين)" oninput="sync('strengths',this.value)"></textarea>
     <div class="auto-row">
       <button class="auto-btn" onclick="fill('strengths')">نص تلقائي</button>
       <button class="auto-btn clear-btn" onclick="clearText('strengths')">مسح النص</button>
@@ -435,13 +506,18 @@ button#printBtn:hover {
 <label>إرفاق الصور (حد أقصى صورتين)</label>
 <input type="file" multiple accept="image/*" onchange="loadImages(this)">
 
-<label>اسم المعلم</label>
-<input id="teacherInput" placeholder="أدخل اسم المعلم" oninput="sync('teacher',this.value)">
+<div class="small-grid">
+  <div>
+    <label>اسم المعلم</label>
+    <input id="teacherInput" placeholder="اسم المعلم" oninput="sync('teacher',this.value)" value="أحمد محمد">
+  </div>
+  <div>
+    <label>اسم مدير المدرسة</label>
+    <input id="principalInput" placeholder="اسم المدير" oninput="sync('principal',this.value)" value="خالد عبدالله">
+  </div>
+</div>
 
-<label>اسم مدير المدرسة</label>
-<input id="principalInput" placeholder="أدخل اسم مدير المدرسة" oninput="sync('principal',this.value)">
-
-<button id="printBtn" onclick="printReport()">تصدير PDF</button>
+<button id="printBtn" onclick="printReport()">تصدير PDF (صفحة واحدة)</button>
 </div>
 
 <!-- قسم التقرير للطباعة -->
@@ -465,7 +541,7 @@ button#printBtn:hover {
 
 <div class="grid2">
   <div class="section"><strong>وصف مختصر</strong><div id="desc1">تنمية مواهب وقدرات طلابية متنوعة</div></div>
-  <div class="section"><strong>إجراءات التنفيذ</strong><div id="desc2">تخطيط الأنشطة<br>تنفيذ ورش العمل<br>تقييم المواهب</div></div>
+  <div class="section"><strong>إجراءات التنفيذ</strong><div id="desc2">تخطيط الأنشطة تنفيذ ورش التقييم</div></div>
 </div>
 
 <div class="grid2">
@@ -540,18 +616,12 @@ let autoTextIndex = {
 // تهيئة الصفحة
 function initializePage() {
   // تعيين القيم الافتراضية
-  document.getElementById('eduSelect').value = "الإدارة العامة للتعليم بمنطقة الرياض";
-  document.getElementById('schoolInput').value = "مدرسة النموذجية الابتدائية";
-  document.getElementById('reportSelect').value = "تقرير نشاط إثرائي";
-  document.getElementById('targetInput').value = "طلاب الصف الثالث";
-  document.getElementById('countInput').value = "25 طالب";
-  document.getElementById('teacherInput').value = "أحمد محمد";
-  document.getElementById('principalInput').value = "خالد عبدالله";
+  currentReport = "تقرير نشاط إثرائي";
+  syncReport();
   
   // مزامنة القيم الافتراضية مع التقرير
   sync('edu', document.getElementById('eduSelect').value);
   sync('school', document.getElementById('schoolInput').value);
-  syncReport();
   sync('target', document.getElementById('targetInput').value);
   sync('count', document.getElementById('countInput').value);
   sync('teacher', document.getElementById('teacherInput').value);
@@ -572,9 +642,7 @@ function initializePage() {
 
 // تعيين التقرير
 function syncReport() {
-  const reportSelect = document.getElementById('reportSelect');
   const reportTitle = document.getElementById('reportTitle');
-  currentReport = reportSelect.value;
   if (reportTitle) {
     reportTitle.textContent = currentReport;
   }
@@ -670,7 +738,7 @@ function initializeHijriDate() {
   const gregorianDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   
   if (hijriDateElement) {
-    hijriDateElement.textContent = `التاريخ الهجري: ${hijriDate} | التاريخ الميلادي: ${gregorianDate}`;
+    hijriDateElement.textContent = `التاريخ الهجري: ${hijriDate} | الميلادي: ${gregorianDate}`;
   }
 }
 
@@ -684,18 +752,25 @@ function printReport() {
     const element = document.getElementById(field);
     if (element && element.textContent.trim() === '') {
       allFilled = false;
-      alert(`يرجى تعبئة حقل ${field === 'goal' ? 'الهدف التربوي' : 
-                                     field === 'desc1' ? 'الوصف المختصر' :
-                                     field === 'desc2' ? 'إجراءات التنفيذ' :
-                                     field === 'desc3' ? 'النتائج' : 'التوصيات'}`);
+      const fieldNames = {
+        'goal': 'الهدف التربوي',
+        'desc1': 'الوصف المختصر',
+        'desc2': 'إجراءات التنفيذ',
+        'desc3': 'النتائج',
+        'desc4': 'التوصيات'
+      };
+      alert(`يرجى تعبئة حقل ${fieldNames[field]}`);
       break;
     }
   }
   
   if (allFilled) {
-    // إظهار الحقول الاختيارية بناءً على التحديد
+    // إظهار/إخفاء الحقول الاختيارية بناءً على التحديد
     toggleOptional('challenges');
     toggleOptional('strengths');
+    
+    // تقليل حجم الخطوط للنصوص الطويلة قبل الطباعة
+    optimizeForPrinting();
     
     // الانتظار قليلاً لضمان تحديث العرض ثم الطباعة
     setTimeout(() => {
@@ -704,12 +779,27 @@ function printReport() {
   }
 }
 
+// تحسين التقرير للطباعة في صفحة واحدة
+function optimizeForPrinting() {
+  // تقليل حجم الخط للنصوص الطويلة
+  const sections = document.querySelectorAll('.section div:not(strong)');
+  sections.forEach(section => {
+    const textLength = section.textContent.length;
+    if (textLength > 50) {
+      section.style.fontSize = '8pt';
+    }
+  });
+  
+  // تقليل حجم خط الهدف التربوي إذا كان طويلاً
+  const goalElement = document.getElementById('goal');
+  if (goalElement && goalElement.textContent.length > 100) {
+    goalElement.style.fontSize = '9pt';
+  }
+}
+
 // تهيئة الصفحة عند التحميل
 document.addEventListener('DOMContentLoaded', function() {
   initializePage();
-  
-  // إضافة مستمعين للأحداث
-  document.getElementById('reportSelect').addEventListener('change', syncReport);
   
   // إضافة مستمعين للحقول النصية
   const fields = ['goal', 'desc1', 'desc2', 'desc3', 'desc4', 'challenges', 'strengths'];
@@ -720,6 +810,14 @@ document.addEventListener('DOMContentLoaded', function() {
         sync(field, this.value);
       });
     }
+  });
+  
+  // تحسين حجم النصوص عند التغيير
+  document.querySelectorAll('textarea').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+    });
   });
 });
 </script>
