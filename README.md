@@ -10,145 +10,7 @@ body{
   margin:0;
   padding:20px;
 }
-.tool{@media print{
-  body{
-    background:white;
-    padding:0;
-    margin:0;
-    font-size:11pt;
-    line-height:1.6;
-  }
-
-  .tool{display:none !important;}
-
-  .report{
-    display:block;
-    width:100%;
-  }
-
-  @page{
-    size:A4;
-    margin:0.8cm;
-  }
-
-  .header{
-    background:#0a3b40;
-    color:white;
-    text-align:center;
-    padding:8px;
-    margin-bottom:10px;
-    font-size:12pt;
-  }
-
-  .header .hijri{
-    font-size:10.5pt;
-    margin-top:4px;
-  }
-
-  .top-info{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-    margin-bottom:10px;
-  }
-
-  .box{
-    border:1px solid #ccc;
-    padding:6px;
-    text-align:center;
-    font-size:11pt;
-  }
-
-  .goal-section{
-    background:linear-gradient(135deg,#e8f5e9,#f4fbf6);
-    border-right:5px solid #2e7d32;
-    border-radius:8px;
-    padding:8px 10px;
-    margin-bottom:10px;
-    min-height:70px;
-    text-align:center;
-  }
-
-  .goal-section strong{
-    display:block;
-    font-size:12pt;
-    margin-bottom:6px;
-    color:#1b5e20;
-  }
-
-  #goal,
-  #desc1,
-  #desc2,
-  #desc3,
-  #desc4,
-  #challenges,
-  #strengths{
-    font-size:11pt;
-    line-height:1.6;
-  }
-
-  .grid2{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-bottom:10px;
-  }
-
-  .section{
-    border:1px solid #ccc;
-    padding:8px;
-    font-size:11pt;
-  }
-
-  .section strong{
-    display:block;
-    margin-bottom:6px;
-    border-bottom:1px solid #0a3b40;
-  }
-
-  .optional{
-    background:#fff8cc;
-    border:1px dashed #e6b800;
-  }
-
-  .optional.hidden{
-    display:none !important;
-  }
-
-  .images{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:12px;
-  }
-
-  .images img{
-    width:100%;
-    height:180px;
-    object-fit:cover;
-    border:1px solid #ccc;
-  }
-
-  .signatures{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:40px;
-    margin-top:20px;
-    font-size:10pt;
-  }
-
-  .signature-line{
-    border-bottom:1px dashed #000;
-    height:20px;
-    margin-top:5px;
-    width:200px;
-    display:inline-block;
-  }
-
-  .signature-label{
-    display:none !important;
-  }
-}
+.tool{
   max-width:900px;
   margin:auto;
   background:white;
@@ -215,64 +77,47 @@ button{
 
 /* ===== التقرير ===== */
 .report{display:none}
-
 @media print{
-  body{
-    background:white;
-    padding:0;
-    margin:0;
-    font-size: 11pt;
-    line-height: 1.6;
-  }
-  
-  .tool{
-    display:none !important;
-  }
-  
+  body{background:white;padding:0}
+  .tool{display:none}
   .report{
     display:block;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
   
-  /* إعدادات الصفحة */
+  /* منع انبثاق الصفحة الثانية */
   @page {
     size: A4;
     margin: 0.8cm;
+  }
+  
+  .report-content {
+    height: calc(100vh - 1.6cm);
+    overflow: hidden;
   }
   
   .header{
     background:#0a3b40;
     color:white;
     text-align:center;
-    padding:12px;
-    margin-bottom: 15px;
-    font-size:14pt;
-    page-break-before: avoid;
-    page-break-after: avoid;
+    padding:8px;
+    margin-bottom:10px;
+    font-size:12px;
   }
-  
-  .header .hijri{
-    font-size:11pt;
-    margin-top:6px;
-    opacity: 0.9;
-  }
+  .header .hijri{font-size:11px;margin-top:4px}
 
   .top-info{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:12px;
-    margin-bottom: 15px;
-    page-break-inside: avoid;
+    gap:8px;
+    margin-bottom:10px;
   }
-  
   .box{
     border:1px solid #ccc;
-    padding:10px;
+    padding:6px;
     text-align:center;
-    font-size:12pt;
-    page-break-inside: avoid;
+    font-size:11pt;
   }
 
   /* الهدف التربوي */
@@ -281,117 +126,75 @@ button{
     border-right:5px solid #2e7d32;
     border-radius:8px;
     padding:8px 10px;
-    margin-bottom: 10px;
-    page-break-inside: avoid;
+    margin-bottom:10px;
+    min-height:70px;
     text-align:center;
     line-height:1.7;
   }
-  
   .goal-section strong{
     color:#1b5e20;
     margin-bottom:6px;
     display:block;
-    font-size: 12pt;
   }
 
   .section{
     border:1px solid #ccc;
     padding:8px;
-    font-size:10pt;
+    font-size:11pt;
     page-break-inside: avoid;
   }
-  
   .section strong{
     display:block;
     border-bottom:1px solid #0a3b40;
     margin-bottom:6px;
-    padding-bottom: 5px;
-    font-size: 13pt;
   }
-  
   .grid2{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:10px;
-    margin-bottom: 15px;
+    margin-bottom:10px;
+    page-break-inside: avoid;
   }
-  
   .optional{
     background:#fff8cc;
     border:1px dashed #e6b800;
   }
-  
   .optional.hidden {
     display: none !important;
   }
-  
   .images{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:15px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    gap:10px;
+    margin-top:12px;
     page-break-inside: avoid;
   }
-  
   .images img{
     width:100%;
-    max-height: 200px;
+    height:180px;
     object-fit:cover;
     border:1px solid #ccc;
-    page-break-inside: avoid;
   }
-  
   .signatures{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:50px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-    font-size:11pt;
+    gap:40px;
+    margin-top:20px;
+    font-size:10pt;
     page-break-inside: avoid;
-    page-break-before: avoid;
   }
-  
-  .signatures div{
-    text-align:center;
-  }
-  
+  .signatures div{text-align:center}
   .signature-line{
     border-bottom:1px dashed #000;
-    height:25px;
-    margin-top:8px;
-    width: 220px;
+    height:20px;
+    margin-top:5px;
+    width: 200px;
     display: inline-block;
   }
   
   /* إزالة عبارات التوقيع */
   .signatures .signature-label {
     display: none !important;
-  }
-  
-  /* تحسين إدارة فواصل الصفحات */
-  .section,
-  .goal-section,
-  .top-info,
-  .images,
-  .signatures {
-    page-break-inside: avoid;
-  }
-  
-  .grid2 {
-    page-break-inside: auto;
-  }
-  
-  /* منع العزل لوحده في صفحة */
-  h1, h2, h3, h4 {
-    page-break-after: avoid;
-  }
-  
-  /* التأكد أن التقرير يبدأ من أعلى الصفحة */
-  .report-content {
-    margin-top: 0;
-    padding-top: 0;
   }
 }
 </style>
@@ -1245,4 +1048,4 @@ window.onbeforeprint = loadHijri;
 </script>
 
 </body>
-</htm
+</html>
