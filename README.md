@@ -10,7 +10,145 @@ body{
   margin:0;
   padding:20px;
 }
-.tool{
+.tool{@media print{
+  body{
+    background:white;
+    padding:0;
+    margin:0;
+    font-size:11pt;
+    line-height:1.6;
+  }
+
+  .tool{display:none !important;}
+
+  .report{
+    display:block;
+    width:100%;
+  }
+
+  @page{
+    size:A4;
+    margin:0.8cm;
+  }
+
+  .header{
+    background:#0a3b40;
+    color:white;
+    text-align:center;
+    padding:8px;
+    margin-bottom:10px;
+    font-size:12pt;
+  }
+
+  .header .hijri{
+    font-size:10.5pt;
+    margin-top:4px;
+  }
+
+  .top-info{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:10px;
+  }
+
+  .box{
+    border:1px solid #ccc;
+    padding:6px;
+    text-align:center;
+    font-size:11pt;
+  }
+
+  .goal-section{
+    background:linear-gradient(135deg,#e8f5e9,#f4fbf6);
+    border-right:5px solid #2e7d32;
+    border-radius:8px;
+    padding:8px 10px;
+    margin-bottom:10px;
+    min-height:70px;
+    text-align:center;
+  }
+
+  .goal-section strong{
+    display:block;
+    font-size:12pt;
+    margin-bottom:6px;
+    color:#1b5e20;
+  }
+
+  #goal,
+  #desc1,
+  #desc2,
+  #desc3,
+  #desc4,
+  #challenges,
+  #strengths{
+    font-size:11pt;
+    line-height:1.6;
+  }
+
+  .grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:10px;
+  }
+
+  .section{
+    border:1px solid #ccc;
+    padding:8px;
+    font-size:11pt;
+  }
+
+  .section strong{
+    display:block;
+    margin-bottom:6px;
+    border-bottom:1px solid #0a3b40;
+  }
+
+  .optional{
+    background:#fff8cc;
+    border:1px dashed #e6b800;
+  }
+
+  .optional.hidden{
+    display:none !important;
+  }
+
+  .images{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:12px;
+  }
+
+  .images img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    border:1px solid #ccc;
+  }
+
+  .signatures{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    margin-top:20px;
+    font-size:10pt;
+  }
+
+  .signature-line{
+    border-bottom:1px dashed #000;
+    height:20px;
+    margin-top:5px;
+    width:200px;
+    display:inline-block;
+  }
+
+  .signature-label{
+    display:none !important;
+  }
+}
   max-width:900px;
   margin:auto;
   background:white;
