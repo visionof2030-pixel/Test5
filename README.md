@@ -210,10 +210,49 @@ button#printBtn:hover {
   margin-bottom: 12px;
   border-radius: 6px;
   font-size: 11pt;
+  position: relative;
 }
 
-.header div {
-  margin: 3px 0;
+.header-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 5px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 50%;
+  padding: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.logo-text {
+  font-weight: bold;
+  font-size: 12pt;
+  color: white;
+}
+
+.school-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.school-info div {
+  margin: 2px 0;
   font-weight: bold;
 }
 
@@ -485,6 +524,16 @@ button#printBtn:hover {
   .signature-line {
     height: 22px;
   }
+  
+  /* شعار الوزارة في الطباعة */
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .logo-text {
+    font-size: 10pt;
+  }
 }
 
 /* تحسينات للعرض على الشاشة */
@@ -505,6 +554,41 @@ button#printBtn:hover {
   .section.optional:hover {
     box-shadow: 0 2px 8px rgba(230,184,0,0.2);
     transform: translateY(-1px);
+  }
+  
+  .logo {
+    transition: transform 0.3s ease;
+  }
+  
+  .logo:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* شعار SVG معدل */
+.logo svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* تصميم متجاوب */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .small-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .optional-fields {
+    grid-template-columns: 1fr;
+  }
+  
+  .signatures {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 </style>
@@ -619,8 +703,24 @@ button#printBtn:hover {
 <!-- قسم التقرير للطباعة -->
 <div class="report">
 <div class="header">
-  <div id="edu">الإدارة العامة للتعليم بمنطقة الرياض</div>
-  <div id="school">مدرسة النموذجية الابتدائية</div>
+  <div class="header-content">
+    <div class="logo-container">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <rect width="100" height="100" fill="#0a3b40"/>
+          <circle cx="50" cy="40" r="20" fill="white"/>
+          <rect x="30" y="60" width="40" height="20" fill="white"/>
+          <path d="M30 60 L50 40 L70 60 Z" fill="#0a3b40"/>
+          <text x="50" y="85" text-anchor="middle" fill="white" font-size="18" font-weight="bold">م</text>
+        </svg>
+      </div>
+      <div class="logo-text">وزارة التعليم</div>
+    </div>
+    <div class="school-info">
+      <div id="edu">الإدارة العامة للتعليم بمنطقة الرياض</div>
+      <div id="school">مدرسة النموذجية الابتدائية</div>
+    </div>
+  </div>
   <div id="hijriDate" class="hijri">جاري تحميل التاريخ الهجري...</div>
 </div>
 
@@ -661,12 +761,12 @@ button#printBtn:hover {
 <!-- منطقة التوقيعات المعدلة -->
 <div class="signatures">
   <div class="signature-box">
-    <div class="signature-title">المعلم /</div>
+    <div class="signature-title" id="teacherNameDisplay"></div>
     <div class="signature-line"></div>
     <div class="signature-text">التوقيع</div>
   </div>
   <div class="signature-box">
-    <div class="signature-title">مدير المدرسة /</div>
+    <div class="signature-title" id="principalNameDisplay"></div>
     <div class="signature-line"></div>
     <div class="signature-text">التوقيع</div>
   </div>
@@ -825,6 +925,10 @@ async function initializePage() {
   fill('challenges');
   fill('strengths');
   
+  // مزامنة أسماء المعلم ومدير المدرسة
+  sync('teacher', document.getElementById('teacherInput').value);
+  sync('principal', document.getElementById('principalInput').value);
+  
   // جلب التاريخ الهجري الدقيق من API
   await getHijriDate();
 }
@@ -878,6 +982,16 @@ function sync(id, value) {
     } else {
       el.textContent = value;
     }
+  }
+  
+  // مزامنة خاصة لأسماء المعلم ومدير المدرسة
+  if (id === 'teacher') {
+    const teacherDisplay = document.getElementById('teacherNameDisplay');
+    if (teacherDisplay) teacherDisplay.textContent = value;
+  }
+  if (id === 'principal') {
+    const principalDisplay = document.getElementById('principalNameDisplay');
+    if (principalDisplay) principalDisplay.textContent = value;
   }
 }
 
@@ -998,6 +1112,22 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   });
+  
+  // مستمعين لأسماء المعلم ومدير المدرسة
+  const teacherInput = document.getElementById('teacherInput');
+  const principalInput = document.getElementById('principalInput');
+  
+  if (teacherInput) {
+    teacherInput.addEventListener('input', function() {
+      sync('teacher', this.value);
+    });
+  }
+  
+  if (principalInput) {
+    principalInput.addEventListener('input', function() {
+      sync('principal', this.value);
+    });
+  }
 });
 </script>
 
