@@ -171,7 +171,7 @@ button#printBtn:hover {
   /* تكبير حجم الصور بنسبة 20% للطباعة */
   .images img {
     height: auto;
-    max-height: 144px !important; /* تكبير 20% من 120px */
+    max-height: 144px !important;
     width: 100%;
     object-fit: contain;
   }
@@ -192,11 +192,11 @@ button#printBtn:hover {
     font-size: 9pt !important;
   }
   
-  /* تصغير المربعات الاختيارية بنسبة 50% */
+  /* تصغير المربعات الاختيارية بنسبة 5% إضافية (أصغر من 50%) */
   .section.optional {
-    min-height: 60px !important;
-    max-height: 70px !important;
-    font-size: 8pt !important;
+    min-height: 57px !important; /* تصغير 5% إضافية من 60px */
+    max-height: 66.5px !important; /* تصغير 5% إضافية من 70px */
+    font-size: 7.5pt !important;
   }
 }
 
@@ -308,14 +308,14 @@ button#printBtn:hover {
   max-height: 70px;
 }
 
-/* الحقول الاختيارية: تصغير بنسبة 50% */
+/* الحقول الاختيارية: تصغير بنسبة 50% + 5% إضافية = 55% */
 .section.optional {
   border: 1px dashed #e6b800;
-  padding: 6px;
-  font-size: 8pt;
-  min-height: 60px;
-  max-height: 70px;
-  border-radius: 6px;
+  padding: 5px;
+  font-size: 7.5pt;
+  min-height: 57px; /* تصغير 5% إضافية من 60px */
+  max-height: 66.5px; /* تصغير 5% إضافية من 70px */
+  border-radius: 5px;
   background: #fff8cc;
   overflow: hidden;
   display: flex;
@@ -325,20 +325,20 @@ button#printBtn:hover {
 .section.optional strong {
   display: block;
   border-bottom: 1px dashed #e6b800;
-  margin-bottom: 4px;
-  padding-bottom: 3px;
-  font-size: 9pt;
+  margin-bottom: 3px;
+  padding-bottom: 2px;
+  font-size: 8pt;
   color: #0a3b40;
   flex-shrink: 0;
-  line-height: 1.1;
+  line-height: 1;
 }
 
 .section.optional div:not(strong) {
-  line-height: 1.3;
+  line-height: 1.2;
   flex-grow: 1;
   overflow: hidden;
-  font-size: 8pt;
-  max-height: 45px;
+  font-size: 7.5pt;
+  max-height: 42px;
 }
 
 /* تكبير مربعات الصور بنسبة 20% */
@@ -352,7 +352,7 @@ button#printBtn:hover {
 .images img {
   width: 100%;
   height: auto;
-  max-height: 144px; /* تكبير 20% من 120px */
+  max-height: 144px;
   object-fit: cover;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -369,54 +369,34 @@ button#printBtn:hover {
 }
 
 .signature-box {
-  min-height: 90px;
+  min-height: 70px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 0 10px;
 }
 
-.signature-name {
+/* توقيعات جديدة - بدون نقاط وبدون أسماء */
+.signature-title {
+  text-align: center;
   font-weight: bold;
-  margin-bottom: 8px;
-  min-height: 25px;
-  text-align: center;
+  margin-bottom: 5px;
+  font-size: 11pt;
 }
 
-/* سطر التوقيع بالخط المتصل */
-.signature-line {
-  border-bottom: 2px solid #000;
-  height: 25px;
-  margin-top: 5px;
-  width: 100%;
-  text-align: center;
-  font-size: 12pt;
-  color: #000;
-  position: relative;
-  padding-bottom: 5px;
-}
-
-/* النص تحت خط التوقيع */
 .signature-text {
   text-align: center;
   font-size: 9pt;
-  color: #666;
-  margin-top: 5px;
-  padding-top: 2px;
-}
-
-/* تنسيق خاص للمعلم والمدير */
-.signature-box .name-line {
-  text-align: center;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.signature-box .signature-label {
-  text-align: center;
-  font-size: 9pt;
   color: #333;
-  margin-top: 3px;
+  margin-top: 15px;
+  font-weight: normal;
+}
+
+.signature-line {
+  border-bottom: 2px solid #000;
+  height: 25px;
+  width: 100%;
+  margin-top: 5px;
 }
 
 /* تحسينات عامة */
@@ -482,9 +462,9 @@ button#printBtn:hover {
   }
   
   .section.optional {
-    padding: 5px;
-    min-height: 55px;
-    max-height: 65px;
+    padding: 4px;
+    min-height: 54px;
+    max-height: 63px;
   }
   
   .images {
@@ -498,12 +478,11 @@ button#printBtn:hover {
   }
   
   .signature-box {
-    min-height: 80px;
+    min-height: 65px;
   }
   
   .signature-line {
     height: 22px;
-    margin-top: 8px;
   }
 }
 
@@ -641,7 +620,7 @@ button#printBtn:hover {
 <div class="header">
   <div id="edu">الإدارة العامة للتعليم بمنطقة الرياض</div>
   <div id="school">مدرسة النموذجية الابتدائية</div>
-  <div id="hijriDate" class="hijri">التاريخ الهجري: 15 ربيع الأول 1446هـ</div>
+  <div id="hijriDate" class="hijri">جاري تحميل التاريخ الهجري...</div>
 </div>
 
 <div class="top-info">
@@ -667,7 +646,7 @@ button#printBtn:hover {
   <div class="section"><strong>التوصيات</strong><div id="desc4">زيادة الأنشطة الإثرائية المتنوعة</div></div>
 </div>
 
-<!-- التحديات ونقاط القوة جنباً إلى جنب -->
+<!-- التحديات ونقاط القوة جنباً إلى جنب (مصغرة بنسبة 5% إضافية) -->
 <div class="grid2">
   <div class="section optional" id="challengesSection"><strong>التحديات</strong><div id="challenges">ضيق الوقت</div></div>
   <div class="section optional" id="strengthsSection"><strong>نقاط القوة</strong><div id="strengths">تنمية شاملة</div></div>
@@ -681,16 +660,14 @@ button#printBtn:hover {
 <!-- منطقة التوقيعات المعدلة -->
 <div class="signatures">
   <div class="signature-box">
-    <div class="name-line">اسم المعلم /</div>
-    <div class="signature-name" id="teacher">أحمد محمد</div>
-    <div class="signature-label">التوقيع/</div>
-    <div class="signature-line">……………………………………………………</div>
+    <div class="signature-title">المعلم /</div>
+    <div class="signature-line"></div>
+    <div class="signature-text">التوقيع</div>
   </div>
   <div class="signature-box">
-    <div class="name-line">اسم مدير المدرسة /</div>
-    <div class="signature-name" id="principal">خالد عبدالله</div>
-    <div class="signature-label">التوقيع/</div>
-    <div class="signature-line">……………………………………………………</div>
+    <div class="signature-title">مدير المدرسة /</div>
+    <div class="signature-line"></div>
+    <div class="signature-text">التوقيع</div>
   </div>
 </div>
 </div>
@@ -744,8 +721,90 @@ let autoTextIndex = {
   challenges: 0, strengths: 0
 };
 
+// دالة للحصول على التاريخ الهجري من API
+async function getHijriDate() {
+  const hijriDateElement = document.getElementById('hijriDate');
+  
+  try {
+    // استخدام API من موقع التقويم الهجري الموثوق
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    
+    // محاولة استخدام أول API
+    try {
+      const response = await fetch(`https://api.aladhan.com/v1/gToH/${day}-${month}-${year}`);
+      const data = await response.json();
+      
+      if (data.code === 200 && data.data) {
+        const hijri = data.data.hijri;
+        const hijriDate = `${hijri.day} ${hijri.month.ar} ${hijri.year}هـ`;
+        const gregorianDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        hijriDateElement.textContent = `التاريخ الهجري: ${hijriDate} | الميلادي: ${gregorianDate}`;
+        return;
+      }
+    } catch (e) {
+      console.log('الـAPI الأول غير متوفر، جاري المحاولة بـAPI آخر...');
+    }
+    
+    // محاولة استخدام API بديل
+    try {
+      const response = await fetch(`https://api.islamic-datetime.com/v1/gregorian-to-hijri?year=${year}&month=${month}&day=${day}`);
+      const data = await response.json();
+      
+      if (data.hijri) {
+        const hijri = data.hijri;
+        const hijriMonths = [
+          'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الآخرة',
+          'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+        ];
+        const hijriDate = `${hijri.day} ${hijriMonths[hijri.month - 1]} ${hijri.year}هـ`;
+        const gregorianDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        hijriDateElement.textContent = `التاريخ الهجري: ${hijriDate} | الميلادي: ${gregorianDate}`;
+        return;
+      }
+    } catch (e) {
+      console.log('الـAPI البديل غير متوفر، جاري استخدام طريقة تقريبية...');
+    }
+    
+    // استخدام الطريقة التقريبية إذا فشلت جميع الـAPIs
+    const hijriYear = Math.floor((year - 622) * (33/32));
+    const hijriMonth = month;
+    const hijriDay = day;
+    
+    const hijriMonths = [
+      'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الآخرة',
+      'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+    ];
+    
+    const hijriDate = `${hijriDay} ${hijriMonths[hijriMonth-1]} ${hijriYear}هـ`;
+    const gregorianDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    hijriDateElement.textContent = `التاريخ الهجري: ${hijriDate} | الميلادي: ${gregorianDate}`;
+    
+  } catch (error) {
+    console.error('خطأ في جلب التاريخ الهجري:', error);
+    // استخدام التاريخ الحالي كبديل
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    
+    // طريقة تقريبية للتاريخ الهجري
+    const hijriYear = Math.floor((year - 622) * (33/32));
+    const hijriMonths = [
+      'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الآخرة',
+      'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+    ];
+    
+    const hijriDate = `${day} ${hijriMonths[month-1]} ${hijriYear}هـ`;
+    const gregorianDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    hijriDateElement.textContent = `التاريخ الهجري: ${hijriDate} | الميلادي: ${gregorianDate}`;
+  }
+}
+
 // تهيئة الصفحة
-function initializePage() {
+async function initializePage() {
   // تعيين القيم الافتراضية
   currentReport = "تقرير نشاط إثرائي";
   syncReport();
@@ -755,8 +814,6 @@ function initializePage() {
   sync('school', document.getElementById('schoolInput').value);
   sync('target', document.getElementById('targetInput').value);
   sync('count', document.getElementById('countInput').value);
-  sync('teacher', document.getElementById('teacherInput').value);
-  sync('principal', document.getElementById('principalInput').value);
   
   // تعبئة الحقول بالنصوص التلقائية الأولى
   fill('goal');
@@ -767,8 +824,8 @@ function initializePage() {
   fill('challenges');
   fill('strengths');
   
-  // تهيئة التاريخ الهجري
-  initializeHijriDate();
+  // جلب التاريخ الهجري الدقيق من API
+  await getHijriDate();
 }
 
 // تعيين التقرير
@@ -850,29 +907,6 @@ function loadImages(input) {
   });
 }
 
-// تهيئة التاريخ الهجري
-function initializeHijriDate() {
-  const hijriDateElement = document.getElementById('hijriDate');
-  const today = new Date();
-  
-  // تحويل التاريخ الميلادي إلى هجري (تقريبي)
-  const hijriYear = Math.floor((today.getFullYear() - 622) * (33/32));
-  const hijriMonth = today.getMonth() + 1;
-  const hijriDay = today.getDate();
-  
-  const hijriMonths = [
-    'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الآخرة',
-    'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
-  ];
-  
-  const hijriDate = `${hijriDay} ${hijriMonths[hijriMonth-1]} ${hijriYear}هـ`;
-  const gregorianDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-  
-  if (hijriDateElement) {
-    hijriDateElement.textContent = `التاريخ الهجري: ${hijriDate} | الميلادي: ${gregorianDate}`;
-  }
-}
-
 // طباعة التقرير
 function printReport() {
   // التحقق من تعبئة الحقول الأساسية
@@ -936,7 +970,7 @@ function optimizeForSinglePage() {
   const optionalFields = ['challenges', 'strengths'];
   optionalFields.forEach(field => {
     const element = document.getElementById(field);
-    adjustFontSize(element, 15, '7.5pt', '8pt');
+    adjustFontSize(element, 15, '7pt', '7.5pt');
   });
   
   // تقليل المسافات إذا لزم الأمر
@@ -944,7 +978,7 @@ function optimizeForSinglePage() {
   sections.forEach(section => {
     if (section.scrollHeight > section.clientHeight) {
       section.style.lineHeight = '1.2';
-      section.style.paddingTop = '2px';
+      section.style.paddingTop = '1px';
     }
   });
 }
