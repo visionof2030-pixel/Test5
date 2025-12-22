@@ -54,15 +54,16 @@ textarea {
 .small-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  gap: 6px;
   margin: 15px 0;
 }
 
 .small-grid input,
 .small-grid select {
-  font-size: 12px;
-  padding: 6px;
+  font-size: 11px;
+  padding: 5px 4px;
   margin-top: 0;
+  height: 35px;
 }
 
 .auto-row {
@@ -263,38 +264,45 @@ button#printBtn:hover {
   font-weight: normal;
 }
 
-/* 7 مربعات في سطر واحد */
+/* 7 مربعات صغيرة جداً في سطر واحد */
 .top-info {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  gap: 3px;
   margin-bottom: 10px;
 }
 
 .box {
   border: 1px solid #0a3b40;
-  padding: 4px;
+  padding: 2px;
   text-align: center;
-  font-size: 8pt;
-  min-height: 40px;
+  font-size: 7pt;
+  min-height: 30px;
+  max-height: 35px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 4px;
+  border-radius: 3px;
   background: #f8f9fa;
+  overflow: hidden;
 }
 
 .box strong {
   display: block;
-  margin-bottom: 2px;
-  font-size: 8pt;
+  margin-bottom: 1px;
+  font-size: 7pt;
   color: #0a3b40;
+  line-height: 1;
+  padding: 0 1px;
 }
 
 .box div {
-  font-size: 7.5pt;
-  line-height: 1.2;
+  font-size: 6.5pt;
+  line-height: 1.1;
+  max-height: 16px;
+  overflow: hidden;
+  padding: 0 1px;
 }
 
 .goal-section {
@@ -441,13 +449,14 @@ button#printBtn:hover {
   }
   
   .top-info {
-    gap: 3px;
+    gap: 2px;
     margin-bottom: 6px;
   }
   
   .box {
-    padding: 3px;
-    min-height: 35px;
+    padding: 1px;
+    min-height: 28px;
+    max-height: 32px;
   }
   
   .goal-section {
@@ -511,11 +520,11 @@ button#printBtn:hover {
 /* تصميم متجاوب */
 @media (max-width: 768px) {
   .small-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
   
   .top-info {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
   
   .optional-fields {
@@ -530,11 +539,11 @@ button#printBtn:hover {
 
 @media (max-width: 480px) {
   .small-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
   
   .top-info {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 </style>
@@ -656,7 +665,7 @@ button#printBtn:hover {
   <div id="hijriDate" class="hijri">جاري تحميل التاريخ الهجري...</div>
 </div>
 
-<!-- 7 مربعات في سطر واحد -->
+<!-- 7 مربعات صغيرة جداً في سطر واحد -->
 <div class="top-info">
   <div class="box"><strong>التقرير</strong><div id="reportTitle">تقرير نشاط إثرائي</div></div>
   <div class="box"><strong>المستهدفون</strong><div id="target">طلاب الصف الثالث</div></div>
@@ -750,49 +759,12 @@ async function getHijriDate() {
   const hijriDateElement = document.getElementById('hijriDate');
   
   try {
-    // استخدام API من موقع التقويم الهجري الموثوق
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth() + 1;
     const day = today.getDate();
     
-    // محاولة استخدام أول API
-    try {
-      const response = await fetch(`https://api.aladhan.com/v1/gToH/${day}-${month}-${year}`);
-      const data = await response.json();
-      
-      if (data.code === 200 && data.data) {
-        const hijri = data.data.hijri;
-        const hijriDate = `${hijri.day} ${hijri.month.ar} ${hijri.year}هـ`;
-        const gregorianDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        hijriDateElement.textContent = `التاريخ الهجري: ${hijriDate} | الميلادي: ${gregorianDate}`;
-        return;
-      }
-    } catch (e) {
-      console.log('الـAPI الأول غير متوفر، جاري المحاولة بـAPI آخر...');
-    }
-    
-    // محاولة استخدام API بديل
-    try {
-      const response = await fetch(`https://api.islamic-datetime.com/v1/gregorian-to-hijri?year=${year}&month=${month}&day=${day}`);
-      const data = await response.json();
-      
-      if (data.hijri) {
-        const hijri = data.hijri;
-        const hijriMonths = [
-          'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الآخرة',
-          'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
-        ];
-        const hijriDate = `${hijri.day} ${hijriMonths[hijri.month - 1]} ${hijri.year}هـ`;
-        const gregorianDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        hijriDateElement.textContent = `التاريخ الهجري: ${hijriDate} | الميلادي: ${gregorianDate}`;
-        return;
-      }
-    } catch (e) {
-      console.log('الـAPI البديل غير متوفر، جاري استخدام طريقة تقريبية...');
-    }
-    
-    // استخدام الطريقة التقريبية إذا فشلت جميع الـAPIs
+    // استخدام الطريقة التقريبية
     const hijriYear = Math.floor((year - 622) * (33/32));
     const hijriMonth = month;
     const hijriDay = day;
@@ -808,13 +780,11 @@ async function getHijriDate() {
     
   } catch (error) {
     console.error('خطأ في جلب التاريخ الهجري:', error);
-    // استخدام التاريخ الحالي كبديل
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth() + 1;
     const day = today.getDate();
     
-    // طريقة تقريبية للتاريخ الهجري
     const hijriYear = Math.floor((year - 622) * (33/32));
     const hijriMonths = [
       'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الآخرة',
@@ -852,7 +822,7 @@ async function initializePage() {
   fill('challenges');
   fill('strengths');
   
-  // جلب التاريخ الهجري الدقيق من API
+  // جلب التاريخ الهجري
   await getHijriDate();
 }
 
@@ -871,14 +841,11 @@ function fill(fieldId) {
   const fieldData = reportsData[currentReport][fieldId];
   if (!fieldData) return;
   
-  // الحصول على النص التالي في القائمة (دوراني)
   const index = autoTextIndex[fieldId] || 0;
   const text = fieldData[index];
   
-  // تحديث الفهرس للدورة التالية
   autoTextIndex[fieldId] = (index + 1) % fieldData.length;
   
-  // تعيين النص في الحقل المناسب
   const inputElement = document.getElementById(fieldId + 'Input');
   if (inputElement) {
     inputElement.value = text;
@@ -899,7 +866,6 @@ function clearText(fieldId) {
 function sync(id, value) {
   const el = document.getElementById(id);
   if (el) {
-    // معالجة خاصة لحقل إجراءات التنفيذ
     if (id === 'desc2') {
       el.innerHTML = value.replace(/ /g, '<br>');
     } else {
@@ -937,7 +903,6 @@ function loadImages(input) {
 
 // طباعة التقرير
 function printReport() {
-  // التحقق من تعبئة الحقول الأساسية
   const requiredFields = ['goal', 'desc1', 'desc2', 'desc3', 'desc4'];
   let allFilled = true;
   
@@ -958,64 +923,19 @@ function printReport() {
   }
   
   if (allFilled) {
-    // إظهار/إخفاء الحقول الاختيارية بناءً على التحديد
     toggleOptional('challenges');
     toggleOptional('strengths');
     
-    // ضبط أحجام الخطوط للحفاظ على صفحة واحدة
-    optimizeForSinglePage();
-    
-    // الانتظار قليلاً لضمان تحديث العرض ثم الطباعة
     setTimeout(() => {
       window.print();
     }, 100);
   }
 }
 
-// تحسين التقرير ليكون في صفحة واحدة
-function optimizeForSinglePage() {
-  // تقليل حجم الخط للنصوص الطويلة
-  const adjustFontSize = (element, maxLength, smallSize, normalSize) => {
-    if (element && element.textContent.length > maxLength) {
-      element.style.fontSize = smallSize;
-    } else if (element) {
-      element.style.fontSize = normalSize;
-    }
-  };
-  
-  // ضبط حجم خط الهدف التربوي
-  const goalElement = document.getElementById('goal');
-  adjustFontSize(goalElement, 80, '9pt', '10pt');
-  
-  // ضبط أحجام الخطوط للحقول الأساسية
-  const mainFields = ['desc1', 'desc2', 'desc3', 'desc4'];
-  mainFields.forEach(field => {
-    const element = document.getElementById(field);
-    adjustFontSize(element, 30, '8.5pt', '9pt');
-  });
-  
-  // ضبط أحجام الخطوط للحقول الاختيارية (أصغر)
-  const optionalFields = ['challenges', 'strengths'];
-  optionalFields.forEach(field => {
-    const element = document.getElementById(field);
-    adjustFontSize(element, 15, '7pt', '7.5pt');
-  });
-  
-  // تقليل المسافات إذا لزم الأمر
-  const sections = document.querySelectorAll('.section div:not(strong)');
-  sections.forEach(section => {
-    if (section.scrollHeight > section.clientHeight) {
-      section.style.lineHeight = '1.2';
-      section.style.paddingTop = '1px';
-    }
-  });
-}
-
 // تهيئة الصفحة عند التحميل
 document.addEventListener('DOMContentLoaded', function() {
   initializePage();
   
-  // إضافة مستمعين للحقول النصية
   const fields = ['goal', 'desc1', 'desc2', 'desc3', 'desc4', 'challenges', 'strengths'];
   fields.forEach(field => {
     const inputElement = document.getElementById(field + 'Input');
