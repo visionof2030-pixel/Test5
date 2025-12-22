@@ -198,56 +198,76 @@ button#printBtn:hover {
     max-height: 66.5px !important; /* تصغير 5% إضافية من 70px */
     font-size: 7.5pt !important;
   }
+  
+  /* تصغير الهيدر للطباعة */
+  .header {
+    padding: 6px !important;
+    margin-bottom: 8px !important;
+    font-size: 10pt !important;
+  }
+  
+  .header .hijri {
+    font-size: 8pt !important;
+  }
 }
 
 /* ===== التقرير - مع تصغير المربعات ===== */
+/* الهيدر المصغر */
 .header {
   background: #0a3b40;
   color: white;
   text-align: center;
-  padding: 10px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  font-size: 11pt;
+  padding: 8px; /* تصغير من 10px */
+  margin-bottom: 10px; /* تصغير من 12px */
+  border-radius: 5px; /* تصغير من 6px */
+  font-size: 10pt; /* تصغير من 11pt */
 }
 
 .header div {
-  margin: 3px 0;
+  margin: 2px 0; /* تصغير من 3px */
   font-weight: bold;
 }
 
 .header .hijri {
-  font-size: 9pt;
-  margin-top: 4px;
+  font-size: 8pt; /* تصغير من 9pt */
+  margin-top: 3px; /* تصغير من 4px */
   font-weight: normal;
 }
 
-.top-info {
+/* شبكة المربعات العلوية - 6 مربعات في سطر واحد */
+.top-info-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
   margin-bottom: 12px;
 }
 
 .box {
   border: 1px solid #0a3b40;
-  padding: 8px;
+  padding: 6px; /* تصغير من 8px */
   text-align: center;
-  font-size: 9pt;
-  min-height: 50px;
+  font-size: 8pt; /* تصغير من 9pt */
+  min-height: 45px; /* تصغير من 50px */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 6px;
+  border-radius: 5px; /* تصغير من 6px */
   background: #f8f9fa;
 }
 
 .box strong {
   display: block;
-  margin-bottom: 4px;
-  font-size: 10pt;
+  margin-bottom: 3px; /* تصغير من 4px */
+  font-size: 9pt; /* تصغير من 10pt */
   color: #0a3b40;
+  line-height: 1.2;
+}
+
+.box div {
+  line-height: 1.3;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .goal-section {
@@ -358,29 +378,29 @@ button#printBtn:hover {
   border-radius: 5px;
 }
 
-/* منطقة التوقيعات المعدلة - بدون خط */
+/* منطقة التوقيعات المعدلة - بدون خط التوقيع */
 .signatures {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
-  margin-top: 25px;
+  margin-top: 20px;
   font-size: 10pt;
   text-align: right;
 }
 
 .signature-box {
-  min-height: 70px;
+  min-height: 60px; /* تصغير بدون خط التوقيع */
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 0 10px;
 }
 
-/* توقيعات جديدة - بدون خط */
+/* توقيعات جديدة */
 .signature-title {
   text-align: center;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-size: 11pt;
 }
 
@@ -389,25 +409,20 @@ button#printBtn:hover {
   text-align: center;
   font-size: 10pt;
   font-weight: bold;
-  margin-bottom: 15px; /* مسافة أكبر بين الاسم والتوقيع */
+  margin-bottom: 10px;
   min-height: 20px;
+  border-bottom: 2px solid #000; /* إضافة خط تحت الاسم للتوقيع */
+  padding-bottom: 5px;
+  height: 30px;
 }
 
 .signature-text {
   text-align: center;
   font-size: 9pt;
   color: #333;
-  margin-top: 20px; /* مسافة مناسبة بين الاسم والتوقيع */
+  margin-top: 5px;
   font-weight: normal;
 }
-
-/* تم إزالة خط التوقيع - سيتم التوقيع على الورقة مباشرة */
-/* .signature-line {
-  border-bottom: 2px solid #000;
-  height: 25px;
-  width: 100%;
-  margin-top: 5px;
-} */
 
 /* تحسينات عامة */
 #fields {
@@ -426,7 +441,7 @@ button#printBtn:hover {
 /* تحسين النصوص */
 #goal, #desc1, #desc2, #desc3, #desc4, #challenges, #strengths,
 #target, #count, #reportTitle, #school, #edu,
-#teacher, #principal {
+#teacher, #principal, #subject, #location, #semester, #lessonTopic {
   line-height: 1.4;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -441,18 +456,23 @@ button#printBtn:hover {
 @media print {
   /* تقليل المسافات أكثر للطباعة */
   .header {
-    padding: 8px;
-    margin-bottom: 8px;
+    padding: 6px;
+    margin-bottom: 6px;
   }
   
-  .top-info {
-    gap: 6px;
+  .top-info-grid {
+    gap: 4px;
     margin-bottom: 8px;
   }
   
   .box {
-    padding: 6px;
-    min-height: 45px;
+    padding: 4px;
+    min-height: 40px;
+    font-size: 7pt;
+  }
+  
+  .box strong {
+    font-size: 8pt;
   }
   
   .goal-section {
@@ -484,11 +504,16 @@ button#printBtn:hover {
   
   .signatures {
     gap: 30px;
-    margin-top: 20px;
+    margin-top: 15px;
   }
   
   .signature-box {
-    min-height: 65px;
+    min-height: 55px;
+  }
+  
+  .signature-name {
+    height: 25px;
+    font-size: 9pt;
   }
 }
 
@@ -510,6 +535,22 @@ button#printBtn:hover {
   .section.optional:hover {
     box-shadow: 0 2px 8px rgba(230,184,0,0.2);
     transform: translateY(-1px);
+  }
+}
+
+/* تصميم متجاوب للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .top-info-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .signatures {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 </style>
@@ -537,6 +578,14 @@ button#printBtn:hover {
 </select>
 <input id="targetInput" placeholder="المستهدفون" oninput="sync('target',this.value)" value="طلاب الصف الثالث">
 <input id="countInput" placeholder="العدد" oninput="sync('count',this.value)" value="25 طالب">
+</div>
+
+<!-- مربعات إضافية جديدة -->
+<div class="small-grid">
+  <input id="subjectInput" placeholder="المادة الدراسية" oninput="sync('subject',this.value)" value="الرياضيات">
+  <input id="locationInput" placeholder="مكان التنفيذ" oninput="sync('location',this.value)" value="الفصل الدراسي">
+  <input id="semesterInput" placeholder="الفصل الدراسي" oninput="sync('semester',this.value)" value="الأول">
+  <input id="lessonTopicInput" placeholder="موضوع الدرس" oninput="sync('lessonTopic',this.value)" value="الكسور">
 </div>
 
 <!-- الحقول الأساسية -->
@@ -629,10 +678,19 @@ button#printBtn:hover {
   <div id="hijriDate" class="hijri">جاري تحميل التاريخ الهجري...</div>
 </div>
 
-<div class="top-info">
+<!-- شبكة المربعات العلوية - 6 مربعات في سطر واحد -->
+<div class="top-info-grid">
   <div class="box"><strong>التقرير</strong><div id="reportTitle">تقرير نشاط إثرائي</div></div>
   <div class="box"><strong>المستهدفون</strong><div id="target">طلاب الصف الثالث</div></div>
   <div class="box"><strong>العدد</strong><div id="count">25 طالب</div></div>
+  <div class="box"><strong>المادة الدراسية</strong><div id="subject">الرياضيات</div></div>
+  <div class="box"><strong>مكان التنفيذ</strong><div id="location">الفصل الدراسي</div></div>
+  <div class="box"><strong>الفصل الدراسي</strong><div id="semester">الأول</div></div>
+</div>
+
+<!-- سطر إضافي للمربعات -->
+<div class="top-info-grid" style="margin-top: 8px;">
+  <div class="box" style="grid-column: span 6;"><strong>موضوع الدرس</strong><div id="lessonTopic">الكسور</div></div>
 </div>
 
 <div class="goal-section">
@@ -663,21 +721,19 @@ button#printBtn:hover {
   <!-- سيتم إضافة الصور هنا -->
 </div>
 
-<!-- منطقة التوقيعات المعدلة - بدون خط -->
+<!-- منطقة التوقيعات المعدلة - بدون خط منفصل -->
 <div class="signatures">
   <div class="signature-box">
     <div class="signature-title">المعلم /</div>
-    <!-- هنا سيظهر اسم المعلم -->
+    <!-- هنا سيظهر اسم المعلم مع خط التوقيع أسفله مباشرة -->
     <div class="signature-name" id="teacherSignature">أحمد محمد</div>
     <div class="signature-text">التوقيع</div>
-    <!-- تم إزالة الخط -->
   </div>
   <div class="signature-box">
     <div class="signature-title">مدير المدرسة /</div>
-    <!-- هنا سيظهر اسم مدير المدرسة -->
+    <!-- هنا سيظهر اسم مدير المدرسة مع خط التوقيع أسفله مباشرة -->
     <div class="signature-name" id="principalSignature">خالد عبدالله</div>
     <div class="signature-text">التوقيع</div>
-    <!-- تم إزالة الخط -->
   </div>
 </div>
 </div>
@@ -824,6 +880,10 @@ async function initializePage() {
   sync('school', document.getElementById('schoolInput').value);
   sync('target', document.getElementById('targetInput').value);
   sync('count', document.getElementById('countInput').value);
+  sync('subject', document.getElementById('subjectInput').value);
+  sync('location', document.getElementById('locationInput').value);
+  sync('semester', document.getElementById('semesterInput').value);
+  sync('lessonTopic', document.getElementById('lessonTopicInput').value);
   
   // تعبئة الحقول بالنصوص التلقائية الأولى
   fill('goal');
@@ -1038,6 +1098,17 @@ document.addEventListener('DOMContentLoaded', function() {
       sync('principal', this.value);
     });
   }
+  
+  // إضافة مستمعين للحقول الجديدة
+  const newFields = ['subject', 'location', 'semester', 'lessonTopic'];
+  newFields.forEach(field => {
+    const inputElement = document.getElementById(field + 'Input');
+    if (inputElement) {
+      inputElement.addEventListener('input', function() {
+        sync(field, this.value);
+      });
+    }
+  });
 });
 </script>
 
