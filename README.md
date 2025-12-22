@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -145,7 +146,7 @@ button#printBtn:hover {
   body {
     background: white;
     padding: 0;
-    font-size: 10pt !important;
+    font-size: 9pt !important;
   }
   
   .tool {
@@ -154,7 +155,7 @@ button#printBtn:hover {
   
   .report {
     display: block !important;
-    font-size: 10pt !important;
+    font-size: 9pt !important;
     max-width: 210mm;
     margin: 0 auto;
     padding: 0;
@@ -168,7 +169,7 @@ button#printBtn:hover {
     break-inside: avoid;
   }
   
-  /* تكبير حجم الصور بنسبة 20% للطباعة */
+  /* الحفاظ على حجم الصور */
   .images img {
     height: auto;
     max-height: 144px !important;
@@ -185,52 +186,40 @@ button#printBtn:hover {
     page-break-inside: avoid;
   }
   
-  /* تصغير المربعات بنسبة 25% للحقول الأساسية */
+  /* تصغير المربعات بنسبة 20% للطباعة */
   .section:not(.optional) {
-    min-height: 90px !important;
-    max-height: 100px !important;
-    font-size: 9pt !important;
-  }
-  
-  /* تصغير المربعات الاختيارية بنسبة 5% إضافية (أصغر من 50%) */
-  .section.optional {
-    min-height: 57px !important; /* تصغير 5% إضافية من 60px */
-    max-height: 66.5px !important; /* تصغير 5% إضافية من 70px */
-    font-size: 7.5pt !important;
-  }
-  
-  /* تصغير الهيدر للطباعة */
-  .header {
-    padding: 6px !important;
-    margin-bottom: 8px !important;
-    font-size: 10pt !important;
-  }
-  
-  .header .hijri {
+    min-height: 96px !important; /* تصغير 20% من 120px */
+    max-height: 104px !important; /* تصغير 20% من 130px */
     font-size: 8pt !important;
+  }
+  
+  /* تصغير المربعات الاختيارية بنسبة 20% */
+  .section.optional {
+    min-height: 96px !important; /* تصغير 20% من 120px */
+    max-height: 104px !important; /* تصغير 20% من 130px */
+    font-size: 7.5pt !important;
   }
 }
 
-/* ===== التقرير - مع تصغير المربعات ===== */
-/* الهيدر المصغر */
+/* ===== التقرير - التصميم الأصلي مع تصغير 20% ===== */
 .header {
   background: #0a3b40;
   color: white;
   text-align: center;
-  padding: 8px; /* تصغير من 10px */
-  margin-bottom: 10px; /* تصغير من 12px */
-  border-radius: 5px; /* تصغير من 6px */
-  font-size: 10pt; /* تصغير من 11pt */
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  font-size: 10pt;
 }
 
 .header div {
-  margin: 2px 0; /* تصغير من 3px */
+  margin: 3px 0;
   font-weight: bold;
 }
 
 .header .hijri {
-  font-size: 8pt; /* تصغير من 9pt */
-  margin-top: 3px; /* تصغير من 4px */
+  font-size: 8pt;
+  margin-top: 4px;
   font-weight: normal;
 }
 
@@ -244,22 +233,22 @@ button#printBtn:hover {
 
 .box {
   border: 1px solid #0a3b40;
-  padding: 6px; /* تصغير من 8px */
+  padding: 6px;
   text-align: center;
-  font-size: 8pt; /* تصغير من 9pt */
-  min-height: 45px; /* تصغير من 50px */
+  font-size: 8pt;
+  min-height: 45px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 5px; /* تصغير من 6px */
+  border-radius: 5px;
   background: #f8f9fa;
 }
 
 .box strong {
   display: block;
-  margin-bottom: 3px; /* تصغير من 4px */
-  font-size: 9pt; /* تصغير من 10pt */
+  margin-bottom: 3px;
+  font-size: 9pt;
   color: #0a3b40;
   line-height: 1.2;
 }
@@ -277,13 +266,13 @@ button#printBtn:hover {
   padding: 10px;
   margin-bottom: 12px;
   text-align: center;
-  font-size: 9pt;
+  font-size: 8pt; /* تصغير 20% */
 }
 
 .goal-section strong {
   display: block;
   margin-bottom: 6px;
-  font-size: 10pt;
+  font-size: 9pt; /* تصغير 20% */
   color: #0a3b40;
 }
 
@@ -295,13 +284,13 @@ button#printBtn:hover {
   margin-bottom: 12px;
 }
 
-/* الحقول الأساسية: تصغير بنسبة 25% */
+/* الحقول الأساسية: تصغير بنسبة 20% */
 .section:not(.optional) {
   border: 1px solid #0a3b40;
-  padding: 8px;
-  font-size: 9pt;
-  min-height: 90px;
-  max-height: 100px;
+  padding: 8px; /* تصغير 20% */
+  font-size: 8pt; /* تصغير 20% */
+  min-height: 96px; /* تصغير 20% من 120px */
+  max-height: 104px; /* تصغير 20% من 130px */
   border-radius: 6px;
   background: white;
   overflow: hidden;
@@ -314,7 +303,7 @@ button#printBtn:hover {
   border-bottom: 1px solid #0a3b40;
   margin-bottom: 6px;
   padding-bottom: 4px;
-  font-size: 10pt;
+  font-size: 9pt; /* تصغير 20% */
   color: #0a3b40;
   flex-shrink: 0;
   line-height: 1.2;
@@ -324,17 +313,17 @@ button#printBtn:hover {
   line-height: 1.4;
   flex-grow: 1;
   overflow: hidden;
-  font-size: 9pt;
+  font-size: 8pt; /* تصغير 20% */
   max-height: 70px;
 }
 
-/* الحقول الاختيارية: تصغير بنسبة 50% + 5% إضافية = 55% */
+/* الحقول الاختيارية: تصغير بنسبة 20% */
 .section.optional {
   border: 1px dashed #e6b800;
-  padding: 5px;
-  font-size: 7.5pt;
-  min-height: 57px; /* تصغير 5% إضافية من 60px */
-  max-height: 66.5px; /* تصغير 5% إضافية من 70px */
+  padding: 6px; /* تصغير 20% */
+  font-size: 7.5pt; /* تصغير 20% */
+  min-height: 96px; /* تصغير 20% من 120px */
+  max-height: 104px; /* تصغير 20% من 130px */
   border-radius: 5px;
   background: #fff8cc;
   overflow: hidden;
@@ -345,23 +334,23 @@ button#printBtn:hover {
 .section.optional strong {
   display: block;
   border-bottom: 1px dashed #e6b800;
-  margin-bottom: 3px;
-  padding-bottom: 2px;
-  font-size: 8pt;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  font-size: 8pt; /* تصغير 20% */
   color: #0a3b40;
   flex-shrink: 0;
-  line-height: 1;
+  line-height: 1.1;
 }
 
 .section.optional div:not(strong) {
-  line-height: 1.2;
+  line-height: 1.3;
   flex-grow: 1;
   overflow: hidden;
-  font-size: 7.5pt;
-  max-height: 42px;
+  font-size: 7.5pt; /* تصغير 20% */
+  max-height: 70px;
 }
 
-/* تكبير مربعات الصور بنسبة 20% */
+/* الصور - بدون تصغير (نفس الحجم) */
 .images {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -378,47 +367,45 @@ button#printBtn:hover {
   border-radius: 5px;
 }
 
-/* منطقة التوقيعات المعدلة - بدون خط التوقيع */
+/* منطقة التوقيعات */
 .signatures {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
   margin-top: 20px;
-  font-size: 10pt;
+  font-size: 9pt; /* تصغير 20% */
   text-align: right;
 }
 
 .signature-box {
-  min-height: 60px; /* تصغير بدون خط التوقيع */
+  min-height: 70px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 0 10px;
 }
 
-/* توقيعات جديدة */
 .signature-title {
   text-align: center;
   font-weight: bold;
   margin-bottom: 8px;
-  font-size: 11pt;
+  font-size: 10pt; /* تصغير 20% */
 }
 
-/* اسم المعلم والمدير - سيظهر هنا */
 .signature-name {
   text-align: center;
-  font-size: 10pt;
+  font-size: 9pt; /* تصغير 20% */
   font-weight: bold;
   margin-bottom: 10px;
   min-height: 20px;
-  border-bottom: 2px solid #000; /* إضافة خط تحت الاسم للتوقيع */
+  border-bottom: 2px solid #000;
   padding-bottom: 5px;
   height: 30px;
 }
 
 .signature-text {
   text-align: center;
-  font-size: 9pt;
+  font-size: 8pt; /* تصغير 20% */
   color: #333;
   margin-top: 5px;
   font-weight: normal;
@@ -456,8 +443,8 @@ button#printBtn:hover {
 @media print {
   /* تقليل المسافات أكثر للطباعة */
   .header {
-    padding: 6px;
-    margin-bottom: 6px;
+    padding: 8px;
+    margin-bottom: 8px;
   }
   
   .top-info-grid {
@@ -485,18 +472,6 @@ button#printBtn:hover {
     margin-bottom: 8px;
   }
   
-  .section:not(.optional) {
-    padding: 6px;
-    min-height: 85px;
-    max-height: 95px;
-  }
-  
-  .section.optional {
-    padding: 4px;
-    min-height: 54px;
-    max-height: 63px;
-  }
-  
   .images {
     gap: 10px;
     margin: 12px 0;
@@ -507,13 +482,9 @@ button#printBtn:hover {
     margin-top: 15px;
   }
   
-  .signature-box {
-    min-height: 55px;
-  }
-  
   .signature-name {
     height: 25px;
-    font-size: 9pt;
+    font-size: 8pt;
   }
 }
 
@@ -710,28 +681,26 @@ button#printBtn:hover {
   <div class="section"><strong>التوصيات</strong><div id="desc4">زيادة الأنشطة الإثرائية المتنوعة</div></div>
 </div>
 
-<!-- التحديات ونقاط القوة جنباً إلى جنب (مصغرة بنسبة 5% إضافية) -->
+<!-- التحديات ونقاط القوة جنباً إلى جنب -->
 <div class="grid2">
   <div class="section optional" id="challengesSection"><strong>التحديات</strong><div id="challenges">ضيق الوقت</div></div>
   <div class="section optional" id="strengthsSection"><strong>نقاط القوة</strong><div id="strengths">تنمية شاملة</div></div>
 </div>
 
-<!-- الصور (مكبرة بنسبة 20%) -->
+<!-- الصور (بدون تصغير) -->
 <div class="images" id="imagesBox">
   <!-- سيتم إضافة الصور هنا -->
 </div>
 
-<!-- منطقة التوقيعات المعدلة - بدون خط منفصل -->
+<!-- منطقة التوقيعات -->
 <div class="signatures">
   <div class="signature-box">
     <div class="signature-title">المعلم /</div>
-    <!-- هنا سيظهر اسم المعلم مع خط التوقيع أسفله مباشرة -->
     <div class="signature-name" id="teacherSignature">أحمد محمد</div>
     <div class="signature-text">التوقيع</div>
   </div>
   <div class="signature-box">
     <div class="signature-title">مدير المدرسة /</div>
-    <!-- هنا سيظهر اسم مدير المدرسة مع خط التوقيع أسفله مباشرة -->
     <div class="signature-name" id="principalSignature">خالد عبدالله</div>
     <div class="signature-text">التوقيع</div>
   </div>
@@ -1042,16 +1011,16 @@ function optimizeForSinglePage() {
   
   // ضبط حجم خط الهدف التربوي
   const goalElement = document.getElementById('goal');
-  adjustFontSize(goalElement, 80, '9pt', '10pt');
+  adjustFontSize(goalElement, 80, '8pt', '9pt');
   
   // ضبط أحجام الخطوط للحقول الأساسية
   const mainFields = ['desc1', 'desc2', 'desc3', 'desc4'];
   mainFields.forEach(field => {
     const element = document.getElementById(field);
-    adjustFontSize(element, 30, '8.5pt', '9pt');
+    adjustFontSize(element, 30, '7.5pt', '8pt');
   });
   
-  // ضبط أحجام الخطوط للحقول الاختيارية (أصغر)
+  // ضبط أحجام الخطوط للحقول الاختيارية
   const optionalFields = ['challenges', 'strengths'];
   optionalFields.forEach(field => {
     const element = document.getElementById(field);
@@ -1063,7 +1032,7 @@ function optimizeForSinglePage() {
   sections.forEach(section => {
     if (section.scrollHeight > section.clientHeight) {
       section.style.lineHeight = '1.2';
-      section.style.paddingTop = '1px';
+      section.style.paddingTop = '2px';
     }
   });
 }
