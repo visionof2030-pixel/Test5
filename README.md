@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -168,10 +167,11 @@ button#printBtn:hover {
     page-break-inside: avoid;
     break-inside: avoid;
   }
-
+  
+  /* تكبير حجم الصور بنسبة 20% للطباعة */
   .images img {
     height: auto;
-    max-height: 100px;
+    max-height: 144px !important; /* تكبير 20% من 120px */
     width: 100%;
     object-fit: contain;
   }
@@ -341,55 +341,82 @@ button#printBtn:hover {
   max-height: 45px;
 }
 
+/* تكبير مربعات الصور بنسبة 20% */
 .images {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 12px 0;
+  gap: 15px;
+  margin: 15px 0;
 }
 
 .images img {
   width: 100%;
   height: auto;
-  max-height: 120px;
+  max-height: 144px; /* تكبير 20% من 120px */
   object-fit: cover;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
 /* منطقة التوقيعات المعدلة */
 .signatures {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  margin-top: 20px;
-  font-size: 9pt;
-  text-align: center;
+  gap: 40px;
+  margin-top: 25px;
+  font-size: 10pt;
+  text-align: right;
 }
 
 .signature-box {
-  min-height: 80px;
+  min-height: 90px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  padding: 0 10px;
 }
 
 .signature-name {
   font-weight: bold;
-  margin-bottom: 5px;
-  min-height: 20px;
+  margin-bottom: 8px;
+  min-height: 25px;
+  text-align: center;
 }
 
-/* خط التوقيع المتقطع */
+/* سطر التوقيع بالخط المتصل */
 .signature-line {
-  border-bottom: 2px dotted #000;
+  border-bottom: 2px solid #000;
   height: 25px;
-  margin-top: 10px;
+  margin-top: 5px;
   width: 100%;
   text-align: center;
-  font-size: 8pt;
+  font-size: 12pt;
+  color: #000;
+  position: relative;
+  padding-bottom: 5px;
+}
+
+/* النص تحت خط التوقيع */
+.signature-text {
+  text-align: center;
+  font-size: 9pt;
   color: #666;
-  letter-spacing: 5px;
+  margin-top: 5px;
+  padding-top: 2px;
+}
+
+/* تنسيق خاص للمعلم والمدير */
+.signature-box .name-line {
+  text-align: center;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.signature-box .signature-label {
+  text-align: center;
+  font-size: 9pt;
+  color: #333;
+  margin-top: 3px;
 }
 
 /* تحسينات عامة */
@@ -461,27 +488,22 @@ button#printBtn:hover {
   }
   
   .images {
-    gap: 8px;
-    margin: 8px 0;
-  }
-  
-  .images img {
-    max-height: 100px;
+    gap: 10px;
+    margin: 12px 0;
   }
   
   .signatures {
-    gap: 20px;
-    margin-top: 15px;
+    gap: 30px;
+    margin-top: 20px;
   }
   
   .signature-box {
-    min-height: 70px;
+    min-height: 80px;
   }
   
   .signature-line {
     height: 22px;
     margin-top: 8px;
-    letter-spacing: 4px;
   }
 }
 
@@ -651,6 +673,7 @@ button#printBtn:hover {
   <div class="section optional" id="strengthsSection"><strong>نقاط القوة</strong><div id="strengths">تنمية شاملة</div></div>
 </div>
 
+<!-- الصور (مكبرة بنسبة 20%) -->
 <div class="images" id="imagesBox">
   <!-- سيتم إضافة الصور هنا -->
 </div>
@@ -658,12 +681,16 @@ button#printBtn:hover {
 <!-- منطقة التوقيعات المعدلة -->
 <div class="signatures">
   <div class="signature-box">
+    <div class="name-line">اسم المعلم /</div>
     <div class="signature-name" id="teacher">أحمد محمد</div>
-    <div class="signature-line">. . . . . . . . . . . . . . . . . . . . .</div>
+    <div class="signature-label">التوقيع/</div>
+    <div class="signature-line">……………………………………………………</div>
   </div>
   <div class="signature-box">
+    <div class="name-line">اسم مدير المدرسة /</div>
     <div class="signature-name" id="principal">خالد عبدالله</div>
-    <div class="signature-line">. . . . . . . . . . . . . . . . . . . . .</div>
+    <div class="signature-label">التوقيع/</div>
+    <div class="signature-line">……………………………………………………</div>
   </div>
 </div>
 </div>
