@@ -358,7 +358,7 @@ button#printBtn:hover {
   border-radius: 5px;
 }
 
-/* منطقة التوقيعات المعدلة */
+/* منطقة التوقيعات المعدلة - بدون خط */
 .signatures {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -376,7 +376,7 @@ button#printBtn:hover {
   padding: 0 10px;
 }
 
-/* توقيعات جديدة */
+/* توقيعات جديدة - بدون خط */
 .signature-title {
   text-align: center;
   font-weight: bold;
@@ -389,7 +389,7 @@ button#printBtn:hover {
   text-align: center;
   font-size: 10pt;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: 15px; /* مسافة أكبر بين الاسم والتوقيع */
   min-height: 20px;
 }
 
@@ -397,16 +397,17 @@ button#printBtn:hover {
   text-align: center;
   font-size: 9pt;
   color: #333;
-  margin-top: 15px;
+  margin-top: 20px; /* مسافة مناسبة بين الاسم والتوقيع */
   font-weight: normal;
 }
 
-.signature-line {
+/* تم إزالة خط التوقيع - سيتم التوقيع على الورقة مباشرة */
+/* .signature-line {
   border-bottom: 2px solid #000;
   height: 25px;
   width: 100%;
   margin-top: 5px;
-}
+} */
 
 /* تحسينات عامة */
 #fields {
@@ -488,10 +489,6 @@ button#printBtn:hover {
   
   .signature-box {
     min-height: 65px;
-  }
-  
-  .signature-line {
-    height: 22px;
   }
 }
 
@@ -666,21 +663,21 @@ button#printBtn:hover {
   <!-- سيتم إضافة الصور هنا -->
 </div>
 
-<!-- منطقة التوقيعات المعدلة -->
+<!-- منطقة التوقيعات المعدلة - بدون خط -->
 <div class="signatures">
   <div class="signature-box">
     <div class="signature-title">المعلم /</div>
     <!-- هنا سيظهر اسم المعلم -->
     <div class="signature-name" id="teacherSignature">أحمد محمد</div>
     <div class="signature-text">التوقيع</div>
-    <div class="signature-line"></div>
+    <!-- تم إزالة الخط -->
   </div>
   <div class="signature-box">
     <div class="signature-title">مدير المدرسة /</div>
     <!-- هنا سيظهر اسم مدير المدرسة -->
     <div class="signature-name" id="principalSignature">خالد عبدالله</div>
     <div class="signature-text">التوقيع</div>
-    <div class="signature-line"></div>
+    <!-- تم إزالة الخط -->
   </div>
 </div>
 </div>
@@ -985,7 +982,7 @@ function optimizeForSinglePage() {
   
   // ضبط حجم خط الهدف التربوي
   const goalElement = document.getElementById('goal');
- adjustFontSize(goalElement, 80, '9pt', '10pt');
+  adjustFontSize(goalElement, 80, '9pt', '10pt');
   
   // ضبط أحجام الخطوط للحقول الأساسية
   const mainFields = ['desc1', 'desc2', 'desc3', 'desc4'];
@@ -1045,4 +1042,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 </body>
-</html>,
+</html>
