@@ -376,12 +376,21 @@ button#printBtn:hover {
   padding: 0 10px;
 }
 
-/* توقيعات جديدة - بدون نقاط وبدون أسماء */
+/* توقيعات جديدة */
 .signature-title {
   text-align: center;
   font-weight: bold;
   margin-bottom: 5px;
   font-size: 11pt;
+}
+
+/* اسم المعلم والمدير - سيظهر هنا */
+.signature-name {
+  text-align: center;
+  font-size: 10pt;
+  font-weight: bold;
+  margin-bottom: 8px;
+  min-height: 20px;
 }
 
 .signature-text {
@@ -661,13 +670,17 @@ button#printBtn:hover {
 <div class="signatures">
   <div class="signature-box">
     <div class="signature-title">المعلم /</div>
-    <div class="signature-line"></div>
+    <!-- هنا سيظهر اسم المعلم -->
+    <div class="signature-name" id="teacherSignature">أحمد محمد</div>
     <div class="signature-text">التوقيع</div>
+    <div class="signature-line"></div>
   </div>
   <div class="signature-box">
     <div class="signature-title">مدير المدرسة /</div>
-    <div class="signature-line"></div>
+    <!-- هنا سيظهر اسم مدير المدرسة -->
+    <div class="signature-name" id="principalSignature">خالد عبدالله</div>
     <div class="signature-text">التوقيع</div>
+    <div class="signature-line"></div>
   </div>
 </div>
 </div>
@@ -877,6 +890,21 @@ function sync(id, value) {
     } else {
       el.textContent = value;
     }
+    
+    // إذا كان الحقل هو اسم المعلم أو المدير، نقوم بمزامنته مع منطقة التوقيع
+    if (id === 'teacher') {
+      const teacherSignatureEl = document.getElementById('teacherSignature');
+      if (teacherSignatureEl) {
+        teacherSignatureEl.textContent = value;
+      }
+    }
+    
+    if (id === 'principal') {
+      const principalSignatureEl = document.getElementById('principalSignature');
+      if (principalSignatureEl) {
+        principalSignatureEl.textContent = value;
+      }
+    }
   }
 }
 
@@ -957,7 +985,7 @@ function optimizeForSinglePage() {
   
   // ضبط حجم خط الهدف التربوي
   const goalElement = document.getElementById('goal');
-  adjustFontSize(goalElement, 80, '9pt', '10pt');
+ adjustFontSize(goalElement, 80, '9pt', '10pt');
   
   // ضبط أحجام الخطوط للحقول الأساسية
   const mainFields = ['desc1', 'desc2', 'desc3', 'desc4'];
@@ -997,8 +1025,24 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   });
+  
+  // إضافة مستمعين لأسماء المعلم والمدير
+  const teacherInput = document.getElementById('teacherInput');
+  const principalInput = document.getElementById('principalInput');
+  
+  if (teacherInput) {
+    teacherInput.addEventListener('input', function() {
+      sync('teacher', this.value);
+    });
+  }
+  
+  if (principalInput) {
+    principalInput.addEventListener('input', function() {
+      sync('principal', this.value);
+    });
+  }
 });
 </script>
 
 </body>
-</html>
+</html>,
