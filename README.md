@@ -146,7 +146,7 @@ button#printBtn:hover {
   body {
     background: white;
     padding: 0;
-    font-size: 9pt !important;
+    font-size: 10pt !important;
   }
   
   .tool {
@@ -155,7 +155,7 @@ button#printBtn:hover {
   
   .report {
     display: block !important;
-    font-size: 9pt !important;
+    font-size: 10pt !important;
     max-width: 210mm;
     margin: 0 auto;
     padding: 0;
@@ -169,7 +169,7 @@ button#printBtn:hover {
     break-inside: avoid;
   }
   
-  /* الحفاظ على حجم الصور */
+  /* تكبير حجم الصور بنسبة 20% للطباعة */
   .images img {
     height: auto;
     max-height: 144px !important;
@@ -186,22 +186,22 @@ button#printBtn:hover {
     page-break-inside: avoid;
   }
   
-  /* تصغير المربعات بنسبة 20% للطباعة */
+  /* تصغير المربعات بنسبة 25% للحقول الأساسية */
   .section:not(.optional) {
-    min-height: 96px !important; /* تصغير 20% من 120px */
-    max-height: 104px !important; /* تصغير 20% من 130px */
-    font-size: 8pt !important;
+    min-height: 90px !important;
+    max-height: 100px !important;
+    font-size: 9pt !important;
   }
   
-  /* تصغير المربعات الاختيارية بنسبة 20% */
+  /* تصغير المربعات الاختيارية بنسبة 5% إضافية (أصغر من 50%) */
   .section.optional {
-    min-height: 96px !important; /* تصغير 20% من 120px */
-    max-height: 104px !important; /* تصغير 20% من 130px */
+    min-height: 57px !important; /* تصغير 5% إضافية من 60px */
+    max-height: 66.5px !important; /* تصغير 5% إضافية من 70px */
     font-size: 7.5pt !important;
   }
 }
 
-/* ===== التقرير - التصميم الأصلي مع تصغير 20% ===== */
+/* ===== التقرير - مع تصغير المربعات ===== */
 .header {
   background: #0a3b40;
   color: white;
@@ -209,7 +209,7 @@ button#printBtn:hover {
   padding: 10px;
   margin-bottom: 12px;
   border-radius: 6px;
-  font-size: 10pt;
+  font-size: 11pt;
 }
 
 .header div {
@@ -218,45 +218,37 @@ button#printBtn:hover {
 }
 
 .header .hijri {
-  font-size: 8pt;
+  font-size: 9pt;
   margin-top: 4px;
   font-weight: normal;
 }
 
-/* شبكة المربعات العلوية - 6 مربعات في سطر واحد */
-.top-info-grid {
+.top-info {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
   margin-bottom: 12px;
 }
 
 .box {
   border: 1px solid #0a3b40;
-  padding: 6px;
+  padding: 8px;
   text-align: center;
-  font-size: 8pt;
-  min-height: 45px;
+  font-size: 9pt;
+  min-height: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
+  border-radius: 6px;
   background: #f8f9fa;
 }
 
 .box strong {
   display: block;
-  margin-bottom: 3px;
-  font-size: 9pt;
+  margin-bottom: 4px;
+  font-size: 10pt;
   color: #0a3b40;
-  line-height: 1.2;
-}
-
-.box div {
-  line-height: 1.3;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
 .goal-section {
@@ -266,13 +258,13 @@ button#printBtn:hover {
   padding: 10px;
   margin-bottom: 12px;
   text-align: center;
-  font-size: 8pt; /* تصغير 20% */
+  font-size: 9pt;
 }
 
 .goal-section strong {
   display: block;
   margin-bottom: 6px;
-  font-size: 9pt; /* تصغير 20% */
+  font-size: 10pt;
   color: #0a3b40;
 }
 
@@ -284,13 +276,13 @@ button#printBtn:hover {
   margin-bottom: 12px;
 }
 
-/* الحقول الأساسية: تصغير بنسبة 20% */
+/* الحقول الأساسية: تصغير بنسبة 25% */
 .section:not(.optional) {
   border: 1px solid #0a3b40;
-  padding: 8px; /* تصغير 20% */
-  font-size: 8pt; /* تصغير 20% */
-  min-height: 96px; /* تصغير 20% من 120px */
-  max-height: 104px; /* تصغير 20% من 130px */
+  padding: 8px;
+  font-size: 9pt;
+  min-height: 90px;
+  max-height: 100px;
   border-radius: 6px;
   background: white;
   overflow: hidden;
@@ -303,7 +295,7 @@ button#printBtn:hover {
   border-bottom: 1px solid #0a3b40;
   margin-bottom: 6px;
   padding-bottom: 4px;
-  font-size: 9pt; /* تصغير 20% */
+  font-size: 10pt;
   color: #0a3b40;
   flex-shrink: 0;
   line-height: 1.2;
@@ -313,17 +305,17 @@ button#printBtn:hover {
   line-height: 1.4;
   flex-grow: 1;
   overflow: hidden;
-  font-size: 8pt; /* تصغير 20% */
+  font-size: 9pt;
   max-height: 70px;
 }
 
-/* الحقول الاختيارية: تصغير بنسبة 20% */
+/* الحقول الاختيارية: تصغير بنسبة 50% + 5% إضافية = 55% */
 .section.optional {
   border: 1px dashed #e6b800;
-  padding: 6px; /* تصغير 20% */
-  font-size: 7.5pt; /* تصغير 20% */
-  min-height: 96px; /* تصغير 20% من 120px */
-  max-height: 104px; /* تصغير 20% من 130px */
+  padding: 5px;
+  font-size: 7.5pt;
+  min-height: 57px; /* تصغير 5% إضافية من 60px */
+  max-height: 66.5px; /* تصغير 5% إضافية من 70px */
   border-radius: 5px;
   background: #fff8cc;
   overflow: hidden;
@@ -334,23 +326,23 @@ button#printBtn:hover {
 .section.optional strong {
   display: block;
   border-bottom: 1px dashed #e6b800;
-  margin-bottom: 4px;
-  padding-bottom: 3px;
-  font-size: 8pt; /* تصغير 20% */
+  margin-bottom: 3px;
+  padding-bottom: 2px;
+  font-size: 8pt;
   color: #0a3b40;
   flex-shrink: 0;
-  line-height: 1.1;
+  line-height: 1;
 }
 
 .section.optional div:not(strong) {
-  line-height: 1.3;
+  line-height: 1.2;
   flex-grow: 1;
   overflow: hidden;
-  font-size: 7.5pt; /* تصغير 20% */
-  max-height: 70px;
+  font-size: 7.5pt;
+  max-height: 42px;
 }
 
-/* الصور - بدون تصغير (نفس الحجم) */
+/* تكبير مربعات الصور بنسبة 20% */
 .images {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -367,13 +359,13 @@ button#printBtn:hover {
   border-radius: 5px;
 }
 
-/* منطقة التوقيعات */
+/* منطقة التوقيعات المعدلة */
 .signatures {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
-  margin-top: 20px;
-  font-size: 9pt; /* تصغير 20% */
+  margin-top: 25px;
+  font-size: 10pt;
   text-align: right;
 }
 
@@ -385,30 +377,27 @@ button#printBtn:hover {
   padding: 0 10px;
 }
 
+/* توقيعات جديدة - بدون نقاط وبدون أسماء */
 .signature-title {
   text-align: center;
   font-weight: bold;
-  margin-bottom: 8px;
-  font-size: 10pt; /* تصغير 20% */
-}
-
-.signature-name {
-  text-align: center;
-  font-size: 9pt; /* تصغير 20% */
-  font-weight: bold;
-  margin-bottom: 10px;
-  min-height: 20px;
-  border-bottom: 2px solid #000;
-  padding-bottom: 5px;
-  height: 30px;
+  margin-bottom: 5px;
+  font-size: 11pt;
 }
 
 .signature-text {
   text-align: center;
-  font-size: 8pt; /* تصغير 20% */
+  font-size: 9pt;
   color: #333;
-  margin-top: 5px;
+  margin-top: 15px;
   font-weight: normal;
+}
+
+.signature-line {
+  border-bottom: 2px solid #000;
+  height: 25px;
+  width: 100%;
+  margin-top: 5px;
 }
 
 /* تحسينات عامة */
@@ -428,7 +417,7 @@ button#printBtn:hover {
 /* تحسين النصوص */
 #goal, #desc1, #desc2, #desc3, #desc4, #challenges, #strengths,
 #target, #count, #reportTitle, #school, #edu,
-#teacher, #principal, #subject, #location, #semester, #lessonTopic {
+#teacher, #principal {
   line-height: 1.4;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -447,19 +436,14 @@ button#printBtn:hover {
     margin-bottom: 8px;
   }
   
-  .top-info-grid {
-    gap: 4px;
+  .top-info {
+    gap: 6px;
     margin-bottom: 8px;
   }
   
   .box {
-    padding: 4px;
-    min-height: 40px;
-    font-size: 7pt;
-  }
-  
-  .box strong {
-    font-size: 8pt;
+    padding: 6px;
+    min-height: 45px;
   }
   
   .goal-section {
@@ -472,6 +456,18 @@ button#printBtn:hover {
     margin-bottom: 8px;
   }
   
+  .section:not(.optional) {
+    padding: 6px;
+    min-height: 85px;
+    max-height: 95px;
+  }
+  
+  .section.optional {
+    padding: 4px;
+    min-height: 54px;
+    max-height: 63px;
+  }
+  
   .images {
     gap: 10px;
     margin: 12px 0;
@@ -479,12 +475,15 @@ button#printBtn:hover {
   
   .signatures {
     gap: 30px;
-    margin-top: 15px;
+    margin-top: 20px;
   }
   
-  .signature-name {
-    height: 25px;
-    font-size: 8pt;
+  .signature-box {
+    min-height: 65px;
+  }
+  
+  .signature-line {
+    height: 22px;
   }
 }
 
@@ -506,22 +505,6 @@ button#printBtn:hover {
   .section.optional:hover {
     box-shadow: 0 2px 8px rgba(230,184,0,0.2);
     transform: translateY(-1px);
-  }
-}
-
-/* تصميم متجاوب للشاشات الصغيرة */
-@media (max-width: 768px) {
-  .top-info-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .grid2 {
-    grid-template-columns: 1fr;
-  }
-  
-  .signatures {
-    grid-template-columns: 1fr;
-    gap: 20px;
   }
 }
 </style>
@@ -549,14 +532,6 @@ button#printBtn:hover {
 </select>
 <input id="targetInput" placeholder="المستهدفون" oninput="sync('target',this.value)" value="طلاب الصف الثالث">
 <input id="countInput" placeholder="العدد" oninput="sync('count',this.value)" value="25 طالب">
-</div>
-
-<!-- مربعات إضافية جديدة -->
-<div class="small-grid">
-  <input id="subjectInput" placeholder="المادة الدراسية" oninput="sync('subject',this.value)" value="الرياضيات">
-  <input id="locationInput" placeholder="مكان التنفيذ" oninput="sync('location',this.value)" value="الفصل الدراسي">
-  <input id="semesterInput" placeholder="الفصل الدراسي" oninput="sync('semester',this.value)" value="الأول">
-  <input id="lessonTopicInput" placeholder="موضوع الدرس" oninput="sync('lessonTopic',this.value)" value="الكسور">
 </div>
 
 <!-- الحقول الأساسية -->
@@ -649,19 +624,10 @@ button#printBtn:hover {
   <div id="hijriDate" class="hijri">جاري تحميل التاريخ الهجري...</div>
 </div>
 
-<!-- شبكة المربعات العلوية - 6 مربعات في سطر واحد -->
-<div class="top-info-grid">
+<div class="top-info">
   <div class="box"><strong>التقرير</strong><div id="reportTitle">تقرير نشاط إثرائي</div></div>
   <div class="box"><strong>المستهدفون</strong><div id="target">طلاب الصف الثالث</div></div>
   <div class="box"><strong>العدد</strong><div id="count">25 طالب</div></div>
-  <div class="box"><strong>المادة الدراسية</strong><div id="subject">الرياضيات</div></div>
-  <div class="box"><strong>مكان التنفيذ</strong><div id="location">الفصل الدراسي</div></div>
-  <div class="box"><strong>الفصل الدراسي</strong><div id="semester">الأول</div></div>
-</div>
-
-<!-- سطر إضافي للمربعات -->
-<div class="top-info-grid" style="margin-top: 8px;">
-  <div class="box" style="grid-column: span 6;"><strong>موضوع الدرس</strong><div id="lessonTopic">الكسور</div></div>
 </div>
 
 <div class="goal-section">
@@ -681,27 +647,27 @@ button#printBtn:hover {
   <div class="section"><strong>التوصيات</strong><div id="desc4">زيادة الأنشطة الإثرائية المتنوعة</div></div>
 </div>
 
-<!-- التحديات ونقاط القوة جنباً إلى جنب -->
+<!-- التحديات ونقاط القوة جنباً إلى جنب (مصغرة بنسبة 5% إضافية) -->
 <div class="grid2">
   <div class="section optional" id="challengesSection"><strong>التحديات</strong><div id="challenges">ضيق الوقت</div></div>
   <div class="section optional" id="strengthsSection"><strong>نقاط القوة</strong><div id="strengths">تنمية شاملة</div></div>
 </div>
 
-<!-- الصور (بدون تصغير) -->
+<!-- الصور (مكبرة بنسبة 20%) -->
 <div class="images" id="imagesBox">
   <!-- سيتم إضافة الصور هنا -->
 </div>
 
-<!-- منطقة التوقيعات -->
+<!-- منطقة التوقيعات المعدلة -->
 <div class="signatures">
   <div class="signature-box">
     <div class="signature-title">المعلم /</div>
-    <div class="signature-name" id="teacherSignature">أحمد محمد</div>
+    <div class="signature-line"></div>
     <div class="signature-text">التوقيع</div>
   </div>
   <div class="signature-box">
     <div class="signature-title">مدير المدرسة /</div>
-    <div class="signature-name" id="principalSignature">خالد عبدالله</div>
+    <div class="signature-line"></div>
     <div class="signature-text">التوقيع</div>
   </div>
 </div>
@@ -849,10 +815,6 @@ async function initializePage() {
   sync('school', document.getElementById('schoolInput').value);
   sync('target', document.getElementById('targetInput').value);
   sync('count', document.getElementById('countInput').value);
-  sync('subject', document.getElementById('subjectInput').value);
-  sync('location', document.getElementById('locationInput').value);
-  sync('semester', document.getElementById('semesterInput').value);
-  sync('lessonTopic', document.getElementById('lessonTopicInput').value);
   
   // تعبئة الحقول بالنصوص التلقائية الأولى
   fill('goal');
@@ -915,21 +877,6 @@ function sync(id, value) {
       el.innerHTML = value.replace(/ /g, '<br>');
     } else {
       el.textContent = value;
-    }
-    
-    // إذا كان الحقل هو اسم المعلم أو المدير، نقوم بمزامنته مع منطقة التوقيع
-    if (id === 'teacher') {
-      const teacherSignatureEl = document.getElementById('teacherSignature');
-      if (teacherSignatureEl) {
-        teacherSignatureEl.textContent = value;
-      }
-    }
-    
-    if (id === 'principal') {
-      const principalSignatureEl = document.getElementById('principalSignature');
-      if (principalSignatureEl) {
-        principalSignatureEl.textContent = value;
-      }
     }
   }
 }
@@ -1011,16 +958,16 @@ function optimizeForSinglePage() {
   
   // ضبط حجم خط الهدف التربوي
   const goalElement = document.getElementById('goal');
-  adjustFontSize(goalElement, 80, '8pt', '9pt');
+  adjustFontSize(goalElement, 80, '9pt', '10pt');
   
   // ضبط أحجام الخطوط للحقول الأساسية
   const mainFields = ['desc1', 'desc2', 'desc3', 'desc4'];
   mainFields.forEach(field => {
     const element = document.getElementById(field);
-    adjustFontSize(element, 30, '7.5pt', '8pt');
+    adjustFontSize(element, 30, '8.5pt', '9pt');
   });
   
-  // ضبط أحجام الخطوط للحقول الاختيارية
+  // ضبط أحجام الخطوط للحقول الاختيارية (أصغر)
   const optionalFields = ['challenges', 'strengths'];
   optionalFields.forEach(field => {
     const element = document.getElementById(field);
@@ -1032,7 +979,7 @@ function optimizeForSinglePage() {
   sections.forEach(section => {
     if (section.scrollHeight > section.clientHeight) {
       section.style.lineHeight = '1.2';
-      section.style.paddingTop = '2px';
+      section.style.paddingTop = '1px';
     }
   });
 }
@@ -1044,33 +991,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // إضافة مستمعين للحقول النصية
   const fields = ['goal', 'desc1', 'desc2', 'desc3', 'desc4', 'challenges', 'strengths'];
   fields.forEach(field => {
-    const inputElement = document.getElementById(field + 'Input');
-    if (inputElement) {
-      inputElement.addEventListener('input', function() {
-        sync(field, this.value);
-      });
-    }
-  });
-  
-  // إضافة مستمعين لأسماء المعلم والمدير
-  const teacherInput = document.getElementById('teacherInput');
-  const principalInput = document.getElementById('principalInput');
-  
-  if (teacherInput) {
-    teacherInput.addEventListener('input', function() {
-      sync('teacher', this.value);
-    });
-  }
-  
-  if (principalInput) {
-    principalInput.addEventListener('input', function() {
-      sync('principal', this.value);
-    });
-  }
-  
-  // إضافة مستمعين للحقول الجديدة
-  const newFields = ['subject', 'location', 'semester', 'lessonTopic'];
-  newFields.forEach(field => {
     const inputElement = document.getElementById(field + 'Input');
     if (inputElement) {
       inputElement.addEventListener('input', function() {
