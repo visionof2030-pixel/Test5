@@ -1,4 +1,3 @@
-
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -51,11 +50,19 @@ textarea {
   min-height: 80px;
 }
 
+/* شبكة المدخلات الصغيرة - 7 مربعات */
 .small-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
   margin: 15px 0;
+}
+
+.small-grid input,
+.small-grid select {
+  font-size: 12px;
+  padding: 6px;
+  margin-top: 0;
 }
 
 .auto-row {
@@ -202,14 +209,15 @@ button#printBtn:hover {
 }
 
 /* ===== التقرير - مع تصغير المربعات ===== */
+/* تصغير الهيدر - بدون شعار */
 .header {
   background: #0a3b40;
   color: white;
   text-align: center;
-  padding: 10px;
-  margin-bottom: 12px;
+  padding: 8px;
+  margin-bottom: 10px;
   border-radius: 6px;
-  font-size: 11pt;
+  font-size: 10pt;
   position: relative;
 }
 
@@ -217,37 +225,7 @@ button#printBtn:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 5px;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 5px;
-  width: 100%;
-}
-
-.logo {
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: white;
-  border-radius: 8px;
-  padding: 5px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  margin: 0 15px;
-}
-
-.logo-text {
-  font-weight: bold;
-  font-size: 14pt;
-  color: white;
-  text-align: center;
-  line-height: 1.3;
-  direction: ltr;
+  margin-bottom: 3px;
 }
 
 .ministry-title {
@@ -280,52 +258,58 @@ button#printBtn:hover {
 }
 
 .header .hijri {
-  font-size: 9pt;
-  margin-top: 4px;
+  font-size: 8pt;
+  margin-top: 3px;
   font-weight: normal;
 }
 
+/* 7 مربعات في سطر واحد */
 .top-info {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 12px;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
 }
 
 .box {
   border: 1px solid #0a3b40;
-  padding: 8px;
+  padding: 4px;
   text-align: center;
-  font-size: 9pt;
-  min-height: 50px;
+  font-size: 8pt;
+  min-height: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 6px;
+  border-radius: 4px;
   background: #f8f9fa;
 }
 
 .box strong {
   display: block;
-  margin-bottom: 4px;
-  font-size: 10pt;
+  margin-bottom: 2px;
+  font-size: 8pt;
   color: #0a3b40;
+}
+
+.box div {
+  font-size: 7.5pt;
+  line-height: 1.2;
 }
 
 .goal-section {
   background: #e8f5e9;
   border-right: 3px solid #2e7d32;
   border-radius: 6px;
-  padding: 10px;
-  margin-bottom: 12px;
+  padding: 8px;
+  margin-bottom: 10px;
   text-align: center;
   font-size: 9pt;
 }
 
 .goal-section strong {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   font-size: 10pt;
   color: #0a3b40;
 }
@@ -334,17 +318,17 @@ button#printBtn:hover {
 .grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 /* الحقول الأساسية: تصغير بنسبة 25% */
 .section:not(.optional) {
   border: 1px solid #0a3b40;
-  padding: 8px;
+  padding: 6px;
   font-size: 9pt;
-  min-height: 90px;
-  max-height: 100px;
+  min-height: 85px;
+  max-height: 95px;
   border-radius: 6px;
   background: white;
   overflow: hidden;
@@ -355,30 +339,30 @@ button#printBtn:hover {
 .section:not(.optional) strong {
   display: block;
   border-bottom: 1px solid #0a3b40;
-  margin-bottom: 6px;
-  padding-bottom: 4px;
-  font-size: 10pt;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  font-size: 9pt;
   color: #0a3b40;
   flex-shrink: 0;
   line-height: 1.2;
 }
 
 .section:not(.optional) div:not(strong) {
-  line-height: 1.4;
+  line-height: 1.3;
   flex-grow: 1;
   overflow: hidden;
-  font-size: 9pt;
-  max-height: 70px;
+  font-size: 8.5pt;
+  max-height: 65px;
 }
 
 /* الحقول الاختيارية: تصغير بنسبة 50% + 5% إضافية = 55% */
 .section.optional {
   border: 1px dashed #e6b800;
-  padding: 5px;
+  padding: 4px;
   font-size: 7.5pt;
-  min-height: 57px; /* تصغير 5% إضافية من 60px */
-  max-height: 66.5px; /* تصغير 5% إضافية من 70px */
-  border-radius: 5px;
+  min-height: 55px;
+  max-height: 65px;
+  border-radius: 4px;
   background: #fff8cc;
   overflow: hidden;
   display: flex;
@@ -388,7 +372,7 @@ button#printBtn:hover {
 .section.optional strong {
   display: block;
   border-bottom: 1px dashed #e6b800;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
   padding-bottom: 2px;
   font-size: 8pt;
   color: #0a3b40;
@@ -401,15 +385,15 @@ button#printBtn:hover {
   flex-grow: 1;
   overflow: hidden;
   font-size: 7.5pt;
-  max-height: 42px;
+  max-height: 40px;
 }
 
 /* تكبير مربعات الصور بنسبة 20% */
 .images {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin: 15px 0;
+  gap: 12px;
+  margin: 12px 0;
 }
 
 .images img {
@@ -452,53 +436,48 @@ button#printBtn:hover {
 @media print {
   /* تقليل المسافات أكثر للطباعة */
   .header {
-    padding: 8px;
-    margin-bottom: 8px;
+    padding: 6px;
+    margin-bottom: 6px;
   }
   
   .top-info {
-    gap: 6px;
-    margin-bottom: 8px;
+    gap: 3px;
+    margin-bottom: 6px;
   }
   
   .box {
-    padding: 6px;
-    min-height: 45px;
+    padding: 3px;
+    min-height: 35px;
   }
   
   .goal-section {
-    padding: 8px;
-    margin-bottom: 8px;
+    padding: 6px;
+    margin-bottom: 6px;
   }
   
   .grid2 {
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 6px;
+    margin-bottom: 6px;
   }
   
   .section:not(.optional) {
-    padding: 6px;
-    min-height: 85px;
-    max-height: 95px;
+    padding: 5px;
+    min-height: 80px;
+    max-height: 90px;
   }
   
   .section.optional {
-    padding: 4px;
-    min-height: 54px;
-    max-height: 63px;
+    padding: 3px;
+    min-height: 52px;
+    max-height: 60px;
   }
   
   .images {
-    gap: 10px;
-    margin: 12px 0;
+    gap: 8px;
+    margin: 10px 0;
   }
   
-  /* شعار الوزارة في الطباعة */
-  .logo {
-    width: 70px;
-    height: 70px;
-  }
-  
+  /* تصغير الهيدر في الطباعة */
   .ministry-title {
     font-size: 14pt;
   }
@@ -527,43 +506,30 @@ button#printBtn:hover {
     box-shadow: 0 2px 8px rgba(230,184,0,0.2);
     transform: translateY(-1px);
   }
-  
-  .logo {
-    transition: transform 0.3s ease;
-  }
-  
-  .logo:hover {
-    transform: scale(1.05);
-  }
-}
-
-/* شعار SVG معدل */
-.logo svg {
-  width: 100%;
-  height: 100%;
 }
 
 /* تصميم متجاوب */
 @media (max-width: 768px) {
-  .header-content {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .logo-container {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .logo {
-    margin: 0 0 10px 0;
-  }
-  
   .small-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .top-info {
+    grid-template-columns: repeat(2, 1fr);
   }
   
   .optional-fields {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .small-grid {
     grid-template-columns: 1fr;
   }
   
@@ -589,13 +555,18 @@ button#printBtn:hover {
 <label>اسم المدرسة</label>
 <input id="schoolInput" placeholder="أدخل اسم المدرسة" oninput="sync('school',this.value)" value="مدرسة النموذجية الابتدائية">
 
+<!-- شبكة المدخلات الصغيرة - 7 مربعات -->
 <div class="small-grid">
-<select id="reportSelect" onchange="syncReport()">
-  <option value="">اختر التقرير</option>
-  <option value="تقرير نشاط إثرائي" selected>تقرير نشاط إثرائي</option>
-</select>
-<input id="targetInput" placeholder="المستهدفون" oninput="sync('target',this.value)" value="طلاب الصف الثالث">
-<input id="countInput" placeholder="العدد" oninput="sync('count',this.value)" value="25 طالب">
+  <select id="reportSelect" onchange="syncReport()">
+    <option value="">اختر التقرير</option>
+    <option value="تقرير نشاط إثرائي" selected>تقرير نشاط إثرائي</option>
+  </select>
+  <input id="targetInput" placeholder="المستهدفون" oninput="sync('target',this.value)" value="طلاب الصف الثالث">
+  <input id="countInput" placeholder="العدد" oninput="sync('count',this.value)" value="25 طالب">
+  <input id="locationInput" placeholder="مكان التنفيذ" oninput="sync('location',this.value)" value="قاعة الأنشطة">
+  <input id="semesterInput" placeholder="الفصل الدراسي" oninput="sync('semester',this.value)" value="الفصل الأول">
+  <input id="gradeInput" placeholder="الصف" oninput="sync('grade',this.value)" value="الصف الثالث">
+  <input id="subjectInput" placeholder="المادة الدراسية" oninput="sync('subject',this.value)" value="التربية الفنية">
 </div>
 
 <!-- الحقول الأساسية -->
@@ -673,17 +644,6 @@ button#printBtn:hover {
 <div class="report">
 <div class="header">
   <div class="header-content">
-    <div class="logo-container">
-      <div class="logo">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-          <rect width="100" height="100" fill="#0a3b40"/>
-          <circle cx="50" cy="40" r="20" fill="white"/>
-          <rect x="30" y="60" width="40" height="20" fill="white"/>
-          <path d="M30 60 L50 40 L70 60 Z" fill="#0a3b40"/>
-          <text x="50" y="85" text-anchor="middle" fill="white" font-size="18" font-weight="bold">م</text>
-        </svg>
-      </div>
-    </div>
     <div class="logo-text">
       <div class="ministry-title">وزارة التـعليـم</div>
       <div class="ministry-subtitle">Ministry of Education</div>
@@ -696,10 +656,15 @@ button#printBtn:hover {
   <div id="hijriDate" class="hijri">جاري تحميل التاريخ الهجري...</div>
 </div>
 
+<!-- 7 مربعات في سطر واحد -->
 <div class="top-info">
   <div class="box"><strong>التقرير</strong><div id="reportTitle">تقرير نشاط إثرائي</div></div>
   <div class="box"><strong>المستهدفون</strong><div id="target">طلاب الصف الثالث</div></div>
   <div class="box"><strong>العدد</strong><div id="count">25 طالب</div></div>
+  <div class="box"><strong>مكان التنفيذ</strong><div id="location">قاعة الأنشطة</div></div>
+  <div class="box"><strong>الفصل الدراسي</strong><div id="semester">الفصل الأول</div></div>
+  <div class="box"><strong>الصف</strong><div id="grade">الصف الثالث</div></div>
+  <div class="box"><strong>المادة الدراسية</strong><div id="subject">التربية الفنية</div></div>
 </div>
 
 <div class="goal-section">
@@ -873,6 +838,10 @@ async function initializePage() {
   sync('school', document.getElementById('schoolInput').value);
   sync('target', document.getElementById('targetInput').value);
   sync('count', document.getElementById('countInput').value);
+  sync('location', document.getElementById('locationInput').value);
+  sync('semester', document.getElementById('semesterInput').value);
+  sync('grade', document.getElementById('gradeInput').value);
+  sync('subject', document.getElementById('subjectInput').value);
   
   // تعبئة الحقول بالنصوص التلقائية الأولى
   fill('goal');
