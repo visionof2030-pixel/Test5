@@ -215,40 +215,63 @@ button#printBtn:hover {
 
 .header-content {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 15px;
   margin-bottom: 5px;
 }
 
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  margin-bottom: 5px;
+  width: 100%;
 }
 
 .logo {
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: white;
-  border-radius: 50%;
+  border-radius: 8px;
   padding: 5px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin: 0 15px;
 }
 
 .logo-text {
   font-weight: bold;
-  font-size: 12pt;
+  font-size: 14pt;
   color: white;
+  text-align: center;
+  line-height: 1.3;
+  direction: ltr;
+}
+
+.ministry-title {
+  font-size: 16pt;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.ministry-subtitle {
+  font-size: 10pt;
+  color: white;
+  opacity: 0.9;
+  margin-top: 2px;
+  direction: ltr;
+  letter-spacing: 0.5px;
 }
 
 .school-info {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 5px;
+  width: 100%;
 }
 
 .school-info div {
@@ -398,47 +421,6 @@ button#printBtn:hover {
   border-radius: 5px;
 }
 
-/* منطقة التوقيعات المعدلة */
-.signatures {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  margin-top: 25px;
-  font-size: 10pt;
-  text-align: right;
-}
-
-.signature-box {
-  min-height: 70px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 10px;
-}
-
-/* توقيعات جديدة - بدون نقاط وبدون أسماء */
-.signature-title {
-  text-align: center;
-  font-weight: bold;
-  margin-bottom: 5px;
-  font-size: 11pt;
-}
-
-.signature-text {
-  text-align: center;
-  font-size: 9pt;
-  color: #333;
-  margin-top: 15px;
-  font-weight: normal;
-}
-
-.signature-line {
-  border-bottom: 2px solid #000;
-  height: 25px;
-  width: 100%;
-  margin-top: 5px;
-}
-
 /* تحسينات عامة */
 #fields {
   display: block;
@@ -455,8 +437,7 @@ button#printBtn:hover {
 
 /* تحسين النصوص */
 #goal, #desc1, #desc2, #desc3, #desc4, #challenges, #strengths,
-#target, #count, #reportTitle, #school, #edu,
-#teacher, #principal {
+#target, #count, #reportTitle, #school, #edu {
   line-height: 1.4;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -512,27 +493,18 @@ button#printBtn:hover {
     margin: 12px 0;
   }
   
-  .signatures {
-    gap: 30px;
-    margin-top: 20px;
-  }
-  
-  .signature-box {
-    min-height: 65px;
-  }
-  
-  .signature-line {
-    height: 22px;
-  }
-  
   /* شعار الوزارة في الطباعة */
   .logo {
-    width: 40px;
-    height: 40px;
+    width: 70px;
+    height: 70px;
   }
   
-  .logo-text {
-    font-size: 10pt;
+  .ministry-title {
+    font-size: 14pt;
+  }
+  
+  .ministry-subtitle {
+    font-size: 9pt;
   }
 }
 
@@ -578,6 +550,15 @@ button#printBtn:hover {
     gap: 10px;
   }
   
+  .logo-container {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .logo {
+    margin: 0 0 10px 0;
+  }
+  
   .small-grid {
     grid-template-columns: 1fr;
   }
@@ -586,9 +567,8 @@ button#printBtn:hover {
     grid-template-columns: 1fr;
   }
   
-  .signatures {
+  .top-info {
     grid-template-columns: 1fr;
-    gap: 20px;
   }
 }
 </style>
@@ -686,17 +666,6 @@ button#printBtn:hover {
 <label>إرفاق الصور (حد أقصى صورتين)</label>
 <input type="file" multiple accept="image/*" onchange="loadImages(this)">
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-  <div>
-    <label>اسم المعلم</label>
-    <input id="teacherInput" placeholder="اسم المعلم" oninput="sync('teacher',this.value)" value="أحمد محمد">
-  </div>
-  <div>
-    <label>اسم مدير المدرسة</label>
-    <input id="principalInput" placeholder="اسم المدير" oninput="sync('principal',this.value)" value="خالد عبدالله">
-  </div>
-</div>
-
 <button id="printBtn" onclick="printReport()">تصدير PDF</button>
 </div>
 
@@ -714,7 +683,10 @@ button#printBtn:hover {
           <text x="50" y="85" text-anchor="middle" fill="white" font-size="18" font-weight="bold">م</text>
         </svg>
       </div>
-      <div class="logo-text">وزارة التعليم</div>
+    </div>
+    <div class="logo-text">
+      <div class="ministry-title">وزارة التـعليـم</div>
+      <div class="ministry-subtitle">Ministry of Education</div>
     </div>
     <div class="school-info">
       <div id="edu">الإدارة العامة للتعليم بمنطقة الرياض</div>
@@ -756,20 +728,6 @@ button#printBtn:hover {
 <!-- الصور (مكبرة بنسبة 20%) -->
 <div class="images" id="imagesBox">
   <!-- سيتم إضافة الصور هنا -->
-</div>
-
-<!-- منطقة التوقيعات المعدلة -->
-<div class="signatures">
-  <div class="signature-box">
-    <div class="signature-title" id="teacherNameDisplay"></div>
-    <div class="signature-line"></div>
-    <div class="signature-text">التوقيع</div>
-  </div>
-  <div class="signature-box">
-    <div class="signature-title" id="principalNameDisplay"></div>
-    <div class="signature-line"></div>
-    <div class="signature-text">التوقيع</div>
-  </div>
 </div>
 </div>
 
@@ -925,10 +883,6 @@ async function initializePage() {
   fill('challenges');
   fill('strengths');
   
-  // مزامنة أسماء المعلم ومدير المدرسة
-  sync('teacher', document.getElementById('teacherInput').value);
-  sync('principal', document.getElementById('principalInput').value);
-  
   // جلب التاريخ الهجري الدقيق من API
   await getHijriDate();
 }
@@ -982,16 +936,6 @@ function sync(id, value) {
     } else {
       el.textContent = value;
     }
-  }
-  
-  // مزامنة خاصة لأسماء المعلم ومدير المدرسة
-  if (id === 'teacher') {
-    const teacherDisplay = document.getElementById('teacherNameDisplay');
-    if (teacherDisplay) teacherDisplay.textContent = value;
-  }
-  if (id === 'principal') {
-    const principalDisplay = document.getElementById('principalNameDisplay');
-    if (principalDisplay) principalDisplay.textContent = value;
   }
 }
 
@@ -1112,22 +1056,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   });
-  
-  // مستمعين لأسماء المعلم ومدير المدرسة
-  const teacherInput = document.getElementById('teacherInput');
-  const principalInput = document.getElementById('principalInput');
-  
-  if (teacherInput) {
-    teacherInput.addEventListener('input', function() {
-      sync('teacher', this.value);
-    });
-  }
-  
-  if (principalInput) {
-    principalInput.addEventListener('input', function() {
-      sync('principal', this.value);
-    });
-  }
 });
 </script>
 
