@@ -765,7 +765,7 @@ font-size: 16px !important;
 <div class="wrapper">
 <div class="input-section">
   
-  <h2><i class="fas fa-tools" style="margin-left:10px;"></i>أداة إصدار التقارير المهنية</h2>
+  <h2><i class="fas fa-tools" style="margin-left:10px;"></i>أداة إصدار التقارير التربوية</h2>
   
   <div class="form-group">
     <label><i class="fas fa-university"></i>إدارة التعليم</label>
