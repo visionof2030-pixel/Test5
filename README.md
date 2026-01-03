@@ -1141,7 +1141,7 @@ user-select: none;
 }
 .image-box{
   border:1px dashed var(--border);
-  height:125px;
+  height:160px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -1163,11 +1163,12 @@ user-select: none;
 
 /* هذا هو الحل الجذري - لا تستخدم width:auto أو height:auto */
 .image-box img{
-  width:auto;
-  height:auto;
-  object-fit:contain;
-  display:block;
+  width: 65%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
+
 /* التوقيعات */
 .signatures{
   display:grid;
