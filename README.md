@@ -1163,8 +1163,6 @@ user-select: none;
 
 /* هذا هو الحل الجذري - لا تستخدم width:auto أو height:auto */
 .image-box img{
-  max-width:100%;
-  max-height:100%;
   width:auto;
   height:auto;
   object-fit:contain;
