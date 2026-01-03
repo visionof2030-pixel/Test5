@@ -2,14 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
 <title>أداة إصدار التقارير والشواهد</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{font-family:'Cairo',sans-serif;background: linear-gradient(135deg, #f0f9f6 0%, #e8f4f0 50%, #d4ebe2 100%);direction:rtl;overflow-x:hidden;min-height:100vh;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+*{margin:0;padding:0;box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+html,body{font-family:'Cairo',sans-serif;background: linear-gradient(135deg, #f0f9f6 0%, #e8f4f0 50%, #d4ebe2 100%);direction:rtl;overflow-x:hidden;min-height:100vh;-webkit-text-size-adjust:100%; -moz-text-size-adjust:100%; -ms-text-size-adjust:100%; text-size-adjust:100%; touch-action: manipulation;}
 .wrapper{max-width:850px;margin:auto;padding:15px;width:100%;}
 
 /* شريط الأخبار العلوي - محسن للأجهزة المحمولة */
@@ -47,6 +47,7 @@ align-items: center;
 gap: 15px;
 flex: 1;
 justify-content: space-between;
+flex-wrap: wrap;
 }
 
 /* عنوان التطبيق */
@@ -55,7 +56,7 @@ background: linear-gradient(135deg, #e8f4f0 0%, #d4ebe2 100%);
 color: #044a35;
 padding: 6px 12px;
 border-radius: 8px;
-font-size: 11px; /* حجم أصغر */
+font-size: 11px;
 font-weight: 700;
 border-right: 3px solid #ffd166;
 display: flex;
@@ -70,12 +71,13 @@ justify-content: center;
 
 .app-title i {
 color: #066d4d;
-font-size: 12px; /* أيقونة أصغر */
+font-size: 12px;
 }
 
 /* مجموعة الأزرار */
 .btn-group{
-display:flex;flex-wrap:nowrap;gap:6px;justify-content:flex-end;align-items:center;
+display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;
+flex: 1;
 }
 
 /* مجموعة زوج الأزرار */
@@ -83,14 +85,16 @@ display:flex;flex-wrap:nowrap;gap:6px;justify-content:flex-end;align-items:cente
 display: flex;
 gap: 6px;
 flex: 0 0 auto;
+min-width: 120px;
 }
 
 button.main-btn{
 background:linear-gradient(135deg, #066d4d 0%, #05553d 100%);color:#fff;border:none;
-padding:10px 8px;font-size:12px;border-radius:10px;cursor:pointer;min-width:110px;
+padding:10px 8px;font-size:12px;border-radius:10px;cursor:pointer;
 transition:all 0.3s ease;font-weight:600;position:relative;overflow:hidden;
 box-shadow:0 4px 10px rgba(6, 109, 77, 0.25);display:flex;flex-direction:column;align-items:center;gap:4px;
-border:1px solid rgba(255,255,255,0.1);flex:0 0 auto;
+border:1px solid rgba(255,255,255,0.1);flex:1;
+min-height: 60px;
 }
 button.main-btn::after{
 content:'';position:absolute;top:0;left:0;width:100%;height:100%;
@@ -181,8 +185,8 @@ display:inline-block;margin-left:6px;box-shadow:0 0 6px #ffd166;
 }
 
 input,select,textarea{
-width:100%;padding:12px;margin-top:6px;border:2px solid #d4ebe2;border-radius:10px;
-font-size:14px;background:#f9fcfb;transition:all 0.3s;font-family:'Cairo', sans-serif;
+width:100%;padding:14px;margin-top:6px;border:2px solid #d4ebe2;border-radius:10px;
+font-size:16px;background:#f9fcfb;transition:all 0.3s;font-family:'Cairo', sans-serif;
 color:#083024;box-shadow:inset 0 2px 5px rgba(0,0,0,0.05);-webkit-appearance:none;
 }
 input:focus,select:focus,textarea:focus{
@@ -193,8 +197,8 @@ textarea{height:100px;resize:none;overflow:hidden;line-height:1.6;}
 
 .auto-buttons{display:flex;gap:10px;margin-top:10px;}
 .auto-btn{
-flex:1;padding:10px;background:linear-gradient(135deg, #f0f9f6 0%, #e0f0ea 100%);
-border:2px solid #b8d9cd;color:#066d4d;border-radius:10px;font-size:13px;cursor:pointer;
+flex:1;padding:12px;background:linear-gradient(135deg, #f0f9f6 0%, #e0f0ea 100%);
+border:2px solid #b8d9cd;color:#066d4d;border-radius:10px;font-size:14px;cursor:pointer;
 font-weight:700;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;
 position:relative;overflow:hidden;
 }
@@ -500,7 +504,9 @@ display: none;
 display: inline-block;
 }
 
-/* تحسينات للأجهزة المحمولة */
+/* ==================== تحسينات للهواتف المحمولة ==================== */
+
+/* تحسينات للأجهزة المحمولة العامة */
 @media (max-width: 768px) {
 .control-bar {
 top: 45px;
@@ -508,6 +514,7 @@ padding: 8px;
 flex-direction: column;
 gap: 10px;
 height: auto;
+min-height: 120px;
 }
 
 .right-section {
@@ -519,13 +526,15 @@ gap: 10px;
 .app-title {
 max-width: 100%;
 width: 100%;
-font-size: 10px;
-padding: 5px 10px;
+font-size: 11px;
+padding: 6px 10px;
+order: 1;
 }
 
 .btn-group {
 width: 100%;
 justify-content: space-between;
+order: 2;
 }
 
 .btn-pair {
@@ -535,27 +544,27 @@ gap: 4px;
 
 button.main-btn {
 flex: 1;
-max-width: none;
-min-width: 0;
-padding: 8px 4px;
+padding: 10px 6px;
+min-height: 55px;
+font-size: 11px;
 }
 
 .half-btn {
 flex: 1;
-max-width: none !important;
-min-width: 0 !important;
+padding: 8px 4px !important;
 }
 
 .btn-icon {
-font-size: 12px !important;
+font-size: 14px !important;
 }
 
 .btn-text {
-font-size: 9px !important;
+font-size: 10px !important;
+white-space: nowrap;
 }
 
 .input-section {
-margin-top: 100px;
+margin-top: 130px;
 padding: 15px;
 border-radius: 15px;
 }
@@ -575,7 +584,7 @@ grid-template-columns: 1fr;
 }
 
 .notification {
-top: 90px;
+top: 110px;
 padding: 10px 15px;
 font-size: 14px;
 }
@@ -599,6 +608,7 @@ font-size: 13px;
 }
 }
 
+/* تحسينات للشاشات الصغيرة جداً */
 @media (max-width: 480px) {
 .top-marquee {
 font-size: 11px;
@@ -610,42 +620,52 @@ height: 40px;
 animation-duration: 35s;
 }
 
+.control-bar {
+min-height: 110px;
+}
+
 .app-title {
-font-size: 9px;
-padding: 4px 8px;
+font-size: 10px;
+padding: 5px 8px;
 }
 
 .btn-group {
 flex-wrap: wrap;
+gap: 4px;
 }
 
 .btn-pair {
 width: 100%;
-margin-bottom: 5px;
+margin-bottom: 4px;
+gap: 4px;
 }
 
 button.main-btn {
-padding: 7px 3px;
+padding: 8px 4px;
 font-size: 10px;
-flex: 1 1 calc(50% - 4px);
+min-height: 50px;
+}
+
+.half-btn {
+min-width: auto !important;
 }
 
 .btn-icon {
-font-size: 11px !important;
+font-size: 12px !important;
 }
 
 .btn-text {
-font-size: 8px !important;
+font-size: 9px !important;
 }
 
 .input-section {
-margin-top: 90px;
+margin-top: 125px;
 padding: 12px;
 }
 
 input, select, textarea {
-padding: 10px;
-font-size: 13px;
+padding: 12px;
+font-size: 16px;
 }
 
 .form-group label {
@@ -658,7 +678,7 @@ padding: 5px;
 }
 
 .auto-btn {
-padding: 8px;
+padding: 10px;
 font-size: 12px;
 }
 
@@ -680,71 +700,196 @@ font-size: 13px;
 }
 }
 
-@media (max-width: 320px) {
+/* تحسينات للأجهزة فائقة الصغر */
+@media (max-width: 360px) {
 .control-bar {
-gap: 4px;
+min-height: 105px;
+padding: 6px;
+}
+
+.btn-group {
+gap: 3px;
 }
 
 .btn-pair {
 gap: 3px;
+margin-bottom: 3px;
 }
 
 button.main-btn {
-flex: 1 1 100%;
-margin-bottom: 4px;
+padding: 6px 3px;
+font-size: 9px;
+min-height: 45px;
+}
+
+.btn-icon {
+font-size: 11px !important;
+}
+
+.btn-text {
+font-size: 8px !important;
 }
 
 .input-section {
-margin-top: 80px;
+margin-top: 120px;
+padding: 10px;
+}
+
+input, select, textarea {
+padding: 10px;
 }
 }
 
-/* iPhone X/XS/11 Pro/12 mini/13 mini - ارتفاع الشاشة */
+/* تحسينات خاصة لـ iPhone ذات الشقوق */
+/* iPhone X/XS/11 Pro/12 mini/13 mini */
 @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
 .top-marquee {
 padding-top: env(safe-area-inset-top);
-height: calc(45px + env(safe-area-inset-top));
+padding-bottom: env(safe-area-inset-top);
+height: calc(45px + env(safe-area-inset-top) * 2);
 }
 
 .control-bar {
 top: calc(45px + env(safe-area-inset-top));
+padding-top: env(safe-area-inset-top);
+padding-bottom: env(safe-area-inset-top);
 }
 
 .input-section {
-margin-top: calc(100px + env(safe-area-inset-top));
+margin-top: calc(140px + env(safe-area-inset-top) * 2);
 }
 }
 
-/* iPhone 12/13/14 - ارتفاع الشاشة */
+/* iPhone 12/13/14 */
 @media only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) {
 .top-marquee {
 padding-top: env(safe-area-inset-top);
-height: calc(45px + env(safe-area-inset-top));
+padding-bottom: env(safe-area-inset-top);
+height: calc(45px + env(safe-area-inset-top) * 2);
 }
 
 .control-bar {
 top: calc(45px + env(safe-area-inset-top));
+padding-top: env(safe-area-inset-top);
+padding-bottom: env(safe-area-inset-top);
 }
 
 .input-section {
-margin-top: calc(100px + env(safe-area-inset-top));
+margin-top: calc(140px + env(safe-area-inset-top) * 2);
 }
 }
 
-/* iPhone 12/13/14 Pro Max - شاشات كبيرة */
+/* iPhone 12/13/14 Pro Max */
 @media only screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
 .top-marquee {
 padding-top: env(safe-area-inset-top);
-height: calc(45px + env(safe-area-inset-top));
+padding-bottom: env(safe-area-inset-top);
+height: calc(45px + env(safe-area-inset-top) * 2);
 }
 
 .control-bar {
 top: calc(45px + env(safe-area-inset-top));
+padding-top: env(safe-area-inset-top);
+padding-bottom: env(safe-area-inset-top);
 }
 
 .input-section {
-margin-top: calc(100px + env(safe-area-inset-top));
+margin-top: calc(140px + env(safe-area-inset-top) * 2);
 }
+}
+
+/* تحسينات للشاشات الطويلة */
+@media (max-height: 700px) and (orientation: portrait) {
+.input-section {
+margin-top: 110px;
+padding: 10px;
+}
+
+.form-group {
+margin-bottom: 15px;
+}
+
+.form-group label {
+font-size: 13px;
+margin-bottom: 5px;
+}
+
+input, select, textarea {
+padding: 10px;
+font-size: 14px;
+}
+
+.auto-btn {
+padding: 8px;
+font-size: 12px;
+}
+}
+
+/* تحسينات للوضع الأفقي (Landscape) */
+@media (max-width: 850px) and (orientation: landscape) {
+.control-bar {
+flex-direction: row;
+height: 70px;
+}
+
+.right-section {
+flex-direction: row;
+gap: 10px;
+}
+
+.app-title {
+max-width: 150px;
+font-size: 10px;
+padding: 4px 8px;
+}
+
+.btn-group {
+flex-wrap: nowrap;
+}
+
+.btn-pair {
+width: auto;
+min-width: 130px;
+}
+
+button.main-btn {
+min-height: 50px;
+padding: 6px 4px;
+}
+
+.input-section {
+margin-top: 90px;
+padding: 12px;
+}
+
+.form-row {
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+}
+}
+
+/* منع التكبير التلقائي على iOS عند التركيز على الحقول */
+input, select, textarea {
+font-size: 16px !important;
+}
+
+/* إصلاح مشكلة التكبير في iOS */
+@media screen and (max-width: 767px) {
+input, select, textarea, .form-group {
+font-size: 16px !important;
+}
+}
+
+/* تحسين تجربة اللمس */
+button, .auto-btn, .tool-checkbox {
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+user-select: none;
+}
+
+/* تحسين التمرير السلس */
+.input-section, .support-content, #searchResults {
+-webkit-overflow-scrolling: touch;
 }
 
 /* ==================== قسم PDF المعدل ==================== */
@@ -754,7 +899,7 @@ margin-top: calc(100px + env(safe-area-inset-top));
 }
 
 :root{
-  --main:#062f25;      /* أغمق نصف درجة من السابق */
+  --main:#062f25;
   --border:#2f9e8f;
 }
 
@@ -1070,16 +1215,16 @@ margin-top: calc(100px + env(safe-area-inset-top));
     color-adjust: exact !important;
 }
 
-/* منع التكبير التلقائي على iOS */
-input, select, textarea {
-font-size: 16px !important;
+/* إصلاحات للأندرويد */
+.android-fix * {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-  select,
-  textarea,
-  input {
-    font-size: 16px !important;
-  }
+
+/* إصلاحات الشريط السفلي على iOS */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .wrapper {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
 }
 </style>
 </head>
@@ -1207,7 +1352,7 @@ font-size: 16px !important;
     
     <!-- حقل البحث - متاح دائمًا -->
     <div id="reportSearchContainer" style="display:block; margin-bottom:10px; position:relative;">
-        <input type="text" id="reportSearch" placeholder="ابحث عن تقرير..." style="width:100%; padding:10px; border:1px solid #d4ebe2; border-radius:6px; font-size:14px;">
+        <input type="text" id="reportSearch" placeholder="ابحث عن تقرير..." style="width:100%; padding:12px; border:1px solid #d4ebe2; border-radius:6px; font-size:14px;">
         <div id="searchResults" style="display:none; position:absolute; top:100%; left:0; right:0; background:white; border:1px solid #ddd; border-radius:6px; max-height:200px; overflow-y:auto; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
     </div>
     
@@ -1218,12 +1363,6 @@ font-size: 16px !important;
     
     <!-- حقل الإدخال للنوع "أخرى" -->
     <input id="reportTypeInput" placeholder="أدخل اسم التقرير" oninput="updateReport()" style="display:none; margin-top:8px;">
-  </div>
-  
-  <!-- حقل الدرس الجديد -->
-  <div class="form-group">
-    <label><i class="fas fa-book-open"></i>الدرس</label>
-    <input id="lesson" placeholder="مثال: درس الضرب - درس النباتات" oninput="updateReport()">
   </div>
   
   <div class="form-group">
@@ -1297,9 +1436,17 @@ font-size: 16px !important;
     </div>
   </div>
   
-  <div class="form-group">
-    <label><i class="fas fa-book"></i>المادة</label>
-    <input id="subject" placeholder="مثال: لغتي – علوم – رياضيات" oninput="updateReport()">
+  <!-- المادة والدرس - أصبحا بجوار بعضهما -->
+  <div class="form-row">
+    <div class="form-group">
+      <label><i class="fas fa-book"></i>المادة</label>
+      <input id="subject" placeholder="مثال: لغتي – علوم – رياضيات" oninput="updateReport()">
+    </div>
+    
+    <div class="form-group">
+      <label><i class="fas fa-book-open"></i>الدرس</label>
+      <input id="lesson" placeholder="مثال: درس الضرب - درس النباتات" oninput="updateReport()">
+    </div>
   </div>
   
   <div class="form-row">
@@ -2319,10 +2466,22 @@ window.onload = function() {
     loadTeacherData();
     updateReport();
     
+    // تحسين تجربة اللمس
     if ('ontouchstart' in window) {
         document.body.classList.add('touch-device');
     }
     
+    // إضافة تأخير للتعامل مع الأزرار على الأجهزة المحمولة
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.95)';
+        });
+        btn.addEventListener('touchend', function() {
+            this.style.transform = '';
+        });
+    });
+    
+    // تحسين البحث للمس
     document.addEventListener('click', function(e) {
         if (e.target.closest('#searchResults div')) {
             const clickedReport = e.target.textContent;
@@ -2345,6 +2504,18 @@ window.onload = function() {
             document.getElementById('reportSearch').value = '';
         }
     });
+    
+    // تحسينات للأندرويد
+    if (navigator.userAgent.match(/Android/i)) {
+        document.body.classList.add('android-fix');
+    }
+    
+    // إصلاح مشكلة التمرير على iOS
+    document.addEventListener('touchmove', function(e) {
+        if (e.target.type === 'range') {
+            e.preventDefault();
+        }
+    }, { passive: false });
 }
 </script>
 
