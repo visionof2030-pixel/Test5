@@ -1163,12 +1163,13 @@ user-select: none;
 
 /* هذا هو الحل الجذري - لا تستخدم width:auto أو height:auto */
 .image-box img{
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  display:block;
 }
-
 /* التوقيعات */
 .signatures{
   display:grid;
