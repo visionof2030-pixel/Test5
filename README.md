@@ -782,9 +782,37 @@ margin-top: calc(100px + env(safe-area-inset-top));
   margin-bottom:8px;
 }
 .header img{width:140px;}
-.header-school{position:absolute;right:12px;bottom:18px;font-size:12px;font-weight:700;}
-.header-education{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:10px;}
-.header-date{position:absolute;left:12px;top:10px;font-size:9px;text-align:right;}
+.header-school-title{
+  position:absolute;
+  right:12px;
+  top:20px;
+  font-size:11px;
+  font-weight:600;
+}
+.header-school{
+  position:absolute;
+  right:12px;
+  bottom:18px;
+  font-size:14px;
+  font-weight:700;
+}
+.header-education{
+  position:absolute;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  font-size:13px;
+  font-weight:700;
+  text-align:center;
+  width:100%;
+}
+.header-date{
+  position:absolute;
+  left:12px;
+  top:10px;
+  font-size:9px;
+  text-align:right;
+}
 
 /* مربعات المعلومات */
 .info-grid{
@@ -959,7 +987,7 @@ margin-top: calc(100px + env(safe-area-inset-top));
   font-size:8px;
 }
 
-/* الصور */
+/* الصور - إعدادات جديدة */
 .images{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -973,11 +1001,27 @@ margin-top: calc(100px + env(safe-area-inset-top));
   align-items:center;
   justify-content:center;
   overflow:hidden;
+  background:#f9fcfb;
+  position:relative;
+}
+.image-box::before{
+  content:'صورة توثيقية';
+  position:absolute;
+  top:4px;
+  right:4px;
+  font-size:9px;
+  background:rgba(255,255,255,.9);
+  padding:1px 5px;
+  border-radius:3px;
+  z-index:1;
 }
 .image-box img{
   max-width:100%;
   max-height:100%;
   object-fit:contain;
+  width:auto;
+  height:auto;
+  display:block;
 }
 
 /* التوقيعات */
@@ -1401,6 +1445,7 @@ font-size: 16px !important;
 
 <div class="header">
   <img src="https://i.ibb.co/1fc5gB6v/9-C92-E57-B-23-FA-479-D-A024-1-D5-F871-B4-F8-D.png">
+  <div class="header-school-title">اسم المدرسة</div>
   <div class="header-school" id="schoolBox"></div>
   <div class="header-education" id="educationBox"></div>
   <div class="header-date">
@@ -1861,7 +1906,7 @@ function toggleTool(toolElement) {
 }
 
 function updateReport(){
-    // تحديث الهيدر
+    // تحديث الهيدر مع إضافة عنوان المدرسة
     document.getElementById('educationBox').innerText = document.getElementById('education').value;
     document.getElementById('schoolBox').innerText = document.getElementById('school').value;
     
@@ -1941,25 +1986,46 @@ function updateToolsDisplay() {
     }
 }
 
-function loadImage(input, target){
+// دالة جديدة محسنة لتحميل الصور
+function loadImage(input, target) {
     if (input.files && input.files[0]) {
-        let r = new FileReader();
-        r.onload = function(e) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
             const imgBox = document.getElementById(target);
             imgBox.innerHTML = '';
-            const img = document.createElement('img');
+            
+            const img = new Image();
+            img.onload = function() {
+                // احسب نسبة الأبعاد
+                const boxWidth = 180; // عرض تقريبي لمربع الصورة
+                const boxHeight = 125; // ارتفاع مربع الصورة
+                const imgWidth = this.width;
+                const imgHeight = this.height;
+                
+                // حساب النسبة المناسبة لتتناسب مع المربع دون تشويه
+                const widthRatio = boxWidth / imgWidth;
+                const heightRatio = boxHeight / imgHeight;
+                const scaleRatio = Math.min(widthRatio, heightRatio);
+                
+                // تعيين الأبعاد مع الحفاظ على النسبة
+                const displayWidth = imgWidth * scaleRatio;
+                const displayHeight = imgHeight * scaleRatio;
+                
+                img.width = displayWidth;
+                img.height = displayHeight;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '100%';
+                img.style.objectFit = 'contain';
+                img.style.display = 'block';
+                img.style.margin = 'auto';
+            };
+            
             img.src = e.target.result;
-            
-            // ضبط الصورة بشكل صحيح
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
-            img.style.objectFit = 'contain';
-            img.style.display = 'block';
-            img.style.margin = 'auto';
-            
             imgBox.appendChild(img);
         };
-        r.readAsDataURL(input.files[0]);
+        
+        reader.readAsDataURL(input.files[0]);
     }
 }
 
