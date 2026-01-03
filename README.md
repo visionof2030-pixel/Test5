@@ -1062,7 +1062,7 @@ user-select: none;
   border-radius:8px;
   padding:8px;
   margin-bottom:6px;
-  height:150px;
+  height:147px;
   display:flex;
   flex-direction:column;
   overflow:hidden;
