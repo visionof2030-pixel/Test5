@@ -1037,7 +1037,7 @@ user-select: none;
   border-radius:8px;
   padding:8px;
   margin-bottom:6px;
-  height:110px;
+  height:95px;
   display:flex;
   flex-direction:column;
   overflow:hidden;
