@@ -1132,7 +1132,7 @@ user-select: none;
   font-size:8px;
 }
 
-/* الصور - إعدادات جديدة */
+/* ========== الصور - إعدادات جديدة جذرية ========== */
 .images{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -1160,13 +1160,13 @@ user-select: none;
   border-radius:3px;
   z-index:1;
 }
+
+/* هذا هو الحل الجذري - لا تستخدم width:auto أو height:auto */
 .image-box img{
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain;
-  width:auto;
-  height:auto;
-  display:block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* التوقيعات */
@@ -2133,45 +2133,21 @@ function updateToolsDisplay() {
     }
 }
 
-// دالة جديدة محسنة لتحميل الصور
+// ==================== دالة تحميل الصور - الإصدار الجديد المبسط ====================
 function loadImage(input, target) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        
         reader.onload = function(e) {
             const imgBox = document.getElementById(target);
             imgBox.innerHTML = '';
-            
-            const img = new Image();
-            img.onload = function() {
-                // احسب نسبة الأبعاد
-                const boxWidth = 180; // عرض تقريبي لمربع الصورة
-                const boxHeight = 125; // ارتفاع مربع الصورة
-                const imgWidth = this.width;
-                const imgHeight = this.height;
-                
-                // حساب النسبة المناسبة لتتناسب مع المربع دون تشويه
-                const widthRatio = boxWidth / imgWidth;
-                const heightRatio = boxHeight / imgHeight;
-                const scaleRatio = Math.min(widthRatio, heightRatio);
-                
-                // تعيين الأبعاد مع الحفاظ على النسبة
-                const displayWidth = imgWidth * scaleRatio;
-                const displayHeight = imgHeight * scaleRatio;
-                
-                img.width = displayWidth;
-                img.height = displayHeight;
-                img.style.maxWidth = '100%';
-                img.style.maxHeight = '100%';
-                img.style.objectFit = 'contain';
-                img.style.display = 'block';
-                img.style.margin = 'auto';
-            };
-            
+
+            const img = document.createElement('img');
             img.src = e.target.result;
+            img.loading = "eager";   // مهم: تحميل فوري
+            img.decoding = "sync";   // مهم: فك الترميز متزامن
+
             imgBox.appendChild(img);
         };
-        
         reader.readAsDataURL(input.files[0]);
     }
 }
@@ -2324,7 +2300,7 @@ function clearData(){
     }
 }
 
-function downloadPDF(){
+async function downloadPDF(){
     document.querySelector('.control-bar').style.visibility = 'hidden';
     document.querySelector('.top-marquee').style.visibility = 'hidden';
     document.body.style.margin = "0";
@@ -2352,6 +2328,9 @@ function downloadPDF(){
     }
     
     const cleanFileName = reportName.replace(/[\/\\:*?"<>|]/g, '_');
+
+    // ========== الحل الجذري: الانتظار حتى اكتمال تحميل الصور ==========
+    await new Promise(resolve => setTimeout(resolve, 300));
 
     html2pdf().set({
         filename: cleanFileName + ".pdf",
@@ -2408,6 +2387,9 @@ async function sharePDFWhatsApp(){
     } else {
         reportName = "تقرير";
     }
+
+    // ========== الحل الجذري: الانتظار حتى اكتمال تحميل الصور ==========
+    await new Promise(resolve => setTimeout(resolve, 300));
 
     await html2pdf().set({
         margin: 0,
