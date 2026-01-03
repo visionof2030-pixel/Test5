@@ -963,7 +963,7 @@ user-select: none;
   text-align:right;
 }
 
-/* مربعات المعلومات */
+/* مربعات المعلومات - تم التعديل هنا لزيادة حجم العناوين */
 .info-grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -983,7 +983,7 @@ user-select: none;
   padding:14px 4px 6px;
   position:relative;
   text-align:center;
-  font-size:13px; /* تم تكبير الخط 3 درجات من 10px إلى 13px */
+  font-size:11px; /* تم تصغير الخط للمحتوى */
   min-height:34px;
   overflow:hidden;
 }
@@ -992,20 +992,20 @@ user-select: none;
   top:4px;
   right:50%;
   transform:translateX(50%);
-  font-size:11px; /* تم تكبير الخط 3 درجات من 8px إلى 11px */
+  font-size:13px; /* تم تكبير العناوين أكثر من المحتوى */
   font-weight:800;
   color:var(--main);
   white-space:nowrap;
 }
 .info-value{
-  font-size:13px; /* تم تكبير الخط 3 درجات من 10px إلى 13px */
-  font-weight:700;
+  font-size:11px; /* تم تصغير خط المحتوى */
+  font-weight:600;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
 
-/* مادة | درس */
+/* مادة | درس - تم التعديل هنا */
 .subject-lesson-box{
   border:1px solid var(--border);
   border-radius:7px;
@@ -1018,7 +1018,7 @@ user-select: none;
   top:4px;
   right:50%;
   transform:translateX(50%);
-  font-size:11px; /* تم تكبير الخط 3 درجات من 8px إلى 11px */
+  font-size:13px; /* تم تكبير العنوان */
   font-weight:800;
   color:var(--main);
 }
@@ -1027,7 +1027,7 @@ user-select: none;
   grid-template-columns:1fr 1px 1fr;
   align-items:center;
   text-align:center;
-  font-size:13px; /* تم تكبير الخط 3 درجات من 10px إلى 13px */
+  font-size:11px; /* تم تصغير خط المحتوى */
 }
 .subject-divider{
   background:var(--border);
