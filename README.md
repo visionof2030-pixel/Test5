@@ -7,10 +7,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
 html,body{font-family:'Cairo',sans-serif;background: linear-gradient(135deg, #f0f9f6 0%, #e8f4f0 50%, #d4ebe2 100%);direction:rtl;overflow-x:hidden;min-height:100vh;-webkit-text-size-adjust:100%; -moz-text-size-adjust:100%; -ms-text-size-adjust:100%; text-size-adjust:100%; touch-action: manipulation;}
-.wrapper{max-width:850px;margin:auto;padding:15px;width:100%;}
+.wrapper{max-width:900px;margin:auto;padding:20px;width:100%;}
 
 /* شريط الأخبار العلوي - محسن للأجهزة المحمولة */
 .top-marquee{
@@ -35,7 +35,7 @@ color:#e8f4f0;font-weight:500;
 .control-bar{
 position:fixed;top:45px;left:0;right:0;width:100%;z-index:250;
 background:linear-gradient(135deg, #ffffff 0%, #f5fcf9 100%);
-padding:10px 15px;display:flex;justify-content:space-between;align-items:center;
+padding:12px 15px;display:flex;justify-content:space-between;align-items:center;
 box-shadow:0 4px 15px rgba(4, 74, 53, 0.12);border-bottom:2px solid #d0e6de;
 backdrop-filter:blur(5px);
 }
@@ -54,47 +54,47 @@ flex-wrap: wrap;
 .app-title {
 background: linear-gradient(135deg, #e8f4f0 0%, #d4ebe2 100%);
 color: #044a35;
-padding: 6px 12px;
-border-radius: 8px;
-font-size: 11px;
-font-weight: 700;
-border-right: 3px solid #ffd166;
+padding: 8px 15px;
+border-radius: 10px;
+font-size: 12px;
+font-weight: 800;
+border-right: 4px solid #ffd166;
 display: flex;
 align-items: center;
-gap: 8px;
+gap: 10px;
 box-shadow: 0 3px 8px rgba(6, 109, 77, 0.15);
 flex-shrink: 0;
-max-width: 180px;
+max-width: 200px;
 text-align: center;
 justify-content: center;
 }
 
 .app-title i {
 color: #066d4d;
-font-size: 12px;
+font-size: 14px;
 }
 
 /* مجموعة الأزرار */
 .btn-group{
-display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;
+display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:center;
 flex: 1;
 }
 
 /* مجموعة زوج الأزرار */
 .btn-pair {
 display: flex;
-gap: 6px;
+gap: 8px;
 flex: 0 0 auto;
-min-width: 120px;
+min-width: 130px;
 }
 
 button.main-btn{
 background:linear-gradient(135deg, #066d4d 0%, #05553d 100%);color:#fff;border:none;
-padding:10px 8px;font-size:12px;border-radius:10px;cursor:pointer;
-transition:all 0.3s ease;font-weight:600;position:relative;overflow:hidden;
-box-shadow:0 4px 10px rgba(6, 109, 77, 0.25);display:flex;flex-direction:column;align-items:center;gap:4px;
+padding:12px 10px;font-size:13px;border-radius:12px;cursor:pointer;
+transition:all 0.3s ease;font-weight:700;position:relative;overflow:hidden;
+box-shadow:0 4px 10px rgba(6, 109, 77, 0.25);display:flex;flex-direction:column;align-items:center;gap:5px;
 border:1px solid rgba(255,255,255,0.1);flex:1;
-min-height: 60px;
+min-height: 65px;
 }
 button.main-btn::after{
 content:'';position:absolute;top:0;left:0;width:100%;height:100%;
@@ -109,23 +109,23 @@ box-shadow:0 6px 15px rgba(6, 109, 77, 0.35);
 }
 button.main-btn:active{transform:translateY(-1px);}
 
-.btn-icon{font-size:16px;}
-.btn-text{font-size:11px;font-weight:700;}
+.btn-icon{font-size:18px;}
+.btn-text{font-size:12px;font-weight:800;}
 
 /* تصميم الأزرار بنصف العرض */
 .half-btn {
-max-width: 100px !important;
-min-width: 90px !important;
-padding: 8px 6px !important;
+max-width: 110px !important;
+min-width: 100px !important;
+padding: 10px 8px !important;
 flex: 0 0 auto;
 }
 
 .half-btn .btn-icon {
-font-size: 14px !important;
+font-size: 15px !important;
 }
 
 .half-btn .btn-text {
-font-size: 10px !important;
+font-size: 11px !important;
 }
 
 /* زر حفظ بيانات المعلم خاص */
@@ -147,36 +147,38 @@ font-size: 10px !important;
 #whatsappBtn{background:linear-gradient(135deg, #25D366 0%, #128C7E 100%);}
 #whatsappBtn:hover{background:linear-gradient(135deg, #128C7E 0%, #075E54 100%);}
 
-/* تحسين واجهة الإدخال */
+/* ========== تحسين واجهة الإدخال - تصميم عصري 2026 ========== */
 .input-section{
-background:#ffffff;padding:20px;border-radius:18px;margin-top:110px;
-border:2px solid #e0f0ea;box-shadow:0 8px 25px rgba(4, 74, 53, 0.1);
+background:#ffffff;padding:25px;border-radius:20px;margin-top:120px;
+border:2px solid #e0f0ea;box-shadow:0 10px 30px rgba(4, 74, 53, 0.12);
 position:relative;overflow:hidden;
 }
 .input-section::before{
-content:'';position:absolute;top:0;right:0;width:100%;height:4px;
-background:linear-gradient(to left, #066d4d, #ffd166);
+content:'';position:absolute;top:0;right:0;width:100%;height:5px;
+background:linear-gradient(to left, #066d4d, #ffd166, #25D366);
 }
 
 .input-section h2{
-color:#044a35;font-size:20px;margin-bottom:25px;padding-bottom:15px;
-border-bottom:3px solid #e0f0ea;text-align:center;font-weight:800;
+color:#044a35;font-size:24px;margin-bottom:30px;padding-bottom:15px;
+border-bottom:3px solid #e0f0ea;text-align:center;font-weight:900;
 position:relative;
 }
 .input-section h2::after{
-content:'';position:absolute;bottom:-3px;right:0;width:100px;height:3px;
-background:linear-gradient(to left, #066d4d, #ffd166);border-radius:2px;
+content:'';position:absolute;bottom:-3px;right:50%;transform:translateX(50%);
+width:120px;height:3px;background:linear-gradient(to left, #066d4d, #ffd166);
+border-radius:2px;
 }
 
-.form-group{margin-bottom:20px;}
+/* تصميم عصري للحقول */
+.form-group{margin-bottom:25px;position:relative;}
 .form-group label{
-font-size:14px;font-weight:700;margin-bottom:8px;display:block;color:#083024;
-display:flex;align-items:center;gap:10px;padding-right:8px;
+font-size:16px;font-weight:800;margin-bottom:10px;display:block;color:#083024;
+display:flex;align-items:center;gap:12px;padding-right:8px;
 position:relative;
 }
 .form-group label i{
-color:#066d4d;font-size:15px;background:#f0f9f6;padding:6px;border-radius:8px;
-border:1px solid #d4ebe2;
+color:#066d4d;font-size:16px;background:#f0f9f6;padding:7px;border-radius:10px;
+border:1px solid #d4ebe2;box-shadow:0 2px 5px rgba(0,0,0,0.05);
 }
 
 .form-group label::before{
@@ -185,32 +187,32 @@ display:inline-block;margin-left:6px;box-shadow:0 0 6px #ffd166;
 }
 
 input,select,textarea{
-width:100%;padding:14px;margin-top:6px;border:2px solid #d4ebe2;border-radius:10px;
-font-size:16px;background:#f9fcfb;transition:all 0.3s;font-family:'Cairo', sans-serif;
-color:#083024;box-shadow:inset 0 2px 5px rgba(0,0,0,0.05);-webkit-appearance:none;
+width:100%;padding:16px;margin-top:8px;border:2px solid #d4ebe2;border-radius:12px;
+font-size:18px;background:#f9fcfb;transition:all 0.3s;font-family:'Cairo', sans-serif;
+color:#083024;box-shadow:inset 0 2px 8px rgba(0,0,0,0.05);-webkit-appearance:none;
 }
 input:focus,select:focus,textarea:focus{
-outline:none;border-color:#066d4d;box-shadow:0 0 0 3px rgba(6,109,77,0.15), inset 0 2px 5px rgba(0,0,0,0.05);
-background:#ffffff;transform:translateY(-2px);
+outline:none;border-color:#066d4d;box-shadow:0 0 0 4px rgba(6,109,77,0.15), inset 0 2px 8px rgba(0,0,0,0.05);
+background:#ffffff;transform:translateY(-3px);
 }
-textarea{height:100px;resize:none;overflow:hidden;line-height:1.6;}
+textarea{height:120px;resize:none;overflow:hidden;line-height:1.7;font-size:17px;}
 
-.auto-buttons{display:flex;gap:10px;margin-top:10px;}
+.auto-buttons{display:flex;gap:12px;margin-top:12px;}
 .auto-btn{
-flex:1;padding:12px;background:linear-gradient(135deg, #f0f9f6 0%, #e0f0ea 100%);
-border:2px solid #b8d9cd;color:#066d4d;border-radius:10px;font-size:14px;cursor:pointer;
-font-weight:700;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;
+flex:1;padding:14px;background:linear-gradient(135deg, #f0f9f6 0%, #e0f0ea 100%);
+border:2px solid #b8d9cd;color:#066d4d;border-radius:12px;font-size:15px;cursor:pointer;
+font-weight:700;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;
 position:relative;overflow:hidden;
 }
 .auto-btn:hover{
 background:linear-gradient(135deg, #e0f0ea 0%, #d0e6de 100%);border-color:#066d4d;
-transform:translateY(-2px);box-shadow:0 4px 10px rgba(6, 109, 77, 0.2);
+transform:translateY(-3px);box-shadow:0 5px 12px rgba(6, 109, 77, 0.25);
 }
 .auto-btn:active{transform:translateY(0);}
-.auto-btn i{font-size:13px;}
+.auto-btn i{font-size:14px;}
 
 .form-row{
-display:grid;grid-template-columns:1fr 1fr;gap:15px;
+display:grid;grid-template-columns:1fr 1fr;gap:20px;
 }
 
 /* تلميحات للأزرار */
@@ -225,14 +227,14 @@ right: 50%;
 transform: translateX(50%);
 background: rgba(4, 58, 42, 0.95);
 color: white;
-padding: 8px 12px;
+padding: 10px 15px;
 border-radius: 8px;
-font-size: 11px;
+font-size: 12px;
 white-space: nowrap;
 z-index: 1000;
 border: 1px solid #044a35;
-box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-max-width:200px;
+box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+max-width:250px;
 }
 button[title]:hover::before {
 content: '';
@@ -444,26 +446,27 @@ box-shadow: 0 0 0 2px rgba(6, 109, 77, 0.2);
 /* قسم الأدوات والوسائل التعليمية في واجهة الإدخال */
 .tools-section {
 background: #f8fdfa;
-padding: 15px;
-border-radius: 10px;
+padding: 18px;
+border-radius: 12px;
 border: 1px solid #d4ebe2;
-margin-top: 8px;
+margin-top: 10px;
+box-shadow: 0 3px 10px rgba(0,0,0,0.05);
 }
 
 .tools-grid {
 display: grid;
 grid-template-columns: repeat(2, 1fr);
-gap: 10px;
+gap: 12px;
 }
 
 .tool-checkbox {
 display: flex;
 align-items: center;
-gap: 8px;
-padding: 8px;
+gap: 10px;
+padding: 10px;
 background: white;
-border-radius: 8px;
-border: 1px solid #d4ebe2;
+border-radius: 10px;
+border: 2px solid #d4ebe2;
 transition: all 0.3s;
 cursor: pointer;
 }
@@ -471,31 +474,32 @@ cursor: pointer;
 .tool-checkbox:hover {
 border-color: #066d4d;
 background: #f0f9f6;
-transform: translateY(-2px);
+transform: translateY(-3px);
+box-shadow: 0 4px 8px rgba(6, 109, 77, 0.1);
 }
 
 .tool-checkbox input[type="checkbox"] {
-width: 18px;
-height: 18px;
+width: 20px;
+height: 20px;
 cursor: pointer;
 }
 
 .tool-checkbox span {
-font-size: 13px;
-font-weight: 600;
+font-size: 14px;
+font-weight: 700;
 color: #083024;
 }
 
 .tool-checkbox.checked {
 border-color: #066d4d;
 background: #e8f4f0;
-box-shadow: 0 2px 8px rgba(6, 109, 77, 0.1);
+box-shadow: 0 4px 10px rgba(6, 109, 77, 0.15);
 }
 
 /* علامة ✅ في واجهة الإدخال */
 .checkmark {
 color: #066d4d;
-font-size: 14px;
+font-size: 16px;
 margin-left: 5px;
 display: none;
 }
@@ -570,7 +574,7 @@ border-radius: 15px;
 }
 
 .input-section h2 {
-font-size: 18px;
+font-size: 20px;
 margin-bottom: 20px;
 }
 
@@ -914,7 +918,7 @@ user-select: none;
   background:#fff;
 }
 
-/* الهيدر */
+/* الهيدر - تم التعديل هنا */
 .header{
   background:var(--main);
   height:150px;
@@ -931,23 +935,23 @@ user-select: none;
   position:absolute;
   right:12px;
   top:20px;
-  font-size:11px;
-  font-weight:600;
+  font-size:14px; /* تم تكبير الخط 3 درجات من 11px إلى 14px */
+  font-weight:800;
 }
 .header-school{
   position:absolute;
   right:12px;
-  bottom:18px;
-  font-size:14px;
-  font-weight:700;
+  top:45px; /* تم تعديل الموقع ليصبح تحت العنوان */
+  font-size:18px; /* تم تكبير الخط 3 درجات من 14px إلى 18px */
+  font-weight:900;
 }
 .header-education{
   position:absolute;
   left:50%;
   bottom:18px;
   transform:translateX(-50%);
-  font-size:13px;
-  font-weight:700;
+  font-size:16px; /* تم تكبير الخط 3 درجات من 13px إلى 16px */
+  font-weight:800;
   text-align:center;
   width:100%;
 }
@@ -955,7 +959,7 @@ user-select: none;
   position:absolute;
   left:12px;
   top:10px;
-  font-size:9px;
+  font-size:12px; /* تم تكبير الخط 3 درجات من 9px إلى 12px */
   text-align:right;
 }
 
@@ -979,7 +983,7 @@ user-select: none;
   padding:14px 4px 6px;
   position:relative;
   text-align:center;
-  font-size:10px;
+  font-size:13px; /* تم تكبير الخط 3 درجات من 10px إلى 13px */
   min-height:34px;
   overflow:hidden;
 }
@@ -988,14 +992,14 @@ user-select: none;
   top:4px;
   right:50%;
   transform:translateX(50%);
-  font-size:8px;
-  font-weight:700;
+  font-size:11px; /* تم تكبير الخط 3 درجات من 8px إلى 11px */
+  font-weight:800;
   color:var(--main);
   white-space:nowrap;
 }
 .info-value{
-  font-size:10px;
-  font-weight:600;
+  font-size:13px; /* تم تكبير الخط 3 درجات من 10px إلى 13px */
+  font-weight:700;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
@@ -1014,8 +1018,8 @@ user-select: none;
   top:4px;
   right:50%;
   transform:translateX(50%);
-  font-size:8px;
-  font-weight:700;
+  font-size:11px; /* تم تكبير الخط 3 درجات من 8px إلى 11px */
+  font-weight:800;
   color:var(--main);
 }
 .subject-lesson{
@@ -1023,7 +1027,7 @@ user-select: none;
   grid-template-columns:1fr 1px 1fr;
   align-items:center;
   text-align:center;
-  font-size:10px;
+  font-size:13px; /* تم تكبير الخط 3 درجات من 10px إلى 13px */
 }
 .subject-divider{
   background:var(--border);
@@ -1045,12 +1049,12 @@ user-select: none;
 .box-objective .box-title{
   text-align:center;
   color:var(--main);
-  font-weight:700;
-  font-size:11px;
+  font-weight:800;
+  font-size:14px; /* تم تكبير الخط 3 درجات من 11px إلى 14px */
   margin-bottom:4px;
 }
 .box-objective .box-content{
-  font-size:11px;
+  font-size:14px; /* تم تكبير الخط 3 درجات من 11px إلى 14px */
   line-height:1.5;
   text-align:center;
   overflow:hidden;
@@ -1070,12 +1074,12 @@ user-select: none;
 .box-title{
   text-align:center;
   color:var(--main);
-  font-weight:700;
-  font-size:11px;
+  font-weight:800;
+  font-size:14px; /* تم تكبير الخط 3 درجات من 11px إلى 14px */
   margin-bottom:4px;
 }
 .box-content{
-  font-size:11px;
+  font-size:14px; /* تم تكبير الخط 3 درجات من 11px إلى 14px */
   line-height:1.5;
   text-align:center;
   overflow:hidden;
@@ -1098,9 +1102,9 @@ user-select: none;
 }
 .tools-title{
   text-align:center;
-  font-weight:700;
+  font-weight:800;
   color:var(--main);
-  font-size:10px;
+  font-size:13px; /* تم تكبير الخط 3 درجات من 10px إلى 13px */
   margin-bottom:4px;
 }
 .tools-list{
@@ -1108,7 +1112,7 @@ user-select: none;
   flex-wrap:wrap;
   justify-content:center;
   gap:6px;
-  font-size:9px;
+  font-size:12px; /* تم تكبير الخط 3 درجات من 9px إلى 12px */
 }
 .tool{
   background:#eef7f4;
@@ -1154,14 +1158,13 @@ user-select: none;
   position:absolute;
   top:4px;
   right:4px;
-  font-size:9px;
+  font-size:12px; /* تم تكبير الخط 3 درجات من 9px إلى 12px */
   background:rgba(255,255,255,.9);
   padding:1px 5px;
   border-radius:3px;
   z-index:1;
 }
 
-/* هذا هو الحل الجذري - لا تستخدم width:auto أو height:auto */
 .image-box img{
   width: 65%;
   height: 100%;
@@ -1175,21 +1178,21 @@ user-select: none;
   grid-template-columns:1fr 1fr;
   gap:30px;
   text-align:center;
-  font-size:10px;
+  font-size:13px; /* تم تكبير الخط 3 درجات من 10px إلى 13px */
   margin-bottom:6px;
 }
 .signature-box{
   padding-top:4px;
 }
 .signature-role{
-  font-size:9px;
+  font-size:12px; /* تم تكبير الخط 3 درجات من 9px إلى 12px */
   color:var(--main);
-  font-weight:600;
+  font-weight:700;
   margin-bottom:2px;
 }
 .signature-name{
-  font-size:11px;
-  font-weight:700;
+  font-size:14px; /* تم تكبير الخط 3 درجات من 11px إلى 14px */
+  font-weight:900;
   color:#000;
 }
 .sign-line{
@@ -1203,7 +1206,7 @@ user-select: none;
   background:var(--main);
   color:#fff;
   text-align:center;
-  font-size:8px;
+  font-size:11px; /* تم تكبير الخط 3 درجات من 8px إلى 11px */
   padding:3px 4px;
   border-radius:6px;
 }
