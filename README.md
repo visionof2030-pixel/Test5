@@ -1066,7 +1066,7 @@ user-select: none;
   border-radius:8px;
   padding:8px;
   margin-bottom:6px;
-  height:140px;
+  height:137px;
   display:flex;
   flex-direction:column;
   overflow:hidden;
