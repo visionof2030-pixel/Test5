@@ -1050,7 +1050,7 @@ user-select: none;
   text-align:center;
   color:var(--main);
   font-weight:800;
-  font-size:14px; /* تم تكبير الخط 3 درجات من 11px إلى 14px */
+  font-size:8px
   margin-bottom:4px;
 }
 .box-objective .box-content{
