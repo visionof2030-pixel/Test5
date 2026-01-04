@@ -992,7 +992,7 @@ user-select: none;
   top:4px;
   right:50%;
   transform:translateX(50%);
-  font-size:13px; /* تم تكبير العناوين أكثر من المحتوى */
+  font-size:8px
   font-weight:800;
   color:var(--main);
   white-space:nowrap;
