@@ -1,1423 +1,1340 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Interactive Grammar Quiz – Drive Slowly / Unit 8 (must, should, adverbs)">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<style>
-/* جميع الأنماط كما هي محفوظة بالكامل من الإصدار السابق */
-:root {
-  --primary: #1A5F7A;
-  --primary-glow: #2D8F9D;
-  --primary-light: #57C3C2;
-  --accent: #159895;
-  --accent-glow: #1DB9B6;
-  --accent-light: #57C3C2;
-  --secondary: #4CAF50;
-  --secondary-glow: #66BB6A;
-  --secondary-light: #81C784;
-  --tertiary: #FF9800;
-  --tertiary-glow: #FFB74D;
-  --tertiary-light: #FFCC80;
-  --quaternary: #9C27B0;
-  --quaternary-glow: #BA68C8;
-  --quaternary-light: #CE93D8;
-  --islamic-green: #228B22;
-  --islamic-blue: #1A5F7A;
-  --islamic-gold: #D4AF37;
-  --islamic-teal: #159895;
-  --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-glow) 50%, var(--primary-light) 100%);
-  --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-glow) 50%, var(--islamic-teal) 100%);
-  --secondary-gradient: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-glow) 50%, var(--islamic-green) 100%);
-  --tertiary-gradient: linear-gradient(135deg, var(--tertiary) 0%, var(--tertiary-glow) 50%, var(--islamic-gold) 100%);
-  --islamic-gradient: linear-gradient(135deg, var(--islamic-blue) 0%, var(--islamic-teal) 50%, var(--islamic-green) 100%);
-  --glow-primary: 0 0 20px rgba(26, 95, 122, 0.7), 0 0 40px rgba(26, 95, 122, 0.5), 0 0 60px rgba(26, 95, 122, 0.3);
-  --glow-accent: 0 0 20px rgba(21, 152, 149, 0.7), 0 0 40px rgba(21, 152, 149, 0.5), 0 0 60px rgba(21, 152, 149, 0.3);
-  --glow-secondary: 0 0 20px rgba(76, 175, 80, 0.7), 0 0 40px rgba(76, 175, 80, 0.5), 0 0 60px rgba(76, 175, 80, 0.3);
-  --glow-tertiary: 0 0 20px rgba(255, 152, 0, 0.7), 0 0 40px rgba(255, 152, 0, 0.5), 0 0 60px rgba(255, 152, 0, 0.3);
-  --glow-islamic: 0 0 20px rgba(26, 95, 122, 0.8), 0 0 40px rgba(21, 152, 149, 0.6), 0 0 60px rgba(34, 139, 34, 0.4);
-  --bg: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-  --card-bg: rgba(255, 255, 255, 0.95);
-  --text: #1F2937;
-  --light-text: #6B7280;
-  --border: rgba(26, 95, 122, 0.2);
-  --shadow: 0 8px 32px rgba(26, 95, 122, 0.1);
-  --shadow-hover: 0 20px 40px rgba(26, 95, 122, 0.2);
-}
-.dark-theme {
-  --bg: linear-gradient(135deg, #0A3D62 0%, #1A5F7A 100%);
-  --card-bg: rgba(15, 30, 45, 0.95);
-  --text: #F1F5F9;
-  --light-text: #CBD5E1;
-  --border: rgba(26, 95, 122, 0.1);
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.4);
-}
-* {
-  box-sizing: border-box;
-  font-family: 'Tajawal', Tahoma, Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-body {
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.7;
-  overflow-x: hidden;
-  padding-top: 80px;
-  transition: all 0.5s ease;
-  min-height: 100vh;
-  direction: ltr;
-  text-align: left;
-}
-header {
-  background: rgba(26, 95, 122, 0.1);
-  backdrop-filter: blur(20px);
-  color: white;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-  box-shadow: var(--shadow);
-  border-bottom: 1px solid var(--border);
-  padding: 15px 0;
-}
-.header-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-}
-.title-section h1 {
-  font-size: 1.5rem;
-  font-weight: 800;
-  background: var(--accent-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 2px 10px rgba(26, 95, 122, 0.3);
-}
-.header-actions {
-  display: flex;
-  gap: 10px;
-}
-.theme-btn {
-  background: rgba(26, 95, 122, 0.2);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 10px 20px;
-  border-radius: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 0 15px rgba(26, 95, 122, 0.3);
-}
-.theme-btn:hover {
-  background: rgba(26, 95, 122, 0.3);
-  transform: translateY(-3px);
-  box-shadow: 0 0 25px rgba(26, 95, 122, 0.5), 0 5px 20px rgba(0,0,0,0.2);
-  border-color: rgba(255,255,255,0.5);
-}
-main {
-  max-width: 1000px;
-  margin: 30px auto;
-  padding: 0 20px;
-}
-.hero-section {
-  background: linear-gradient(135deg, rgba(26, 95, 122, 0.15), rgba(21, 152, 149, 0.15));
-  backdrop-filter: blur(30px);
-  color: white;
-  border-radius: 24px;
-  padding: 40px;
-  margin-bottom: 30px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(26,95,122,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
-  border: 2px solid rgba(255,255,255,0.1);
-}
-.hero-section::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--accent-gradient);
-  opacity: 0.1;
-  z-index: -1;
-}
-.hero-content {
-  position: relative;
-  z-index: 1;
-}
-.hero-title {
-  font-size: 2.2rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero-subtitle {
-  font-size: 1.1rem;
-  margin-bottom: 25px;
-  opacity: 0.9;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.teacher-name {
-  font-size: 1.2rem;
-  margin-top: 10px;
-  background: var(--primary-gradient);
-  display: inline-block;
-  padding: 5px 20px;
-  border-radius: 30px;
-  color: white;
-  font-weight: 500;
-  box-shadow: var(--glow-primary);
-}
-.card {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(30px);
-  border-radius: 20px;
-  padding: 30px;
-  margin-bottom: 25px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.1);
-  transition: all 0.4s ease;
-  border: 1px solid rgba(255,255,255,0.1);
-  position: relative;
-  overflow: hidden;
-}
-.card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 5px;
-  background: var(--islamic-gradient);
-}
-.card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: var(--shadow-hover);
-}
-.section-title {
-  text-align: center;
-  color: var(--text);
-  margin-bottom: 30px;
-  font-size: 2rem;
-  font-weight: 800;
-  position: relative;
-  padding-bottom: 15px;
-}
-.section-title::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  right: 50%;
-  transform: translateX(50%);
-  width: 100px;
-  height: 4px;
-  background: var(--accent-gradient);
-  border-radius: 2px;
-}
-.question-box {
-  background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  padding: 30px;
-  margin-bottom: 25px;
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
-}
-.question-box::before {
-  content: "";
-  position: absolute;
-  top: 0; right: 0;
-  width: 100%;
-  height: 5px;
-  background: var(--primary-gradient);
-}
-.question-box:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-hover);
-}
-.question-number {
-  font-size: 1.3em;
-  color: var(--primary);
-  margin-bottom: 15px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.question-text {
-  font-size: 1.2em;
-  margin-bottom: 25px;
-  line-height: 1.7;
-  color: var(--text);
-  font-weight: 500;
-}
-.options label {
-  display: flex;
-  align-items: center;
-  padding: 18px 20px;
-  margin: 12px 0;
-  border: 2px solid var(--border);
-  border-radius: 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: var(--card-bg);
-  position: relative;
-  overflow: hidden;
-  font-weight: 500;
-}
-.options label::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 0;
-  background: var(--primary-gradient);
-  transition: width 0.3s ease;
-  z-index: 0;
-}
-.options label:hover:not(.locked) {
-  border-color: var(--primary);
-  transform: translateX(-8px);
-  box-shadow: 0 5px 15px rgba(26,95,122,0.2);
-}
-.options label:hover:not(.locked)::before {
-  width: 4px;
-}
-.options input[type="radio"] {
-  margin-left: 12px;
-  transform: scale(1.3);
-  z-index: 1;
-}
-.options label.locked {
-  cursor: not-allowed;
-  opacity: 0.8;
-  pointer-events: none;
-}
-.options label.selected {
-  background: linear-gradient(135deg, rgba(26,95,122,0.15), rgba(21,152,149,0.15));
-  border: 2px solid var(--accent);
-  box-shadow: 0 0 15px rgba(21,152,149,0.3);
-}
-.options label.correct-answer {
-  background: linear-gradient(135deg, rgba(76,175,80,0.2), rgba(102,187,106,0.2));
-  border: 2px solid var(--secondary);
-  box-shadow: 0 0 15px rgba(76,175,80,0.3);
-  animation: correctPulse 0.5s ease;
-}
-@keyframes correctPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.02); }
-  100% { transform: scale(1); }
-}
-.options label.wrong-answer {
-  background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(248,113,113,0.2));
-  border: 2px solid #ef4444;
-  box-shadow: 0 0 15px rgba(239,68,68,0.3);
-  animation: wrongShake 0.5s ease;
-}
-@keyframes wrongShake {
-  0%,100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
-.explanation {
-  margin-top: 25px;
-  padding: 25px;
-  border-radius: 15px;
-  display: none;
-  background: linear-gradient(135deg, rgba(26,95,122,0.05), rgba(21,152,149,0.05));
-  border-left: 4px solid var(--secondary);
-  animation: slideDown 0.5s ease;
-}
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.explanation-line {
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-}
-.explanation-correct {
-  background: linear-gradient(135deg, rgba(76,175,80,0.1), rgba(102,187,106,0.1));
-  border-right: 3px solid var(--secondary);
-}
-.explanation-wrong-1 {
-  background: linear-gradient(135deg, rgba(21,152,149,0.1), rgba(45,143,157,0.1));
-  border-right: 3px solid var(--accent);
-}
-.explanation-wrong-2 {
-  background: linear-gradient(135deg, rgba(255,152,0,0.1), rgba(255,183,77,0.1));
-  border-right: 3px solid var(--tertiary);
-}
-.explanation-wrong-3 {
-  background: linear-gradient(135deg, rgba(156,39,176,0.1), rgba(186,104,200,0.1));
-  border-right: 3px solid var(--quaternary);
-}
-.btn-primary {
-  background: var(--accent-gradient);
-  color: white;
-  box-shadow: var(--glow-accent), 0 8px 25px rgba(21,152,149,0.4);
-  border: 2px solid rgba(255,255,255,0.3);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  transition: all 0.4s ease;
-}
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  transition: left 0.7s;
-  z-index: -1;
-}
-.btn-primary:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: var(--glow-accent), 0 15px 40px rgba(21,152,149,0.6);
-  border-color: rgba(255,255,255,0.5);
-}
-.btn-primary:hover::before { left: 100%; }
-.btn-secondary {
-  background: var(--primary-gradient);
-  color: white;
-  box-shadow: var(--glow-primary), 0 8px 25px rgba(26,95,122,0.4);
-  border: 2px solid rgba(255,255,255,0.3);
-  position: relative;
-  overflow: hidden;
-}
-.btn-secondary:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: var(--glow-primary), 0 15px 40px rgba(26,95,122,0.6);
-  border-color: rgba(255,255,255,0.5);
-}
-.btn-warning {
-  background: var(--tertiary-gradient);
-  color: white;
-  box-shadow: var(--glow-tertiary), 0 8px 25px rgba(255,152,0,0.4);
-  border: 2px solid rgba(255,255,255,0.3);
-}
-.btn-islamic {
-  background: var(--islamic-gradient);
-  color: white;
-  box-shadow: var(--glow-islamic), 0 8px 25px rgba(26,95,122,0.4);
-  border: 2px solid rgba(255,255,255,0.3);
-}
-.btn-success {
-  background: var(--secondary-gradient);
-  color: white;
-  box-shadow: var(--glow-secondary), 0 8px 25px rgba(76,175,80,0.4);
-  border: 2px solid rgba(255,255,255,0.3);
-}
-.navigation {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-  gap: 20px;
-}
-.btn {
-  padding: 15px 30px;
-  border-radius: 15px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.btn:disabled {
-  background: #9CA3AF;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-  opacity: 0.6;
-}
-.progress-bar {
-  height: 15px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
-  margin-bottom: 30px;
-  overflow: hidden;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-  backdrop-filter: blur(10px);
-}
-.progress {
-  height: 100%;
-  background: var(--islamic-gradient);
-  box-shadow: 0 0 15px rgba(26,95,122,0.5);
-  width: 0%;
-  transition: width 0.5s ease;
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-}
-.progress::after {
-  content: "";
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  animation: shimmer 1.5s infinite;
-}
-@keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-#result-box {
-  background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  padding: 30px;
-  margin-top: 30px;
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  display: none;
-  animation: slideUp 0.6s ease;
-}
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 30px;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-.quiz-info {
-  font-size: 1rem;
-  color: var(--light-text);
-  background: linear-gradient(135deg, rgba(26,95,122,0.1), rgba(21,152,149,0.1));
-  padding: 10px 20px;
-  border-radius: 25px;
-  font-weight: 600;
-  backdrop-filter: blur(10px);
-}
-#timer {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: white;
-  margin-left: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(26,95,122,0.2);
-  backdrop-filter: blur(20px);
-  padding: 10px 20px;
-  border-radius: 25px;
-  border: 2px solid rgba(26,95,122,0.3);
-  box-shadow: 0 0 15px rgba(26,95,122,0.2);
-}
-.timer-warning {
-  background: rgba(255,152,0,0.2) !important;
-  border-color: rgba(255,152,0,0.3) !important;
-  box-shadow: 0 0 20px rgba(255,152,0,0.3) !important;
-  animation: warning-pulse 0.8s infinite alternate;
-}
-@keyframes warning-pulse {
-  from { box-shadow: 0 0 15px rgba(255,152,0,0.3); }
-  to { box-shadow: 0 0 25px rgba(255,152,0,0.5), 0 0 40px rgba(255,152,0,0.3); }
-}
-.dark-theme .btn-primary, .dark-theme .btn-secondary {
-  border-color: rgba(255,255,255,0.2);
-}
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 2000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.7);
-  backdrop-filter: blur(5px);
-  animation: fadeIn 0.3s ease;
-}
-.modal-content {
-  background: var(--card-bg);
-  margin: 5% auto;
-  padding: 30px;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow-hover);
-  border: 1px solid var(--border);
-  position: relative;
-  animation: slideUp 0.5s ease;
-}
-.close-modal {
-  position: absolute;
-  left: 20px;
-  top: 20px;
-  color: var(--primary);
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  width: 40px; height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(26,95,122,0.1);
-  transition: all 0.3s ease;
-}
-.close-modal:hover {
-  background: rgba(26,95,122,0.2);
-  transform: rotate(90deg);
-}
-.question-status-grid-modal {
-  width: 60px; height: 60px;
-  border: 2px solid rgba(26,95,122,0.3);
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-weight: 700;
-  transition: all 0.3s ease;
-  background: var(--card-bg);
-}
-.question-status-grid-modal.current {
-  background: var(--accent-gradient);
-  border-color: rgba(255,255,255,0.5);
-  box-shadow: var(--glow-accent);
-}
-.question-status-grid-modal.answered {
-  background: var(--secondary-gradient);
-  border-color: rgba(255,255,255,0.5);
-  box-shadow: var(--glow-secondary);
-}
-.question-status-grid-modal.flagged {
-  background: var(--tertiary-gradient);
-  border-color: rgba(255,255,255,0.5);
-  box-shadow: var(--glow-tertiary);
-}
-#questions-grid-modal {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px,1fr));
-  gap: 12px;
-  margin: 25px 0;
-}
-.legend-modal {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin: 20px 0;
-  justify-content: center;
-}
-.legend-item-modal {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.9rem;
-}
-.chart-container {
-  position: relative;
-  height: 300px;
-  margin: 30px 0;
-  background: var(--card-bg);
-  border-radius: 15px;
-  padding: 20px;
-}
-.tips-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
-  gap: 20px;
-  margin: 30px 0;
-}
-.tip-card {
-  background: var(--card-bg);
-  border-radius: 15px;
-  padding: 25px;
-  transition: all 0.3s ease;
-  border-left: 5px solid var(--primary);
-}
-.tip-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-hover);
-}
-.sound-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 15px;
-  justify-content: center;
-}
-.sound-btn {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 50%;
-  width: 40px; height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: white;
-  transition: all 0.3s ease;
-}
-.sound-btn:hover {
-  background: rgba(255,255,255,0.2);
-  transform: scale(1.1);
-}
-.sound-btn.muted { opacity: 0.5; }
-@media (max-width: 768px) {
-  body { padding-top: 70px; }
-  .header-container { flex-direction: column; gap: 15px; }
-  .hero-title { font-size: 1.8rem; }
-  .navigation { flex-direction: column; }
-  .btn { width: 100%; justify-content: center; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>🏆 كأس العالم 2026 – متتبع المباريات + توقعات + ترتيب</title>
+  <style>
+    /* ========== الأنماط (نفس ما سبق مع إضافة تنسيقات النافذة المنبثقة) ========== */
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { background: radial-gradient(circle at 10% 20%, #0a1f24, #030c10); font-family: 'Segoe UI', 'Cairo', 'Inter', system-ui, -apple-system, 'Roboto', sans-serif; padding: 20px 12px; min-height: 100vh; color: #f0f9ff; font-size: 14px; }
+    .app-container { max-width: 1200px; margin: 0 auto; width: 100%; }
+    
+    .header-image { width: 100%; border-radius: 48px 48px 0 0; overflow: hidden; margin-bottom: 0; background: linear-gradient(135deg, #0a1f24, #030c10); }
+    .header-image img { width: 100%; height: auto; display: block; border-radius: 48px 48px 0 0; }
+    
+    .upper-bar { background: linear-gradient(90deg, #1a2f2f, #2a414b, #1a2f2f); border: 1px solid rgba(255, 180, 70, 0.3); border-radius: 0 0 60px 60px; padding: 8px 16px; margin-bottom: 16px; overflow: hidden; position: relative; box-shadow: 0 0 20px rgba(255, 180, 70, 0.1); }
+    .news-ticker { display: inline-block; white-space: nowrap; animation: tickerScroll 42s linear infinite; font-size: 0.85rem; color: #FFE6B0; font-weight: 500; letter-spacing: 0.3px; }
+    .news-ticker span { display: inline-block; padding: 0 20px; }
+    .news-ticker .separator { color: #ffb34780; }
+    @keyframes tickerScroll { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    .upper-bar:hover .news-ticker { animation-play-state: paused; }
+    
+    .hero { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border-radius: 48px; padding: 20px; margin-bottom: 28px; text-align: center; border: 1px solid rgba(255, 200, 100, 0.3); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+    .hero h1 { font-size: 1.8rem; background: linear-gradient(135deg, #FFE6B0, #FFA559, #FF6A3D); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .school-badge { background: rgba(30, 74, 95, 0.7); backdrop-filter: blur(4px); display: inline-block; padding: 6px 20px; border-radius: 60px; font-size: 0.75rem; font-weight: 500; border: 1px solid #ffb34760; }
+    
+    .leaderboard-section { background: rgba(18, 38, 44, 0.85); backdrop-filter: blur(12px); border-radius: 32px; padding: 20px; margin-bottom: 28px; border: 2px solid rgba(255, 180, 70, 0.4); box-shadow: 0 0 30px rgba(255, 180, 70, 0.1); }
+    .leaderboard-section .section-title { font-size: 1.5rem; font-weight: 800; color: #FFE6B0; text-align: center; margin-bottom: 16px; letter-spacing: -0.5px; }
+    .leaderboard-section .section-title .trophy { font-size: 1.8rem; }
+    .leaderboard-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .leaderboard-item { background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px); border-radius: 24px; padding: 14px 18px; border: 1px solid rgba(255, 180, 70, 0.2); transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
+    .leaderboard-item:hover { transform: translateX(-4px); border-color: #ffb347aa; }
+    .leaderboard-item .rank { font-size: 1.2rem; font-weight: 800; color: #ffb347; min-width: 50px; }
+    .leaderboard-item .rank.gold { color: #FFD700; }
+    .leaderboard-item .rank.silver { color: #C0C0C0; }
+    .leaderboard-item .rank.bronze { color: #CD7F32; }
+    .leaderboard-item .player-name { font-size: 1rem; font-weight: 600; flex: 1; margin: 0 12px; }
+    .leaderboard-item .player-name .avatar-small { display: inline-block; width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #ffb347, #ff8c1a); text-align: center; line-height: 28px; font-weight: 800; color: #1a2f2f; margin-left: 8px; font-size: 0.8rem; }
+    .leaderboard-item .points { background: linear-gradient(135deg, #ffb347, #ff8c1a); padding: 4px 18px; border-radius: 40px; font-weight: 800; color: #1a2f2f; font-size: 0.9rem; min-width: 60px; text-align: center; }
+    .leaderboard-item .medal { font-size: 1.5rem; margin-left: 8px; }
+    
+    .control-panel { background: rgba(10, 25, 30, 0.6); backdrop-filter: blur(16px); border-radius: 80px; padding: 8px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 28px; border: 1px solid rgba(255, 200, 100, 0.25); }
+    .search-group { flex: 2; min-width: 160px; }
+    .search-group input { width: 100%; padding: 12px 20px; border-radius: 60px; border: none; background: #fef9e6; text-align: right; outline: none; font-size: 0.85rem; font-weight: 500; transition: 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .search-group input:focus { transform: scale(0.98); box-shadow: 0 0 0 2px #ffb347; }
+    .round-group { flex: 1; min-width: 130px; }
+    .round-group select { width: 100%; padding: 12px 12px; border-radius: 60px; background: #fef9e6; font-weight: bold; cursor: pointer; font-size: 0.8rem; border: none; outline: none; font-family: inherit; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0 24px; justify-content: center; }
+    .tab-btn { background: rgba(20, 40, 48, 0.7); backdrop-filter: blur(8px); border: 1px solid rgba(255, 180, 70, 0.4); padding: 10px 20px; border-radius: 60px; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: #ffefa6; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.3px; }
+    .tab-btn i { font-style: normal; font-size: 1.1rem; }
+    .tab-btn.active { background: linear-gradient(105deg, #ffb347, #ff8c1a); color: #1a2f2f; border-color: #ffdd99; box-shadow: 0 8px 18px rgba(255, 140, 26, 0.25); }
+    .tab-btn:hover:not(.active) { background: rgba(255, 180, 70, 0.2); border-color: #ffb347; transform: translateY(-2px); }
+    .tab-content { display: none; animation: fadeSlide 0.25s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeSlide { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .matches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 22px; }
+    .match-card { background: rgba(18, 38, 44, 0.75); backdrop-filter: blur(12px); border-radius: 32px; padding: 16px; border: 1px solid rgba(255, 180, 70, 0.3); transition: all 0.25s; box-shadow: 0 12px 24px -12px rgba(0,0,0,0.4); }
+    .match-card:hover { transform: translateY(-3px); border-color: #ffb347aa; box-shadow: 0 20px 30px -12px black; }
+    .match-card.live-card { border: 2px solid #ff4d4d; background: linear-gradient(135deg, #2a414b, #0f2e36); box-shadow: 0 0 12px rgba(255, 60, 30, 0.4); }
+    
+    .teams-score { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: rgba(0, 0, 0, 0.3); padding: 10px 12px; border-radius: 80px; }
+    .team { background: rgba(0, 0, 0, 0.4); padding: 6px 12px; border-radius: 60px; flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 0.85rem; white-space: nowrap; overflow-x: auto; }
+    .team span:first-child { font-size: 1.2rem; }
+    
+    .score-display { background: linear-gradient(135deg, #ffb347, #ff8c1a); padding: 4px 16px; border-radius: 40px; font-weight: 800; font-size: 1rem; color: #1a2f2f; min-width: 50px; text-align: center; box-shadow: 0 0 15px rgba(255, 180, 70, 0.3); letter-spacing: 1px; border: 1px solid rgba(255, 200, 100, 0.5); }
+    .score-display.finished { background: linear-gradient(135deg, #4CAF50, #45a049); box-shadow: 0 0 15px rgba(76, 175, 80, 0.3); border-color: rgba(76, 175, 80, 0.5); }
+    .score-display.live-score { background: linear-gradient(135deg, #ff4444, #cc0000); animation: scorePulse 1s infinite; box-shadow: 0 0 20px rgba(255, 68, 68, 0.5); border-color: rgba(255, 68, 68, 0.7); }
+    @keyframes scorePulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    
+    .vs-badge { background: rgba(255, 180, 70, 0.2); padding: 2px 8px; border-radius: 20px; font-size: 0.6rem; color: #ffb347; font-weight: 600; }
+    
+    .datetime-row { display: flex; justify-content: space-between; gap: 10px; background: rgba(0, 0, 0, 0.35); padding: 8px 14px; border-radius: 50px; flex-wrap: wrap; margin-top: 6px; }
+    .match-day { background: #1e4a5f; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; }
+    .match-full-date { background: rgba(0, 0, 0, 0.5); padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; display: flex; gap: 6px; align-items: baseline; }
+    .info-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+    .round-tag { background: #2f5663; padding: 4px 14px; border-radius: 60px; font-size: 0.7rem; font-weight: 500; }
+    .countdown-timer { background: #00000070; font-family: monospace; font-size: 0.9rem; font-weight: bold; padding: 4px 14px; border-radius: 60px; text-align: center; letter-spacing: 0.5px; }
+    .live-status { animation: pulse 1.2s infinite; background: #d32f2f; }
+    @keyframes pulse { 0% { opacity: 0.75; background: #b71c1c; box-shadow: 0 0 0 0 #ff5e5e; } 50% { opacity: 1; background: #f44336; box-shadow: 0 0 0 3px rgba(255, 68, 34, 0.4); } 100% { opacity: 0.75; background: #b71c1c; } }
+    
+    .empty-state { grid-column: 1/-1; text-align: center; background: rgba(12, 34, 40, 0.7); backdrop-filter: blur(8px); padding: 40px 20px; border-radius: 60px; font-size: 1rem; border: 1px dashed #ffb34780; }
+    .filter-bar { margin-bottom: 24px; background: rgba(0, 0, 0, 0.25); padding: 8px 16px; border-radius: 80px; display: flex; }
+    .filter-bar input { background: #fef7e0; border: none; padding: 12px 20px; border-radius: 60px; width: 100%; font-size: 0.85rem; outline: none; }
+    .groups-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; }
+    .group-card { background: rgba(30, 60, 72, 0.65); backdrop-filter: blur(12px); border-radius: 32px; padding: 16px; border: 1px solid #ffb34760; transition: 0.2s; }
+    .group-title { font-size: 1.4rem; font-weight: 800; text-align: center; margin-bottom: 16px; color: #FFE6B0; letter-spacing: -0.5px; }
+    .standings-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; min-width: 320px; }
+    .standings-table th, .standings-table td { padding: 8px 4px; text-align: center; }
+    .standings-table th { background: #1e4655; color: #FFE0A3; font-weight: 700; border-radius: 16px 16px 0 0; }
+    .standings-table td { background-color: #f3f7f9; color: #11242a; font-weight: 600; border-bottom: 1px solid #cddce0; }
+    .team-name-td { text-align: right; display: flex; align-items: center; gap: 6px; justify-content: flex-start; }
+    .quick-search-results { background: rgba(0, 25, 30, 0.92); backdrop-filter: blur(24px); border-radius: 36px; padding: 20px; margin-bottom: 24px; border: 1px solid #ffb347cc; }
+    .quick-search-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; border-right: 4px solid #ffb347; padding-right: 16px; }
+    .quick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .quick-match-card { background: #0f3e4a; border-radius: 28px; padding: 12px; transition: 0.1s; }
+    .quick-match-teams { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: bold; font-size: 0.85rem; }
+
+    /* ===== زر التوقع البارز ===== */
+    .predict-trigger-btn { display: block; width: 100%; margin-top: 12px; padding: 12px 16px; background: linear-gradient(135deg, rgba(255, 180, 70, 0.15), rgba(255, 140, 26, 0.08)); border: 2px solid rgba(255, 180, 70, 0.4); border-radius: 60px; color: #FFE6B0; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-align: center; letter-spacing: 0.5px; box-shadow: 0 0 20px rgba(255, 180, 70, 0.05); backdrop-filter: blur(4px); }
+    .predict-trigger-btn:hover { background: linear-gradient(135deg, rgba(255, 180, 70, 0.25), rgba(255, 140, 26, 0.15)); border-color: #ffb347; box-shadow: 0 0 30px rgba(255, 180, 70, 0.15); transform: scale(1.01); }
+    .predict-trigger-btn:active { transform: scale(0.97); }
+    .predict-trigger-btn .icon { font-size: 1.1rem; margin-left: 8px; }
+    .predict-trigger-btn .arrow { font-size: 0.8rem; margin-right: 8px; opacity: 0.7; }
+    .predict-trigger-btn.live-blocked { opacity: 0.5; cursor: not-allowed; border-color: rgba(255, 68, 68, 0.3); background: rgba(255, 68, 68, 0.05); }
+    .predict-trigger-btn.live-blocked:hover { transform: none; box-shadow: none; }
+
+    /* ===== نافذة منبثقة ===== */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px); z-index: 9999; justify-content: center; align-items: center; animation: modalFadeIn 0.3s ease; }
+    .modal-overlay.active { display: flex; }
+    @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    .modal-content { background: linear-gradient(145deg, rgba(18, 38, 44, 0.95), rgba(10, 25, 30, 0.98)); backdrop-filter: blur(24px); border-radius: 40px; padding: 30px; max-width: 480px; width: 95%; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255, 180, 70, 0.3); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 180, 70, 0.05); position: relative; }
+    .modal-close { position: absolute; top: 16px; left: 16px; background: rgba(255, 255, 255, 0.05); border: none; color: #98bdc9; font-size: 1.5rem; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .modal-close:hover { background: rgba(255, 68, 68, 0.2); color: #ff6b6b; transform: rotate(90deg); }
+    .modal-title { text-align: center; font-size: 1.2rem; font-weight: 700; color: #FFE6B0; margin-bottom: 20px; padding-top: 10px; }
+    .modal-teams { display: flex; justify-content: center; align-items: center; gap: 12px; background: rgba(0, 0, 0, 0.3); padding: 14px; border-radius: 60px; margin-bottom: 16px; }
+    .modal-teams .m-team { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 6px; }
+    .modal-teams .m-team span:first-child { font-size: 1.4rem; }
+    .modal-teams .m-vs { background: rgba(255, 180, 70, 0.2); padding: 2px 12px; border-radius: 20px; font-size: 0.7rem; color: #ffb347; font-weight: 600; }
+    .modal-datetime { text-align: center; font-size: 0.8rem; color: #98bdc9; margin-bottom: 20px; background: rgba(0, 0, 0, 0.2); padding: 6px 12px; border-radius: 40px; display: inline-block; width: 100%; }
+    .modal-predict-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .modal-predict-options label { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.03); padding: 12px 16px; border-radius: 60px; cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
+    .modal-predict-options label:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 180, 70, 0.2); }
+    .modal-predict-options input[type="radio"] { appearance: none; width: 20px; height: 20px; border: 2px solid #555; border-radius: 50%; position: relative; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+    .modal-predict-options input[type="radio"]:checked { border-color: #ffb347; background: #ffb347; }
+    .modal-predict-options input[type="radio"]:checked::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #1a2f2f; font-size: 12px; font-weight: 800; }
+    .modal-predict-options .option-label { font-weight: 600; font-size: 0.9rem; }
+    .modal-predict-options .option-sub { font-size: 0.7rem; color: #98bdc9; }
+    .modal-user-input { margin-bottom: 16px; }
+    .modal-user-input input { width: 100%; padding: 12px 16px; border-radius: 60px; border: 2px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: #f0f9ff; font-size: 0.9rem; outline: none; transition: 0.2s; }
+    .modal-user-input input:focus { border-color: #ffb347; background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 20px rgba(255, 180, 70, 0.05); }
+    .modal-user-input input::placeholder { color: #666; }
+    .modal-submit-btn { width: 100%; padding: 14px; border: none; border-radius: 60px; background: linear-gradient(135deg, #ffb347, #ff8c1a); color: #1a2f2f; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .modal-submit-btn:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(255, 180, 70, 0.3); }
+    .modal-submit-btn:active { transform: scale(0.97); }
+    .modal-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .modal-message { margin-top: 12px; text-align: center; font-size: 0.9rem; font-weight: 600; padding: 8px 12px; border-radius: 40px; }
+    .modal-message.success { color: #8bc34a; background: rgba(139,195,74,0.1); }
+    .modal-message.error { color: #ff5252; background: rgba(255,82,82,0.1); }
+    .modal-message.warning { color: #ffb347; background: rgba(255,179,71,0.1); }
+
+    /* ===== تنسيق بطاقات التوقعات العامة ===== */
+    .prediction-card { background: rgba(18, 38, 44, 0.75); backdrop-filter: blur(12px); border-radius: 32px; padding: 16px; border: 1px solid rgba(255, 180, 70, 0.3); transition: 0.2s; }
+    .prediction-card:hover { transform: translateY(-2px); border-color: #ffb347aa; }
+    .prediction-card .user-name { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(255, 180, 70, 0.2); font-size: 0.95rem; }
+    .prediction-card .user-name .avatar { background: linear-gradient(135deg, #ffb347, #ff8c1a); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #1a2f2f; font-size: 0.9rem; }
+    .prediction-card .pred-detail { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; font-size: 0.85rem; }
+    .prediction-card .match-info { font-size: 0.75rem; color: #98bdc9; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .prediction-badge { background: linear-gradient(135deg, #ffb347, #ff8c1a); padding: 6px 20px; border-radius: 40px; font-weight: 800; color: #1a2f2f; display: inline-block; font-size: 0.85rem; box-shadow: 0 0 15px rgba(255, 180, 70, 0.2); border: 1px solid rgba(255, 200, 100, 0.3); letter-spacing: 0.5px; }
+    .prediction-badge.home { background: linear-gradient(135deg, #4CAF50, #45a049); border-color: rgba(76, 175, 80, 0.5); color: white; }
+    .prediction-badge.away { background: linear-gradient(135deg, #f44336, #d32f2f); border-color: rgba(244, 67, 54, 0.5); color: white; }
+    .prediction-badge.draw { background: linear-gradient(135deg, #FF9800, #F57C00); border-color: rgba(255, 152, 0, 0.5); color: white; }
+
+    .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #ffb347; animation: spin 1s ease-in-out infinite; margin-left: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer { margin-top: 45px; text-align: center; font-size: 0.7rem; color: #98bdc9; border-top: 1px solid #ffb34760; padding-top: 20px; }
+
+    @media (max-width: 550px) {
+      body { padding: 12px; }
+      .hero h1 { font-size: 1.3rem; }
+      .tab-btn { padding: 6px 14px; font-size: 0.75rem; gap: 4px; }
+      .team { font-size: 0.7rem; white-space: normal; }
+      .team span:first-child { font-size: 1rem; }
+      .countdown-timer { font-size: 0.75rem; }
+      .matches-grid { gap: 14px; }
+      .teams-score { flex-wrap: wrap; justify-content: center; }
+      .team { min-width: 80px; }
+      .prediction-card .pred-detail { flex-direction: column; gap: 8px; align-items: flex-start; }
+      .leaderboard-item { flex-wrap: wrap; gap: 8px; }
+      .leaderboard-item .player-name { margin: 0; width: 100%; }
+      .news-ticker { font-size: 0.7rem; }
+      .upper-bar { padding: 6px 12px; }
+      .leaderboard-section .section-title { font-size: 1.2rem; }
+      .modal-content { padding: 20px; }
+      .modal-teams { flex-wrap: wrap; }
+    }
+  </style>
 </head>
 <body>
-<div class="bg-animation"><div class="floating-shapes"><div class="shape"></div><div class="shape"></div><div class="shape"></div></div></div>
-<header class="glass-effect">
-<div class="header-container">
-<div class="title-section"><h1>Interactive Grammar Quiz – Drive Slowly / Unit 8</h1></div>
-<div class="header-actions"><button class="theme-btn" id="themeBtn"><i class="fas fa-moon"></i></button></div>
-</div>
-</header>
-<main>
-<section class="hero-section glass-effect">
-<div class="hero-content">
-<h1 class="hero-title">Grammar Worksheet – Drive Slowly / Unit 8</h1>
-<p class="hero-subtitle">Test your knowledge of 'must', 'should', and adverbs with instant feedback and explanations.</p>
-<div class="teacher-name">👨‍🏫 Teacher: Fahad Al-Khaldi</div>
-<div class="quiz-info" style="margin-top:15px;">Questions: 15 | Time: 15 minutes</div>
-<div class="sound-controls">
-<button class="sound-btn" id="soundToggleBtn" title="Toggle sound"><i class="fas fa-volume-up"></i></button>
-<span style="font-size:0.9rem;">Sound On</span>
-</div>
-</div>
-</section>
-<div class="progress-bar glass-effect"><div class="progress" id="progress"></div></div>
-<div id="quiz"></div>
-<div class="controls">
-<div class="quiz-info" id="quiz-info"></div>
-<div id="timer">⏱️ <span id="time-display">15:00</span></div>
-<div style="display:flex; gap:15px; flex-wrap:wrap;">
-<button class="btn btn-primary" onclick="openQuestionsModal()"><i class="fas fa-list"></i> Question list</button>
-<button class="btn btn-warning" onclick="toggleMarkForReview()" id="mark-review-btn"><i class="fas fa-flag"></i> Mark for review</button>
-<button class="btn btn-islamic" onclick="finishQuiz()"><i class="fas fa-flag-checkered"></i> Finish</button>
-<button class="btn btn-secondary" onclick="openCurrentScoreModal()"><i class="fas fa-chart-bar"></i> Current score</button>
-</div>
-</div>
-<div id="result-box" class="card">
-<h3 id="result" style="color:var(--text); margin-bottom:20px;"></h3>
-<p id="percentage" style="font-size:1.4rem;"></p>
-<p id="evaluation" style="font-weight:bold; font-size:1.3rem;"></p>
-<div id="advanced-results" style="display:none;">
-<div class="chart-container"><canvas id="performanceChart"></canvas></div>
-<div class="tips-container" id="tips-container"></div>
-<div class="share-results">
-<h4 style="color:var(--text); margin-bottom:20px;"><i class="fas fa-file-pdf"></i> Report</h4>
-<div class="share-buttons" style="display:flex; gap:15px; justify-content:center;">
-<button class="btn btn-success" onclick="generatePDF()"><i class="fas fa-file-pdf"></i> Download PDF</button>
-<button class="btn btn-secondary" onclick="restartQuiz()"><i class="fas fa-redo"></i> Restart</button>
-</div>
-</div>
-</div>
-</div>
-</main>
-<!-- Modal windows -->
-<div id="currentScoreModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeCurrentScoreModal()">&times;</span><div class="modal-header"><h3><i class="fas fa-chart-bar"></i> Current score</h3></div><div class="current-score-content"><div class="score-circle"><svg width="150" height="150"><circle class="score-bg" cx="75" cy="75" r="70"></circle><circle class="score-fill" cx="75" cy="75" r="70" id="score-circle-fill"></circle></svg><div class="score-text" id="score-percentage">0%</div></div><div class="score-details"><p id="current-score-details"></p><p id="current-correct-details"></p><p id="current-progress-details"></p></div></div></div></div>
-<div id="questionsModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeQuestionsModal()">&times;</span><div class="modal-header"><h3><i class="fas fa-th-list"></i> Question list</h3></div><div id="questions-grid-modal"></div><div class="legend-modal"><div class="legend-item-modal"><div class="question-status-grid-modal" style="background:var(--accent-gradient); color:white;"></div><span>Current</span></div><div class="legend-item-modal"><div class="question-status-grid-modal" style="background:var(--secondary-gradient); color:white;"></div><span>Answered</span></div><div class="legend-item-modal"><div class="question-status-grid-modal" style="background:var(--tertiary-gradient); color:var(--text);"></div><span>Flagged</span></div><div class="legend-item-modal"><div class="question-status-grid-modal" style="background:var(--card-bg); border-color:var(--border);"></div><span>Not answered</span></div></div><button class="btn btn-primary" onclick="closeQuestionsModal()" style="margin-top:20px; width:100%;"><i class="fas fa-times"></i> Close</button></div></div>
+<div class="app-container">
+  
+  <!-- ===== الصورة العلوية ===== -->
+  <div class="header-image">
+    <img src="https://i.ibb.co/XfLkgzzn/92b8e6c2-9bad-4e55-90e2-c6ffde973650.png" alt="كأس العالم 2026">
+  </div>
+  
+  <!-- ===== شريط الأخبار المتحرك ===== -->
+  <div class="upper-bar">
+    <div class="news-ticker">
+      <span>🗳️ طريقة التوقع: اختر المباراة → اختر (فوز الفريق الأول / فوز الفريق الثاني / تعادل) → اكتب اسمك → اضغط حفظ التوقع ✨</span>
+      <span class="separator">|</span>
+      <span>التوقعات تظهر للجميع مباشرة ويتم احتساب النقاط تلقائياً 🏆</span>
+      <span class="separator">|</span>
+      <span>⛔ لا يمكن التوقع على المباريات الجارية</span>
+      <span class="separator">|</span>
+      <span>🗳️ طريقة التوقع: اختر المباراة → اختر (فوز الفريق الأول / فوز الفريق الثاني / تعادل) → اكتب اسمك → اضغط حفظ التوقع ✨</span>
+      <span class="separator">|</span>
+      <span>التوقعات تظهر للجميع مباشرة ويتم احتساب النقاط تلقائياً 🏆</span>
+    </div>
+  </div>
 
+  <!-- ===== ترتيب أصحاب التوقعات الصحيحة ===== -->
+  <div class="leaderboard-section" id="leaderboardSection">
+    <div class="section-title">
+      <span class="trophy">🏆</span> ترتيب أصحاب التوقعات الصحيحة
+    </div>
+    <div id="leaderboardContainer" class="leaderboard-grid">
+      <div class="empty-state">⏳ جاري تحميل الترتيب...</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <h1>🏆 كأس العالم 2026 ⚡</h1>
+    <div class="school-badge">📢 غرفة معلمي سعيد بن العاص</div>
+  </div>
+
+  <div class="control-panel">
+    <div class="search-group">
+      <input type="text" id="globalSearchInput" placeholder="🔍 ابحث عن منتخب (مباريات قادمة أو سابقة)" autocomplete="off">
+    </div>
+    <div class="round-group">
+      <select id="roundFilter">
+        <option value="all">🌍 جميع الجولات</option>
+        <option value="first">🟢 الجولة الأولى</option>
+        <option value="second">🟩 الجولة الثانية</option>
+        <option value="third">🟥 الجولة الثالثة</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="quickSearchResults" class="quick-search-results">
+    <div class="quick-search-title">🔍 نتائج البحث عن "<span id="searchKeyword"></span>"</div>
+    <div id="quickResultsContainer" class="quick-grid"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="upcoming"><i>⚡</i> القادمة والجارية</button>
+    <button class="tab-btn" data-tab="previous"><i>📋</i> المباريات السابقة</button>
+    <button class="tab-btn" data-tab="standings"><i>📊</i> ترتيب المجموعات</button>
+    <button class="tab-btn" data-tab="predictions"><i>🗳️</i> جميع التوقعات</button>
+  </div>
+
+  <div id="upcomingTab" class="tab-content active">
+    <div id="matchesContainer" class="matches-grid"><div class="empty-state">✨ جاري تحميل المباريات ✨</div></div>
+  </div>
+
+  <div id="previousTab" class="tab-content">
+    <div class="filter-bar">
+      <input type="text" id="prevSearchInput" placeholder="🔍 بحث في المباريات السابقة...">
+    </div>
+    <div id="previousMatchesContainer" class="matches-grid"><div class="empty-state">📋 جاري تحميل المباريات السابقة...</div></div>
+  </div>
+
+  <div id="standingsTab" class="tab-content">
+    <div id="standingsContainer" class="groups-container"><div class="empty-state">📊 جاري حساب الترتيب من نتائج API...</div></div>
+  </div>
+
+  <div id="predictionsTab" class="tab-content">
+    <h3 style="margin: 0 0 16px 0; color: #FFE6B0;">🗳️ جميع توقعات اللاعبين</h3>
+    <div id="allPredictions" class="matches-grid"><div class="empty-state">📭 جاري تحميل التوقعات...</div></div>
+  </div>
+
+  <footer>🔄 التحديث التلقائي | التوقعات محفوظة في Supabase</footer>
+</div>
+
+<!-- ===== نافذة التوقع المنبثقة ===== -->
+<div class="modal-overlay" id="predictionModal">
+  <div class="modal-content">
+    <button class="modal-close" id="modalCloseBtn">✕</button>
+    <div class="modal-title">📝 توقع نتيجة المباراة</div>
+    
+    <div class="modal-teams" id="modalTeams">
+      <div class="m-team"><span>🏁</span> <span id="modalTeam1">الفريق الأول</span></div>
+      <div class="m-vs">🆚</div>
+      <div class="m-team"><span>🏁</span> <span id="modalTeam2">الفريق الثاني</span></div>
+    </div>
+    
+    <div class="modal-datetime" id="modalDateTime">📅 التاريخ والوقت</div>
+    
+    <div class="modal-predict-options" id="modalOptions">
+      <label>
+        <input type="radio" name="prediction" value="HOME">
+        <span class="option-label">🏆 <span id="optTeam1">الفريق الأول</span></span>
+        <span class="option-sub">فوز</span>
+      </label>
+      <label>
+        <input type="radio" name="prediction" value="AWAY">
+        <span class="option-label">🏆 <span id="optTeam2">الفريق الثاني</span></span>
+        <span class="option-sub">فوز</span>
+      </label>
+      <label>
+        <input type="radio" name="prediction" value="DRAW">
+        <span class="option-label">🤝 تعادل</span>
+        <span class="option-sub">النتيجة متساوية</span>
+      </label>
+    </div>
+    
+    <div class="modal-user-input">
+      <input type="text" id="modalUserName" placeholder="👤 أدخل اسمك" maxlength="30">
+    </div>
+    
+    <button class="modal-submit-btn" id="modalSubmitBtn">
+      💾 حفظ التوقع
+    </button>
+    
+    <div class="modal-message" id="modalMessage"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ========== الأسئلة مع شرح عربي وإنجليزي وافي ==========
-const questions = [
-  // Section 1
-  { id:1, q:"You __ eat healthy foods to stay strong.",
-    options: ["should", "must", "must not", "shouldn’t"],
-    answer:0,
-    explanations: {
-      en: "✅ should – Advice: eating healthy is recommended, not an obligation.",
-      ar: "✅ should – نصيحة: تناول الطعام الصحي أمر موصى به وليس إلزامياً."
-    },
-    wrong_explanations: {
-      en: ["❌ must – Too strong; it's not a strict rule but a healthy habit.",
-           "❌ must not – Means prohibited; healthy food is not forbidden.",
-           "❌ shouldn’t – Negative advice; you should eat healthy, not avoid it."],
-      ar: ["❌ must – قوي جداً؛ إنها عادة صحية وليست قاعدة صارمة.",
-           "❌ must not – تعني محظور؛ الطعام الصحي ليس ممنوعاً.",
-           "❌ shouldn’t – نصيحة سلبية؛ يجب أن تأكل طعاماً صحياً، لا أن تتجنبه."]
+  // ============================================================
+  //  بيانات اتصال Supabase
+  // ============================================================
+  const SUPABASE_URL = "https://szjxwhsmefqpfcebtvei.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_0um28lgPMHcjDOThT0UgDA_K-Y7Wmx3";
+
+  let supabaseClient;
+
+  try {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log("✅ Supabase متصل بنجاح");
+  } catch (err) {
+    console.error("❌ فشل الاتصال بـ Supabase:", err.message);
+    supabaseClient = null;
+  }
+
+  // ============================================================
+  //  متغيرات النافذة المنبثقة
+  // ============================================================
+  let currentMatchId = null;
+  let currentTeam1 = '';
+  let currentTeam2 = '';
+  let currentTimeISO = '';
+
+  // ============================================================
+  //  1) حفظ التوقع (يخزن اسم الفريق مباشرة)
+  // ============================================================
+  async function savePrediction(userName, matchId, prediction) {
+    if (!supabaseClient) {
+      return { success: false, message: "Supabase غير متصل." };
     }
-  },
-  { id:2, q:"You __ cross the street when the light is red.",
-    options: ["must", "should", "must not", "shouldn’t"],
-    answer:2,
-    explanations: {
-      en: "✅ must not – Strong prohibition; it's illegal and dangerous.",
-      ar: "✅ must not – منع قوي؛ إنه غير قانوني وخطير."
-    },
-    wrong_explanations: {
-      en: ["❌ must – Would mean you have to cross, which is wrong.",
-           "❌ should – Advice, but this is a strict rule.",
-           "❌ shouldn’t – Soft advice; rule is stronger."],
-      ar: ["❌ must – تعني أنه يجب عليك العبور، وهذا خطأ.",
-           "❌ should – نصيحة، لكن هذه قاعدة صارمة.",
-           "❌ shouldn’t – نصيحة خفيفة؛ القاعدة أقوى."]
+
+    // prediction هو اسم الفريق (مثل "المكسيك" أو "DRAW")
+    if (!prediction || prediction === "") {
+      return { success: false, message: "الرجاء اختيار توقع." };
     }
-  },
-  { id:3, q:"We __ respect our teachers and classmates.",
-    options: ["should", "must", "must not", "shouldn’t"],
-    answer:1,
-    explanations: {
-      en: "✅ must – Moral duty/obligation; respect is essential.",
-      ar: "✅ must – واجب أخلاقي / التزام؛ الاحترام أساسي."
-    },
-    wrong_explanations: {
-      en: ["❌ should – Acceptable but must expresses stronger duty.",
-           "❌ must not – Opposite meaning.",
-           "❌ shouldn’t – Opposite meaning."],
-      ar: ["❌ should – مقبول لكن must تعبر عن واجب أقوى.",
-           "❌ must not – معنى معاكس.",
-           "❌ shouldn’t – معنى معاكس."]
-    }
-  },
-  { id:4, q:"You __ run in the hallway at school.",
-    options: ["must", "should", "shouldn’t", "must not"],
-    answer:2,
-    explanations: {
-      en: "✅ shouldn’t – Advice against running for safety.",
-      ar: "✅ shouldn’t – نصيحة بعدم الركض حفاظاً على السلامة."
-    },
-    wrong_explanations: {
-      en: ["❌ must – Positive obligation (wrong).",
-           "❌ should – Positive advice (wrong).",
-           "❌ must not – Too strong; it's not a strict rule but a safety advice."],
-      ar: ["❌ must – التزام إيجابي (خطأ).",
-           "❌ should – نصيحة إيجابية (خطأ).",
-           "❌ must not – قوي جداً؛ إنها ليست قاعدة صارمة بل نصيحة للسلامة."]
-    }
-  },
-  { id:5, q:"We __ wear a helmet when riding a bike.",
-    options: ["should", "must", "shouldn’t", "must not"],
-    answer:1,
-    explanations: {
-      en: "✅ must – Safety rule; it's obligatory for protection.",
-      ar: "✅ must – قاعدة سلامة؛ إنها إلزامية للحماية."
-    },
-    wrong_explanations: {
-      en: ["❌ should – Possible but must is stronger for safety.",
-           "❌ shouldn’t – Opposite.",
-           "❌ must not – Opposite."],
-      ar: ["❌ should – ممكن لكن must أقوى للسلامة.",
-           "❌ shouldn’t – عكس.",
-           "❌ must not – عكس."]
-    }
-  },
-  // Section 2
-  { id:6, q:"You ______ wash your hands before eating.",
-    options: ["must", "should", "must not", "shouldn’t"],
-    answer:0,
-    explanations: {
-      en: "✅ must – Hygiene rule; it's necessary.",
-      ar: "✅ must – قاعدة نظافة؛ إنها ضرورية."
-    },
-    wrong_explanations: {
-      en: ["❌ should – Also possible but must is more appropriate for hygiene rule.",
-           "❌ must not – Wrong meaning.",
-           "❌ shouldn’t – Wrong meaning."],
-      ar: ["❌ should – ممكن أيضاً لكن must أنسب لقاعدة النظافة.",
-           "❌ must not – معنى خاطئ.",
-           "❌ shouldn’t – معنى خاطئ."]
-    }
-  },
-  { id:7, q:"We ______ not touch the hot stove.",
-    options: ["must", "should", "must not", "shouldn’t"],
-    answer:0,
-    explanations: {
-      en: "✅ must – 'must not' expresses strong prohibition.",
-      ar: "✅ must – 'must not' تعبر عن منع قوي."
-    },
-    wrong_explanations: {
-      en: ["❌ should – 'should not' is weaker; this is a strong danger rule.",
-           "❌ must not is the correct form; here we choose 'must' because the blank is before 'not'.",
-           "❌ shouldn’t – weaker."],
-      ar: ["❌ should – 'should not' أضعف؛ هذه قاعدة خطر قوية.",
-           "❌ must not هي الصيغة الصحيحة؛ نختار 'must' لأن الفراغ قبل 'not'.",
-           "❌ shouldn’t – أضعف."]
-    }
-  },
-  { id:8, q:"You ______ try your best in school.",
-    options: ["must", "should", "must not", "shouldn’t"],
-    answer:1,
-    explanations: {
-      en: "✅ should – Encouragement/advice, not a strict rule.",
-      ar: "✅ should – تشجيع / نصيحة، وليست قاعدة صارمة."
-    },
-    wrong_explanations: {
-      en: ["❌ must – Too strong; trying your best is advice, not obligation.",
-           "❌ must not – Opposite.",
-           "❌ shouldn’t – Opposite."],
-      ar: ["❌ must – قوي جداً؛ بذل قصارى جهدك نصيحة وليس التزاماً.",
-           "❌ must not – عكس.",
-           "❌ shouldn’t – عكس."]
-    }
-  },
-  { id:9, q:"We ______ not litter in the park.",
-    options: ["must", "should", "must not", "shouldn’t"],
-    answer:1,
-    explanations: {
-      en: "✅ should – 'should not' is advice for good behavior.",
-      ar: "✅ should – 'should not' نصيحة للسلوك الجيد."
-    },
-    wrong_explanations: {
-      en: ["❌ must – 'must not' is stronger, but littering is usually discouraged by advice.",
-           "❌ must not – Also possible but slightly too strong; here expected 'should'.",
-           "❌ shouldn’t is the correct form; we need the modal before 'not'."],
-      ar: ["❌ must – 'must not' أقوى، لكن إلقاء القمامة عادة ما يُثبط بالنصيحة.",
-           "❌ must not – ممكن أيضاً لكنه قوي قليلاً؛ المتوقع 'should'.",
-           "❌ shouldn’t هي الصيغة الصحيحة؛ نحتاج الفعل المساعد قبل 'not'."]
-    }
-  },
-  { id:10, q:"You ______ wear a helmet when riding a bike.",
-    options: ["must", "should", "must not", "shouldn’t"],
-    answer:0,
-    explanations: {
-      en: "✅ must – Safety rule (as in Q5).",
-      ar: "✅ must – قاعدة سلامة (كما في س5)."
-    },
-    wrong_explanations: {
-      en: ["❌ should – Acceptable but must is stronger for safety.",
-           "❌ must not – Wrong.",
-           "❌ shouldn’t – Wrong."],
-      ar: ["❌ should – مقبول لكن must أقوى للسلامة.",
-           "❌ must not – خطأ.",
-           "❌ shouldn’t – خطأ."]
-    }
-  },
-  // Section 3: Adverbs
-  { id:11, q:"The athlete ______ ran the marathon. (quickly, fast)",
-    options: ["quickly", "fast", "quick", "fastly"],
-    answer:0,
-    explanations: {
-      en: "✅ quickly – Adverb ending in -ly describing how he ran.",
-      ar: "✅ quickly – ظرف ينتهي بـ -ly يصف كيف ركض."
-    },
-    wrong_explanations: {
-      en: ["❌ fast – Also an adverb but 'fast' doesn't change; here both are possible, but 'quickly' is given in options.",
-           "❌ quick – Adjective.",
-           "❌ fastly – Not a word."],
-      ar: ["❌ fast – ظرف أيضاً لكن 'fast' لا يتغير؛ كلاهما ممكن، لكن 'quickly' هو المعطى في الخيارات.",
-           "❌ quick – صفة.",
-           "❌ fastly – ليست كلمة."]
-    }
-  },
-  { id:12, q:"The chef ______ cooked the meal. (carefully, loudly)",
-    options: ["carefully", "loudly", "careful", "loud"],
-    answer:0,
-    explanations: {
-      en: "✅ carefully – Describes the manner of cooking.",
-      ar: "✅ carefully – يصف أسلوب الطهي."
-    },
-    wrong_explanations: {
-      en: ["❌ loudly – Doesn't fit the context.",
-           "❌ careful – Adjective.",
-           "❌ loud – Adjective."],
-      ar: ["❌ loudly – لا يتناسب مع السياق.",
-           "❌ careful – صفة.",
-           "❌ loud – صفة."]
-    }
-  },
-  { id:13, q:"The teacher ______ explained the lesson. (clearly, wisely)",
-    options: ["clearly", "wisely", "clear", "wise"],
-    answer:0,
-    explanations: {
-      en: "✅ clearly – Describes how the explanation was given.",
-      ar: "✅ clearly – يصف كيف تم الشرح."
-    },
-    wrong_explanations: {
-      en: ["❌ wisely – Possible but less common; 'clearly' is best.",
-           "❌ clear – Adjective.",
-           "❌ wise – Adjective."],
-      ar: ["❌ wisely – ممكن لكن أقل شيوعاً؛ 'clearly' هو الأفضل.",
-           "❌ clear – صفة.",
-           "❌ wise – صفة."]
-    }
-  },
-  { id:14, q:"The driver ______ navigated the road. (skillfully, slowly)",
-    options: ["skillfully", "slowly", "skillful", "slow"],
-    answer:0,
-    explanations: {
-      en: "✅ skillfully – Shows driving skill.",
-      ar: "✅ skillfully – يُظهر مهارة القيادة."
-    },
-    wrong_explanations: {
-      en: ["❌ slowly – Possible but not the best; skillfully matches 'navigated'.",
-           "❌ skillful – Adjective.",
-           "❌ slow – Adjective."],
-      ar: ["❌ slowly – ممكن لكن ليس الأفضل؛ skillfully تناسب 'navigated'.",
-           "❌ skillful – صفة.",
-           "❌ slow – صفة."]
-    }
-  },
-  { id:15, q:"She sang ______ in the school play. (loudly, beautifully)",
-    options: ["beautifully", "loudly", "beautiful", "loud"],
-    answer:0,
-    explanations: {
-      en: "✅ beautifully – Describes the quality of singing.",
-      ar: "✅ beautifully – يصف جودة الغناء."
-    },
-    wrong_explanations: {
-      en: ["❌ loudly – Possible but not the best; beautifully is more natural.",
-           "❌ beautiful – Adjective.",
-           "❌ loud – Adjective."],
-      ar: ["❌ loudly – ممكن لكن ليس الأفضل؛ beautifully أكثر طبيعية.",
-           "❌ beautiful – صفة.",
-           "❌ loud – صفة."]
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("predictions")
+        .insert([{
+          user_name: userName,
+          match_id: matchId,
+          prediction: prediction  // يخزن اسم الفريق أو "DRAW"
+        }]);
+
+      if (error) {
+        console.error("❌ خطأ Supabase:", error.message);
+        return { success: false, message: error.message };
+      }
+
+      console.log("✅ تم حفظ التوقع:", data);
+      return { success: true, data };
+    } catch (err) {
+      console.error("❌ استثناء:", err);
+      return { success: false, message: err.message };
     }
   }
-];
 
-// ========== نظام الصوت باستخدام الروابط المطلوبة ==========
-class SoundManager {
-    constructor() {
-        this.audioContext = null;
-        this.sounds = new Map();
-        this.isInitialized = false;
-        this.initializing = false;
+  // ============================================================
+  //  2) جلب كل التوقعات
+  // ============================================================
+  async function getAllPredictions() {
+    if (!supabaseClient) {
+      console.warn("⚠️ Supabase غير متاح.");
+      return [];
     }
-    async init() {
-        if (this.isInitialized || this.initializing) return;
-        this.initializing = true;
-        try {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            // تحميل الأصوات المحددة
-            await this.loadSound('correct', 'https://media.vocaroo.com/mp3/19lcrilHKuHR');
-            await this.loadSound('wrong', 'https://media.vocaroo.com/mp3/1ooZTr9sHVXS');
-            await this.loadSound('finish', 'https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3');
-            await this.loadSoundEffect('click', 'https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3');
-            await this.loadSoundEffect('hover', 'https://assets.mixkit.co/sfx/preview/mixkit-hover-click-1198.mp3');
-            await this.loadSoundEffect('pageTurn', 'https://assets.mixkit.co/sfx/preview/mixkit-book-page-turn-1180.mp3');
-            await this.loadSoundEffect('success', 'https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3');
-            await this.loadSoundEffect('error', 'https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3');
-            this.isInitialized = true;
-        } catch (error) {
-            console.warn('Sound loading failed, using fallback beeps', error);
-            this.createFallbackSounds();
-        } finally {
-            this.initializing = false;
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("predictions")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("❌ خطأ جلب التوقعات:", error);
+        return [];
+      }
+
+      return data || [];
+    } catch (err) {
+      console.error("❌ استثناء في getAllPredictions:", err);
+      return [];
+    }
+  }
+
+  // ============================================================
+  //  3) عرض كل التوقعات (يعرض اسم الفريق مع العلم)
+  // ============================================================
+  async function renderAllPredictions() {
+    const container = document.getElementById('allPredictions');
+
+    const predictions = await getAllPredictions();
+
+    if (!predictions || predictions.length === 0) {
+      container.innerHTML = `<div class="empty-state">📭 لا توجد توقعات بعد</div>`;
+      return;
+    }
+
+    container.innerHTML = predictions.map(p => {
+      let text = "";
+      let className = "";
+
+      // p.prediction هو اسم الفريق أو "DRAW"
+      if (p.prediction === "DRAW") {
+        text = "🤝 تعادل الفريقين";
+        className = "draw";
+      } else {
+        const flag = getFlag(p.prediction) || "🏁";
+        text = `🏆 فوز ${flag} ${p.prediction}`;
+        className = "home";
+      }
+
+      let matchInfo = "";
+      if (p.match_id) {
+        const parts = p.match_id.split('_');
+        if (parts.length >= 3) {
+          const team1 = parts[1] || '';
+          const team2 = parts[2] || '';
+          if (team1 && team2) {
+            matchInfo = `${team1} 🆚 ${team2}`;
+          }
         }
+      }
+
+      return `
+        <div class="prediction-card">
+          <div class="user-name">
+            <div class="avatar">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div>
+            <b>${p.user_name || 'مجهول'}</b>
+            ${matchInfo ? `<span style="font-size:0.7rem; color:#98bdc9; margin-right:auto;">📅 ${matchInfo}</span>` : ''}
+          </div>
+
+          <div class="pred-detail">
+            <span>🔮 التوقع</span>
+            <span class="prediction-badge ${className}">
+              ${text}
+            </span>
+          </div>
+
+          <div class="match-info">
+            🕒 ${p.created_at ? new Date(p.created_at).toLocaleString('ar') : 'تاريخ غير معروف'}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ============================================================
+  //  4) Leaderboard System (معدل للتعامل مع أسماء الفرق)
+  // ============================================================
+  function calculateLeaderboard(predictions, matches) {
+    const scores = {};
+
+    predictions.forEach(p => {
+      if (!scores[p.user_name]) {
+        scores[p.user_name] = { name: p.user_name, points: 0, correct: 0, total: 0 };
+      }
+      scores[p.user_name].total += 1;
+    });
+
+    predictions.forEach(p => {
+      const parts = p.match_id.split('_');
+      const team1 = parts[1];
+      const team2 = parts[2];
+
+      const match = matches.find(m =>
+        (m.homeAr === team1 && m.awayAr === team2) ||
+        (m.homeAr === team2 && m.awayAr === team1)
+      );
+
+      if (!match) return;
+
+      let result = "";
+      if (match.homeScore > match.awayScore) {
+        result = match.homeAr;
+      } else if (match.homeScore < match.awayScore) {
+        result = match.awayAr;
+      } else {
+        result = "DRAW";
+      }
+
+      // التحقق: p.prediction يحمل اسم الفريق أو "DRAW"
+      if (p.prediction === result) {
+        scores[p.user_name].points += 1;
+        scores[p.user_name].correct += 1;
+      }
+    });
+
+    return Object.values(scores)
+      .sort((a, b) => b.points - a.points)
+      .map((player, index) => ({ ...player, rank: index + 1 }));
+  }
+
+  // ============================================================
+  //  5) عرض Leaderboard
+  // ============================================================
+  async function renderLeaderboard() {
+    const container = document.getElementById("leaderboardContainer");
+
+    const predictions = await getAllPredictions();
+
+    if (!previousGamesData || previousGamesData.length === 0) {
+      container.innerHTML = `<div class="empty-state">⏳ جاري تحميل النتائج...</div>`;
+      return;
     }
-    async loadSound(name, url) {
-        try {
-            const response = await fetch(url);
-            const arrayBuffer = await response.arrayBuffer();
-            const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-            this.sounds.set(name, audioBuffer);
-        } catch (error) {
-            console.warn(`Failed to load ${name}`, error);
+
+    if (!predictions || predictions.length === 0) {
+      container.innerHTML = `<div class="empty-state">📭 لا توجد توقعات لحساب الترتيب</div>`;
+      return;
+    }
+
+    const board = calculateLeaderboard(predictions, previousGamesData);
+
+    if (board.length === 0) {
+      container.innerHTML = `<div class="empty-state">📭 لا توجد بيانات كافية للترتيب</div>`;
+      return;
+    }
+
+    container.innerHTML = board.map((p, i) => {
+      let rankClass = "";
+      let medal = "";
+      if (i === 0) { rankClass = "gold"; medal = "🥇"; }
+      else if (i === 1) { rankClass = "silver"; medal = "🥈"; }
+      else if (i === 2) { rankClass = "bronze"; medal = "🥉"; }
+
+      const accuracy = p.total > 0 ? Math.round((p.correct / p.total) * 100) : 0;
+
+      return `
+        <div class="leaderboard-item">
+          <div class="rank ${rankClass}">
+            ${medal || `#${p.rank}`}
+          </div>
+          <div class="player-name">
+            <span class="avatar-small">${p.name.charAt(0).toUpperCase()}</span>
+            ${p.name}
+            <span style="font-size:0.7rem; color:#98bdc9; margin-right:8px;">
+              (${p.correct}/${p.total} • ${accuracy}%)
+            </span>
+          </div>
+          <div class="points">${p.points} نقطة</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ============================================================
+  //  دوال الوقت والمباريات
+  // ============================================================
+  function now() { return new Date().getTime(); }
+  function matchTime(t) { return new Date(t).getTime(); }
+  const MATCH_DURATION = 105 * 60 * 1000;
+  
+  function getMatchStatus(m) {
+    const start = matchTime(m.timeISO);
+    const end = start + MATCH_DURATION;
+    const cur = now();
+    if (cur < start) {
+      const diff = start - cur;
+      const h = Math.floor(diff/3600000);
+      const min = Math.floor((diff%3600000)/60000);
+      const s = Math.floor((diff%60000)/1000);
+      return { live: false, text: `⏱️ ${h}h ${min}m ${s}s` };
+    } else if (cur <= end) return { live: true, text: "🔴 تُلعب الآن 🔴" };
+    else return { live: false, text: "✅ انتهت" };
+  }
+  
+  function isMatchLive(timeISO) {
+    const start = matchTime(timeISO);
+    const end = start + MATCH_DURATION;
+    const cur = now();
+    return cur >= start && cur <= end;
+  }
+  
+  function upcomingMatches(arr) { return arr.filter(m => (matchTime(m.timeISO)+MATCH_DURATION) > now()); }
+  function filterRound(arr, r) { if (r==="all") return arr; return arr.filter(m => m.round === r); }
+
+  // ============================================================
+  //  ترجمة الأسماء
+  // ============================================================
+  const nameMapping = new Map([
+    ["مکزیک", "المكسيك"], ["Mexico", "المكسيك"], ["مكسيك", "المكسيك"],
+    ["آفریقای جنوبی", "جنوب أفريقيا"], ["South Africa", "جنوب أفريقيا"], ["افریقای جنوبی", "جنوب أفريقيا"],
+    ["أفريقيا الشمالية", "جنوب أفريقيا"],
+    ["آرژانتین", "الأرجنتين"], ["Argentina", "الأرجنتين"], ["ارژانتین", "الأرجنتين"],
+    ["الجزایر", "الجزائر"], ["Algeria", "الجزائر"], ["الجزائر", "الجزائر"],
+    ["اتریش", "النمسا"], ["Austria", "النمسا"], ["اتریش", "النمسا"],
+    ["اردن", "الأردن"], ["Jordan", "الأردن"], ["اردن", "الأردن"],
+    ["پرتغال", "البرتغال"], ["پرتقال", "البرتغال"], ["Portugal", "البرتغال"], ["پرتغال", "البرتغال"],
+    ["کنگو دمکراتیک", "الكونغو الديمقراطية"], ["جمهوری کنگو", "الكونغو الديمقراطية"], ["DR Congo", "الكونغو الديمقراطية"],
+    ["کنگو", "الكونغو الديمقراطية"], ["کانگو", "الكونغو الديمقراطية"], ["دمکراتیک کنگو", "الكونغو الديمقراطية"],
+    ["کره جنوبی", "كوريا الجنوبية"], ["South Korea", "كوريا الجنوبية"], ["کره جنوبي", "كوريا الجنوبية"],
+    ["جمهوری چک", "التشيك"], ["Czech Republic", "التشيك"], ["چک", "التشيك"],
+    ["کانادا", "كندا"], ["Canada", "كندا"],
+    ["بوسنی و هرزگوین", "البوسنة والهرسك"], ["Bosnia and Herzegovina", "البوسنة والهرسك"], ["بوسنی", "البوسنة والهرسك"],
+    ["آمریکا", "أمريكا"], ["United States", "أمريكا"], ["امریکا", "أمريكا"], ["US", "أمريكا"],
+    ["عراق", "العراق"], ["Iraq", "العراق"], ["العراق", "العراق"],
+    ["سوئیس", "سويسرا"], ["Switzerland", "سويسرا"], ["سویس", "سويسرا"],
+    ["قطر", "قطر"], ["Qatar", "قطر"],
+    ["برزیل", "البرازيل"], ["Brazil", "البرازيل"], ["برزیل", "البرازيل"],
+    ["مراکش", "المغرب"], ["Morocco", "المغرب"], ["مراكش", "المغرب"],
+    ["هائیتی", "هايتي"], ["Haiti", "هايتي"], ["هائیتی", "هايتي"],
+    ["اسکاتلند", "إسكتلندا"], ["Scotland", "إسكتلندا"], ["اسكاتلند", "إسكتلندا"],
+    ["استرالیا", "أستراليا"], ["Australia", "أستراليا"], ["استراليا", "أستراليا"],
+    ["ترکیه", "تركيا"], ["Turkey", "تركيا"], ["ترکیه", "تركيا"],
+    ["آلمان", "ألمانيا"], ["Germany", "ألمانيا"], ["المان", "ألمانيا"],
+    ["کوراساو", "كوراساو"], ["Curaçao", "كوراساو"], ["کوراسائو", "كوراساو"], ["کوراساو", "كوراساو"],
+    ["ژاپن", "اليابان"], ["Japan", "اليابان"], ["ژاپن", "اليابان"],
+    ["هلند", "هولندا"], ["Netherlands", "هولندا"], ["هولندا", "هولندا"],
+    ["اکوادور", "الإكوادور"], ["Ecuador", "الإكوادور"], ["اكوادور", "الإكوادور"],
+    ["ساحل عاج", "ساحل العاج"], ["Ivory Coast", "ساحل العاج"], ["ساحل عاج", "ساحل العاج"],
+    ["سوئد", "السويد"], ["Sweden", "السويد"], ["سويد", "السويد"],
+    ["تونس", "تونس"], ["Tunisia", "تونس"],
+    ["اسپانیا", "إسبانيا"], ["Spain", "إسبانيا"], ["اسبانيا", "إسبانيا"],
+    ["کیپ ورد", "الرأس الأخضر"], ["Cape Verde", "الرأس الأخضر"], ["کیپ ورد", "الرأس الأخضر"],
+    ["مصر", "مصر"], ["Egypt", "مصر"],
+    ["بلژیک", "بلجيكا"], ["Belgium", "بلجيكا"], ["بلژیک", "بلجيكا"],
+    ["عربستان سعودی", "السعودية"], ["سعودی", "السعودية"], ["Saudi Arabia", "السعودية"], ["السعودية", "السعودية"],
+    ["اروگوئه", "أوروغواي"], ["اروگویه", "أوروغواي"], ["Uruguay", "أوروغواي"], ["اروگوئه", "أوروغواي"],
+    ["ایران", "إيران"], ["Iran", "إيران"],
+    ["نیوزیلند", "نيوزيلندا"], ["New Zealand", "نيوزيلندا"], ["نیوزیلند", "نيوزيلندا"],
+    ["سنگال", "السنغال"], ["Senegal", "السنغال"], ["سنگال", "السنغال"],
+    ["فرانسه", "فرنسا"], ["France", "فرنسا"], ["فرانسه", "فرنسا"],
+    ["نروژ", "النرويج"], ["Norway", "النرويج"], ["نروژ", "النرويج"],
+    ["انگلستان", "إنجلترا"], ["England", "إنجلترا"], ["انگلستان", "إنجلترا"],
+    ["کرواسی", "كرواتيا"], ["Croatia", "كرواتيا"], ["کرواسی", "كرواتيا"],
+    ["پاناما", "بنما"], ["Panama", "بنما"], ["پاناما", "بنما"],
+    ["کلمبیا", "كولومبيا"], ["Colombia", "كولومبيا"], ["کلمبیا", "كولومبيا"],
+    ["ازبکستان", "أوزبكستان"], ["Uzbekistan", "أوزبكستان"], ["ازبکستان", "أوزبكستان"],
+    ["غنا", "غانا"], ["Ghana", "غانا"],
+    ["پاراگوئه", "باراغواي"], ["Paraguay", "باراغواي"], ["پاراگوئه", "باراغواي"],
+  ]);
+
+  function normalizeName(str) {
+    if (!str) return "";
+    str = str.normalize("NFD").replace(/[\u064B-\u065F]/g, "");
+    str = str.replace(/[ى]/g, "ا");
+    str = str.replace(/[أإآ]/g, "ا");
+    str = str.replace(/ة/g, "ه");
+    str = str.replace(/[ک]/g, "ك");
+    str = str.replace(/[ی]/g, "ي");
+    str = str.trim().replace(/\s+/g, ' ');
+    return str;
+  }
+
+  function partialMatch(raw, normalized) {
+    for (let [key, value] of nameMapping) {
+      let keyNorm = normalizeName(key);
+      if (normalized.includes(keyNorm) || keyNorm.includes(normalized)) {
+        console.log(`🔍 تطابق جزئي: "${raw}" -> "${value}" (بواسطة "${key}")`);
+        return value;
+      }
+    }
+    return null;
+  }
+
+  function translateToArabic(raw) {
+    if (!raw) return "";
+    let trimmed = raw.trim();
+    if (nameMapping.has(trimmed)) {
+      const result = nameMapping.get(trimmed);
+      console.log(`✅ ترجمة مباشرة: "${trimmed}" -> "${result}"`);
+      return result;
+    }
+    let normalized = normalizeName(trimmed);
+    for (let [key, value] of nameMapping) {
+      if (normalizeName(key) === normalized) {
+        console.log(`✅ ترجمة بعد التطبيع: "${trimmed}" (مطبع: "${normalized}") -> "${value}"`);
+        return value;
+      }
+    }
+    let lower = trimmed.toLowerCase();
+    for (let [key, value] of nameMapping) {
+      if (key.toLowerCase() === lower) {
+        console.log(`✅ ترجمة غير حساسة: "${trimmed}" -> "${value}"`);
+        return value;
+      }
+    }
+    let partial = partialMatch(trimmed, normalized);
+    if (partial) return partial;
+    console.warn(`⚠️ لم يتم العثور على ترجمة لـ "${trimmed}"`);
+    return trimmed;
+  }
+
+  // ============================================================
+  //  بيانات المباريات القادمة (بتوقيت +3 GMT)
+  // ============================================================
+  const rawMatches = [
+    { team1:"المكسيك", team2:"جنوب أفريقيا", time:"2026-06-11T22:00:00", round:"first" },{ team1:"الأرجنتين", team2:"الجزائر", time:"2026-06-11T04:00:00", round:"first" },
+    { team1:"النمسا", team2:"الأردن", time:"2026-06-11T07:00:00", round:"first" },{ team1:"البرتغال", team2:"الكونغو الديمقراطية", time:"2026-06-11T20:00:00", round:"first" },
+    { team1:"كوريا الجنوبية", team2:"التشيك", time:"2026-06-12T05:00:00", round:"first" },{ team1:"كندا", team2:"البوسنة والهرسك", time:"2026-06-12T22:00:00", round:"first" },
+    { team1:"أمريكا", team2:"العراق", time:"2026-06-13T04:00:00", round:"first" },{ team1:"سويسرا", team2:"قطر", time:"2026-06-13T22:00:00", round:"first" },
+    { team1:"البرازيل", team2:"المغرب", time:"2026-06-14T01:00:00", round:"first" },{ team1:"هايتي", team2:"إسكتلندا", time:"2026-06-14T04:00:00", round:"first" },
+    { team1:"أستراليا", team2:"تركيا", time:"2026-06-14T07:00:00", round:"first" },{ team1:"ألمانيا", team2:"كوراساو", time:"2026-06-14T20:00:00", round:"first" },
+    { team1:"اليابان", team2:"هولندا", time:"2026-06-14T23:00:00", round:"first" },{ team1:"الإكوادور", team2:"ساحل العاج", time:"2026-06-15T02:00:00", round:"first" },
+    { team1:"السويد", team2:"تونس", time:"2026-06-15T05:00:00", round:"first" },{ team1:"إسبانيا", team2:"الرأس الأخضر", time:"2026-06-15T19:00:00", round:"first" },
+    { team1:"مصر", team2:"بلجيكا", time:"2026-06-15T22:00:00", round:"first" },{ team1:"السعودية", team2:"أوروغواي", time:"2026-06-16T01:00:00", round:"first" },
+    { team1:"إيران", team2:"نيوزيلندا", time:"2026-06-16T04:00:00", round:"first" },{ team1:"السنغال", team2:"فرنسا", time:"2026-06-16T22:00:00", round:"first" },
+    { team1:"النرويج", team2:"العراق", time:"2026-06-17T01:00:00", round:"first" },{ team1:"الجزائر", team2:"الأرجنتين", time:"2026-06-17T04:00:00", round:"first" },
+    { team1:"الأردن", team2:"النمسا", time:"2026-06-17T07:00:00", round:"first" },{ team1:"البرتغال", team2:"كرواتيا", time:"2026-06-17T20:00:00", round:"first" },
+    { team1:"إنجلترا", team2:"كرواتيا", time:"2026-06-17T23:00:00", round:"first" },{ team1:"جنوب أفريقيا", team2:"التشيك", time:"2026-06-18T19:00:00", round:"second" },
+    { team1:"سويسرا", team2:"البوسنة والهرسك", time:"2026-06-18T22:00:00", round:"second" },{ team1:"قطر", team2:"كندا", time:"2026-06-19T01:00:00", round:"second" },
+    { team1:"المكسيك", team2:"كوريا الجنوبية", time:"2026-06-19T04:00:00", round:"second" },{ team1:"أستراليا", team2:"أمريكا", time:"2026-06-19T22:00:00", round:"second" },
+    { team1:"المغرب", team2:"إسكتلندا", time:"2026-06-20T01:00:00", round:"second" },{ team1:"البرازيل", team2:"هايتي", time:"2026-06-20T03:30:00", round:"second" },
+    { team1:"تركيا", team2:"باراغواي", time:"2026-06-20T06:00:00", round:"second" },{ team1:"السويد", team2:"هولندا", time:"2026-06-20T20:00:00", round:"second" },
+    { team1:"ساحل العاج", team2:"ألمانيا", time:"2026-06-20T23:00:00", round:"second" },{ team1:"الإكوادور", team2:"كوراساو", time:"2026-06-21T03:00:00", round:"second" },
+    { team1:"اليابان", team2:"تونس", time:"2026-06-21T07:00:00", round:"second" },{ team1:"إسبانيا", team2:"السعودية", time:"2026-06-21T19:00:00", round:"second" },
+    { team1:"بلجيكا", team2:"إيران", time:"2026-06-21T22:00:00", round:"second" },{ team1:"أوروغواي", team2:"الرأس الأخضر", time:"2026-06-22T01:00:00", round:"second" },
+    { team1:"مصر", team2:"نيوزيلندا", time:"2026-06-22T04:00:00", round:"second" },{ team1:"الأرجنتين", team2:"النمسا", time:"2026-06-22T20:00:00", round:"second" },
+    { team1:"العراق", team2:"فرنسا", time:"2026-06-23T00:00:00", round:"second" },{ team1:"النرويج", team2:"السنغال", time:"2026-06-23T03:00:00", round:"second" },
+    { team1:"الأردن", team2:"الجزائر", time:"2026-06-23T06:00:00", round:"second" },{ team1:"البرتغال", team2:"أوزبكستان", time:"2026-06-23T20:00:00", round:"second" },
+    { team1:"إنجلترا", team2:"غانا", time:"2026-06-23T23:00:00", round:"second" },{ team1:"بنما", team2:"كرواتيا", time:"2026-06-24T02:00:00", round:"second" },
+    { team1:"كولومبيا", team2:"الكونغو الديمقراطية", time:"2026-06-24T05:00:00", round:"second" },{ team1:"كندا", team2:"سويسرا", time:"2026-06-24T22:00:00", round:"third" },
+    { team1:"قطر", team2:"البوسنة والهرسك", time:"2026-06-24T22:00:00", round:"third" },{ team1:"المغرب", team2:"هايتي", time:"2026-06-25T01:00:00", round:"third" },
+    { team1:"إسكتلندا", team2:"البرازيل", time:"2026-06-25T01:00:00", round:"third" },{ team1:"جنوب أفريقيا", team2:"كوريا الجنوبية", time:"2026-06-25T04:00:00", round:"third" },
+    { team1:"المكسيك", team2:"التشيك", time:"2026-06-25T04:00:00", round:"third" },{ team1:"كوراساو", team2:"ساحل العاج", time:"2026-06-25T23:00:00", round:"third" },
+    { team1:"ألمانيا", team2:"الإكوادور", time:"2026-06-25T23:00:00", round:"third" },{ team1:"هولندا", team2:"تونس", time:"2026-06-26T02:00:00", round:"third" },
+    { team1:"اليابان", team2:"السويد", time:"2026-06-26T02:00:00", round:"third" },{ team1:"أمريكا", team2:"تركيا", time:"2026-06-26T05:00:00", round:"third" },
+    { team1:"أستراليا", team2:"باراغواي", time:"2026-06-26T05:00:00", round:"third" },{ team1:"فرنسا", team2:"النرويج", time:"2026-06-26T22:00:00", round:"third" },
+    { team1:"السنغال", team2:"العراق", time:"2026-06-26T22:00:00", round:"third" },{ team1:"السعودية", team2:"الرأس الأخضر", time:"2026-06-27T03:00:00", round:"third" },
+    { team1:"إسبانيا", team2:"أوروغواي", time:"2026-06-27T03:00:00", round:"third" },{ team1:"إيران", team2:"مصر", time:"2026-06-27T06:00:00", round:"third" },
+    { team1:"نيوزيلندا", team2:"بلجيكا", time:"2026-06-27T06:00:00", round:"third" },{ team1:"إنجلترا", team2:"بنما", time:"2026-06-28T00:00:00", round:"third" },
+    { team1:"كرواتيا", team2:"غانا", time:"2026-06-28T00:00:00", round:"third" },{ team1:"البرتغال", team2:"كولومبيا", time:"2026-06-28T02:30:00", round:"third" },
+    { team1:"الكونغو الديمقراطية", team2:"أوزبكستان", time:"2026-06-28T02:30:00", round:"third" },{ team1:"الجزائر", team2:"النمسا", time:"2026-06-28T05:00:00", round:"third" },
+    { team1:"الأردن", team2:"الأرجنتين", time:"2026-06-28T05:00:00", round:"third" }
+  ];
+  
+  const matchesData = rawMatches.map(m => ({ 
+    ...m, 
+    timeISO: m.time + "+03:00", 
+    roundLabel: m.round === 'first' ? 'الجولة الأولى' : (m.round === 'second' ? 'الجولة الثانية' : 'الجولة الثالثة') 
+  }));
+
+  // ============================================================
+  //  عرض المباريات القادمة (مع زر التوقع البارز)
+  // ============================================================
+  function renderUpcoming() {
+    try {
+      let active = upcomingMatches(matchesData);
+      const round = document.getElementById('roundFilter').value;
+      active = filterRound(active, round);
+      active.sort((a,b) => matchTime(a.timeISO) - matchTime(b.timeISO));
+      const container = document.getElementById('matchesContainer');
+      if (!active.length) { container.innerHTML = `<div class="empty-state">📭 لا توجد مباريات قادمة</div>`; return; }
+      
+      container.innerHTML = active.map(m => {
+        const st = getMatchStatus(m);
+        const dateTimeDisplay = getDateTimeDisplay(m.timeISO);
+        const isLive = st.live;
+        const scoreClass = isLive ? 'live-score' : '';
+        const matchId = `${m.timeISO}_${m.team1}_${m.team2}`;
+        const isLiveMatch = isMatchLive(m.timeISO);
+        
+        return `<div class="match-card ${isLive ? 'live-card' : ''}">
+          <div class="teams-score">
+            <div class="team"><span>${getFlag(m.team1)}</span> ${m.team1}</div>
+            <div class="score-display ${scoreClass}">${isLive ? '🔴 LIVE' : '🆚'}</div>
+            <div class="team"><span>${getFlag(m.team2)}</span> ${m.team2}</div>
+          </div>
+          <div class="datetime-row"><div class="match-day">${getDay(m.timeISO)}</div><div class="match-full-date"><span>${dateTimeDisplay}</span></div></div>
+          <div class="info-row"><span class="round-tag">🏅 ${m.roundLabel}</span><div class="countdown-timer ${isLive ? 'live-status' : ''}">${isLive ? '🔴 تُلعب الآن 🔴' : st.text}</div></div>
+          
+          <button class="predict-trigger-btn ${isLiveMatch ? 'live-blocked' : ''}" 
+                  data-matchid="${matchId}"
+                  data-team1="${m.team1}"
+                  data-team2="${m.team2}"
+                  data-timeiso="${m.timeISO}"
+                  ${isLiveMatch ? 'disabled' : ''}>
+            <span class="icon">📝</span>
+            توقع نتيجة المباراة الآن
+            <span class="arrow">➜</span>
+            ${isLiveMatch ? ' ⛔ جارية' : ''}
+          </button>
+        </div>`;
+      }).join('');
+      
+      document.querySelectorAll('.predict-trigger-btn:not(.live-blocked)').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const matchId = this.dataset.matchid;
+          const team1 = this.dataset.team1;
+          const team2 = this.dataset.team2;
+          const timeISO = this.dataset.timeiso;
+          openPredictionModal(matchId, team1, team2, timeISO);
+        });
+      });
+      
+    } catch (err) {
+      console.error("❌ renderUpcoming:", err);
+      document.getElementById('matchesContainer').innerHTML = `<div class="empty-state">⚠️ حدث خطأ في عرض المباريات القادمة.</div>`;
+    }
+  }
+
+  // ============================================================
+  //  فتح النافذة المنبثقة
+  // ============================================================
+  function openPredictionModal(matchId, team1, team2, timeISO) {
+    currentMatchId = matchId;
+    currentTeam1 = team1;
+    currentTeam2 = team2;
+    currentTimeISO = timeISO;
+    
+    document.getElementById('modalTeam1').textContent = team1;
+    document.getElementById('modalTeam2').textContent = team2;
+    document.getElementById('optTeam1').textContent = team1;
+    document.getElementById('optTeam2').textContent = team2;
+    document.getElementById('modalDateTime').textContent = `📅 ${getDateTimeDisplay(timeISO)}`;
+    
+    const team1Flag = getFlag(team1) || '🏁';
+    const team2Flag = getFlag(team2) || '🏁';
+    document.querySelector('#modalTeams .m-team:first-child span:first-child').textContent = team1Flag;
+    document.querySelector('#modalTeams .m-team:last-child span:first-child').textContent = team2Flag;
+    
+    document.querySelectorAll('input[name="prediction"]').forEach(el => el.checked = false);
+    document.getElementById('modalUserName').value = '';
+    document.getElementById('modalMessage').textContent = '';
+    document.getElementById('modalMessage').className = 'modal-message';
+    document.getElementById('modalSubmitBtn').disabled = false;
+    
+    document.getElementById('predictionModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // ============================================================
+  //  إغلاق النافذة المنبثقة
+  // ============================================================
+  function closePredictionModal() {
+    document.getElementById('predictionModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // ============================================================
+  //  أحداث النافذة المنبثقة
+  // ============================================================
+  document.getElementById('modalCloseBtn').addEventListener('click', closePredictionModal);
+  
+  document.getElementById('predictionModal').addEventListener('click', function(e) {
+    if (e.target === this) closePredictionModal();
+  });
+  
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closePredictionModal();
+  });
+
+  // ============================================================
+  //  حفظ التوقع من النافذة المنبثقة (معدل)
+  // ============================================================
+  document.getElementById('modalSubmitBtn').addEventListener('click', async function() {
+    const userName = document.getElementById('modalUserName').value.trim();
+    const selectedOption = document.querySelector('input[name="prediction"]:checked');
+    const messageEl = document.getElementById('modalMessage');
+    
+    if (!userName) {
+      messageEl.textContent = '⚠️ الرجاء إدخال اسمك.';
+      messageEl.className = 'modal-message warning';
+      return;
+    }
+    
+    if (!selectedOption) {
+      messageEl.textContent = '⚠️ الرجاء اختيار توقعك.';
+      messageEl.className = 'modal-message warning';
+      return;
+    }
+    
+    // تحديد اسم الفريق الفائز
+    let predictionValue;
+    if (selectedOption.value === 'HOME') {
+      predictionValue = currentTeam1;
+    } else if (selectedOption.value === 'AWAY') {
+      predictionValue = currentTeam2;
+    } else {
+      predictionValue = 'DRAW';
+    }
+    
+    // التحقق من أن المباراة ليست جارية
+    if (currentTimeISO && isMatchLive(currentTimeISO)) {
+      messageEl.textContent = '⛔ لا يمكن التوقع على مباراة جارية!';
+      messageEl.className = 'modal-message error';
+      return;
+    }
+    
+    this.disabled = true;
+    messageEl.textContent = '⏳ جاري الحفظ...';
+    messageEl.className = 'modal-message';
+    
+    const result = await savePrediction(userName, currentMatchId, predictionValue);
+    
+    if (result.success) {
+      messageEl.textContent = '✅ تم حفظ توقعك بنجاح! 🎉';
+      messageEl.className = 'modal-message success';
+      this.disabled = false;
+      
+      await renderAllPredictions();
+      await renderLeaderboard();
+      
+      setTimeout(() => {
+        closePredictionModal();
+      }, 1500);
+    } else {
+      messageEl.textContent = `❌ فشل الحفظ: ${result.message}`;
+      messageEl.className = 'modal-message error';
+      this.disabled = false;
+    }
+  });
+
+  // ============================================================
+  //  المباريات السابقة (جلب من API مع إعادة محاولة)
+  // ============================================================
+  let previousGamesData = [];
+  let isLoadingPrevious = false;
+  let retryCount = 0;
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY = 3000;
+
+  function loadFromCache() {
+    try {
+      const cached = localStorage.getItem('previousGamesData');
+      if (cached) {
+        const data = JSON.parse(cached);
+        if (Array.isArray(data) && data.length > 0) {
+          previousGamesData = data;
+          console.log(`📦 تم تحميل ${data.length} مباراة من الكاش.`);
+          return true;
         }
+      }
+    } catch (e) {
+      console.warn("⚠️ فشل تحميل الكاش:", e);
     }
-    async loadSoundEffect(name, url) {
-        await this.loadSound(name, url);
-    }
-    createFallbackSounds() {
-        // أصوات احتياطية في حال فشل التحميل
-        this.sounds.set('click', this.generateBeep(440, 0.1));
-        this.sounds.set('hover', this.generateBeep(220, 0.05));
-        this.sounds.set('correct', this.generateBeep(523.25, 0.3));
-        this.sounds.set('wrong', this.generateBeep(349.23, 0.3));
-        this.sounds.set('finish', this.generateBeep(659.25, 0.5));
-        this.sounds.set('success', this.generateBeep(523.25, 0.3));
-        this.sounds.set('error', this.generateBeep(349.23, 0.3));
-    }
-    generateBeep(frequency, duration) {
-        if (!this.audioContext) return null;
-        const oscillator = this.audioContext.createOscillator();
-        const gainNode = this.audioContext.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
-        oscillator.frequency.value = frequency;
-        oscillator.type = 'sine';
-        gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + duration);
-        return { oscillator, gainNode, duration };
-    }
-    play(name, volume = 0.5) {
-        if (!soundEnabled || !this.isInitialized) return;
-        try {
-            if (this.audioContext.state === 'suspended') this.audioContext.resume();
-            const sound = this.sounds.get(name);
-            if (sound) {
-                if (sound.oscillator) {
-                    const { oscillator, gainNode, duration } = sound;
-                    oscillator.start();
-                    setTimeout(() => oscillator.stop(), duration * 1000);
-                    this.sounds.set(name, this.generateBeep(oscillator.frequency.value, duration));
-                } else {
-                    const source = this.audioContext.createBufferSource();
-                    const gainNode = this.audioContext.createGain();
-                    source.buffer = sound;
-                    gainNode.gain.value = volume;
-                    source.connect(gainNode);
-                    gainNode.connect(this.audioContext.destination);
-                    source.start(0);
-                    source.onended = () => { source.disconnect(); gainNode.disconnect(); };
-                }
-            }
-        } catch (e) {}
-    }
-    playCorrect() { this.play('correct', 0.3); }
-    playWrong() { this.play('wrong', 0.3); }
-    playFinish() { this.play('finish', 0.5); }
-    playClick() { this.play('click', 0.2); }
-    playHover() { this.play('hover', 0.1); }
-    playPageTurn() { this.play('pageTurn', 0.2); }
-    playSuccess() { this.play('success', 0.3); }
-    playError() { this.play('error', 0.3); }
-}
-const soundManager = new SoundManager();
+    return false;
+  }
 
-// ========== متغيرات عامة ==========
-let currentQuestionIndex = 0;
-let userAnswers = Array(questions.length).fill(null);
-let timeLeft = 15 * 60;
-let timerInterval;
-let markedQuestions = [];
-let answerLocked = Array(questions.length).fill(false);
-let performanceHistory = [];
-let shuffledQuestions = [];
-let soundEnabled = true;
+  function saveToCache(data) {
+    try {
+      localStorage.setItem('previousGamesData', JSON.stringify(data));
+      console.log("💾 تم حفظ البيانات في الكاش.");
+    } catch (e) {
+      console.warn("⚠️ فشل حفظ الكاش:", e);
+    }
+  }
 
-// ========== دوال مساعدة ==========
-function shuffleOptions(q) {
-  let opts = [...q.options];
-  let ans = q.answer;
-  let indices = [...Array(opts.length).keys()];
-  for(let i=indices.length-1; i>0; i--) {
-    let j = Math.floor(Math.random()*(i+1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
-  }
-  let newOpts = indices.map(i=>opts[i]);
-  let newAns = indices.indexOf(ans);
-  return {...q, options:newOpts, answer:newAns};
-}
-function loadPerformanceHistory() {
-  let saved = localStorage.getItem('grammarQuizHistory');
-  if(saved) try { performanceHistory = JSON.parse(saved); } catch(e){}
-}
-function savePerformanceHistory() {
-  localStorage.setItem('grammarQuizHistory', JSON.stringify(performanceHistory));
-}
-function playSound(name) {
-  if(!soundEnabled) return;
-  if(name==='click') soundManager.playClick();
-  else if(name==='hover') soundManager.playHover();
-  else if(name==='pageTurn') soundManager.playPageTurn();
-  else if(name==='success') soundManager.playSuccess();
-  else if(name==='error') soundManager.playError();
-}
-function playCorrectSound() { soundManager.playCorrect(); }
-function playWrongSound() { soundManager.playWrong(); }
-function playFinishSound() { soundManager.playFinish(); }
+  async function loadPreviousGames() {
+    if (isLoadingPrevious) {
+      console.log("⏳ تحميل جارٍ بالفعل...");
+      return;
+    }
 
-// ========== دوال الواجهة ==========
-document.getElementById('themeBtn').addEventListener('click', function(){
-  playSound('click');
-  document.body.classList.toggle('dark-theme');
-  let icon = this.querySelector('i');
-  if(document.body.classList.contains('dark-theme')){
-    icon.classList.remove('fa-moon'); icon.classList.add('fa-sun');
-    localStorage.setItem('darkMode','enabled');
-  } else {
-    icon.classList.remove('fa-sun'); icon.classList.add('fa-moon');
-    localStorage.setItem('darkMode','disabled');
+    const containerPrev = document.getElementById('previousMatchesContainer');
+    isLoadingPrevious = true;
+
+    if (previousGamesData.length > 0) {
+      renderPreviousGamesFiltered();
+    } else {
+      if (loadFromCache()) {
+        renderPreviousGamesFiltered();
+      } else {
+        containerPrev.innerHTML = `<div class="empty-state">⏳ جاري تحميل المباريات السابقة... <span class="loading-spinner"></span></div>`;
+      }
+    }
+
+    try {
+      console.log(`🔄 محاولة تحميل المباريات السابقة (${retryCount + 1}/${MAX_RETRIES})...`);
+      const response = await fetch('https://worldcup26.ir/get/games');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      console.log("📦 بيانات API:", data);
+
+      if (!data || !data.games || !Array.isArray(data.games)) {
+        throw new Error("تنسيق البيانات غير صحيح");
+      }
+
+      const finished = data.games.filter(g => g.finished === "TRUE");
+      console.log(`✅ ${finished.length} مباراة منتهية.`);
+
+      const newData = finished.map(game => {
+        let homeRaw = game.home_team_name_fa || game.home_team_name_en || "";
+        let awayRaw = game.away_team_name_fa || game.away_team_name_en || "";
+        let homeAr = translateToArabic(homeRaw);
+        let awayAr = translateToArabic(awayRaw);
+        let homeScore = parseInt(game.home_score, 10);
+        let awayScore = parseInt(game.away_score, 10);
+        let dateStr = game.local_date || "";
+        let dayName = "", formattedDate = "", timeMatch = "";
+        if (dateStr) {
+          let parts = dateStr.split(' ');
+          let dateParts = parts[0]?.split('/');
+          if (dateParts && dateParts.length === 3) {
+            let d = new Date(`${dateParts[2]}-${dateParts[0]}-${dateParts[1]}T12:00:00`);
+            if (!isNaN(d)) {
+              dayName = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][d.getDay()];
+              formattedDate = `${d.getDate()} ${['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][d.getMonth()]} ${d.getFullYear()}`;
+            } else { dayName = "تاريخ"; formattedDate = dateStr; }
+          } else { dayName = "تاريخ"; formattedDate = dateStr; }
+          if (parts.length > 1 && parts[1]?.match(/\d{2}:\d{2}/)) timeMatch = parts[1];
+        }
+        return { homeAr, awayAr, homeScore, awayScore, dayName, formattedDate, timeMatch };
+      });
+
+      previousGamesData = newData;
+      saveToCache(newData);
+      retryCount = 0;
+      console.log(`📊 تم تحميل ${newData.length} مباراة.`);
+      renderPreviousGamesFiltered();
+      calculateStandings();
+
+      await renderLeaderboard();
+
+    } catch (err) {
+      console.error("❌ فشل تحميل المباريات السابقة:", err);
+
+      if (previousGamesData.length > 0) {
+        containerPrev.innerHTML = previousGamesData.length > 0 ? 
+          renderPreviousGamesFiltered() : 
+          `<div class="empty-state">⚠️ فشل التحديث: ${err.message}<br><small>يتم عرض البيانات المخزنة مؤقتاً</small></div>`;
+      } else {
+        containerPrev.innerHTML = `
+          <div class="empty-state">
+            ⚠️ فشل تحميل المباريات السابقة: ${err.message}
+            <br>
+            <button onclick="loadPreviousGames()" style="
+              margin-top:12px;
+              background:#ffb347;
+              border:none;
+              padding:8px 24px;
+              border-radius:30px;
+              font-weight:bold;
+              cursor:pointer;
+              color:#1a2f2f;
+            ">
+              🔄 إعادة المحاولة
+            </button>
+            ${retryCount < MAX_RETRIES ? `<br><small>سيتم المحاولة تلقائياً بعد ${RETRY_DELAY/1000} ثوانٍ</small>` : ''}
+          </div>
+        `;
+      }
+
+      if (retryCount < MAX_RETRIES) {
+        retryCount++;
+        console.log(`⏳ إعادة المحاولة بعد ${RETRY_DELAY/1000} ثوانٍ (${retryCount}/${MAX_RETRIES})...`);
+        setTimeout(() => {
+          isLoadingPrevious = false;
+          loadPreviousGames();
+        }, RETRY_DELAY);
+      } else {
+        console.warn("⚠️ تم الوصول للحد الأقصى من المحاولات.");
+        retryCount = 0;
+        isLoadingPrevious = false;
+      }
+    } finally {
+      if (retryCount === 0 || retryCount >= MAX_RETRIES) {
+        isLoadingPrevious = false;
+      }
+    }
   }
-});
-function checkDarkModePreference() {
-  let dark = localStorage.getItem('darkMode');
-  let icon = document.querySelector('#themeBtn i');
-  if(dark==='enabled'){
-    document.body.classList.add('dark-theme');
-    icon.classList.remove('fa-moon'); icon.classList.add('fa-sun');
-  } else {
-    document.body.classList.remove('dark-theme');
-    icon.classList.remove('fa-sun'); icon.classList.add('fa-moon');
+
+  function renderPreviousGamesFiltered() {
+    try {
+      let games = previousGamesData;
+      const searchText = document.getElementById('prevSearchInput')?.value.trim().toLowerCase() || "";
+      let filtered = games;
+      if (searchText) filtered = games.filter(g => g.homeAr.includes(searchText) || g.awayAr.includes(searchText));
+      const container = document.getElementById('previousMatchesContainer');
+      if (!filtered.length) {
+        if (games.length === 0) {
+          container.innerHTML = `<div class="empty-state">📋 جاري تحميل المباريات السابقة... <span class="loading-spinner"></span></div>`;
+        } else {
+          container.innerHTML = `<div class="empty-state">📋 لا توجد مباريات سابقة مطابقة للبحث.</div>`;
+        }
+        return;
+      }
+      container.innerHTML = filtered.map(g => {
+        const dateTimeDisplay = g.timeMatch ? `${g.formattedDate} - ${g.timeMatch}` : g.formattedDate;
+        return `<div class="match-card">
+          <div class="teams-score">
+            <div class="team"><span>${getFlag(g.homeAr)}</span> ${g.homeAr}</div>
+            <div class="score-display finished">${g.homeScore} - ${g.awayScore}</div>
+            <div class="team"><span>${getFlag(g.awayAr)}</span> ${g.awayAr}</div>
+          </div>
+          <div class="datetime-row"><div class="match-day">${g.dayName}</div><div class="match-full-date"><span>${dateTimeDisplay}</span></div></div>
+          <div class="info-row"><span class="round-tag">🏅 النتيجة النهائية</span><div class="countdown-timer" style="background:#2c4b55;">✅ انتهت</div></div>
+        </div>`;
+      }).join('');
+      return container.innerHTML;
+    } catch (err) {
+      console.error("❌ renderPreviousGamesFiltered:", err);
+      document.getElementById('previousMatchesContainer').innerHTML = `<div class="empty-state">⚠️ حدث خطأ في عرض المباريات السابقة.</div>`;
+      return "";
+    }
   }
-}
-document.getElementById('soundToggleBtn').addEventListener('click', function(){
-  soundEnabled = !soundEnabled;
-  let icon = this.querySelector('i');
-  let span = this.nextElementSibling;
-  if(soundEnabled){
-    icon.classList.remove('fa-volume-mute'); icon.classList.add('fa-volume-up');
-    this.classList.remove('muted');
-    span.textContent = 'Sound On';
-  } else {
-    icon.classList.remove('fa-volume-up'); icon.classList.add('fa-volume-mute');
-    this.classList.add('muted');
-    span.textContent = 'Sound Off';
+
+  // ============================================================
+  //  المجموعات والترتيب
+  // ============================================================
+  const finalGroups = {
+    "A": ["المكسيك","جنوب أفريقيا","كوريا الجنوبية","التشيك"],
+    "B": ["كندا","البوسنة والهرسك","قطر","سويسرا"],
+    "C": ["البرازيل","المغرب","هايتي","إسكتلندا"],
+    "D": ["أمريكا","باراغواي","أستراليا","تركيا"],
+    "E": ["ألمانيا","كوراساو","ساحل العاج","الإكوادور"],
+    "F": ["هولندا","اليابان","السويد","تونس"],
+    "G": ["بلجيكا","مصر","إيران","نيوزيلندا"],
+    "H": ["إسبانيا","الرأس الأخضر","السعودية","أوروغواي"],
+    "I": ["فرنسا","السنغال","النرويج","العراق"],
+    "J": ["الأرجنتين","الجزائر","النمسا","الأردن"],
+    "K": ["البرتغال","الكونغو الديمقراطية","أوزبكستان","كولومبيا"],
+    "L": ["إنجلترا","كرواتيا","غانا","بنما"]
+  };
+
+  function calculateStandings() {
+    try {
+      let standings = {};
+      for (let [group, teams] of Object.entries(finalGroups)) {
+        standings[group] = {};
+        teams.forEach(team => { standings[group][team] = { played:0, wins:0, draws:0, losses:0, goalsFor:0, goalsAgainst:0, points:0 }; });
+      }
+      previousGamesData.forEach(game => {
+        const { homeAr, awayAr, homeScore, awayScore } = game;
+        let groupName = null;
+        for (let [g, teams] of Object.entries(finalGroups)) {
+          if (teams.includes(homeAr) && teams.includes(awayAr)) {
+            groupName = g;
+            break;
+          }
+        }
+        if (!groupName) {
+          console.warn(`⚠️ المباراة بين ${homeAr} و ${awayAr} لا تنتمي لأي مجموعة.`);
+          return;
+        }
+        const stats = standings[groupName];
+        if (!stats[homeAr] || !stats[awayAr]) {
+          console.warn(`⚠️ أحد الفريقين غير موجود في المجموعة: ${homeAr} أو ${awayAr}`);
+          return;
+        }
+        stats[homeAr].played++; stats[awayAr].played++;
+        stats[homeAr].goalsFor += homeScore; stats[homeAr].goalsAgainst += awayScore;
+        stats[awayAr].goalsFor += awayScore; stats[awayAr].goalsAgainst += homeScore;
+        if (homeScore > awayScore) {
+          stats[homeAr].wins++; stats[homeAr].points += 3;
+          stats[awayAr].losses++;
+        } else if (awayScore > homeScore) {
+          stats[awayAr].wins++; stats[awayAr].points += 3;
+          stats[homeAr].losses++;
+        } else {
+          stats[homeAr].draws++; stats[awayAr].draws++;
+          stats[homeAr].points += 1; stats[awayAr].points += 1;
+        }
+      });
+      const container = document.getElementById('standingsContainer');
+      let html = '';
+      for (let [group, teamsStats] of Object.entries(standings)) {
+        let tableRows = [];
+        for (let [team, stat] of Object.entries(teamsStats)) {
+          tableRows.push({ team, ...stat, goalDiff: stat.goalsFor - stat.goalsAgainst });
+        }
+        tableRows.sort((a,b) => {
+          if (a.points !== b.points) return b.points - a.points;
+          if (a.goalDiff !== b.goalDiff) return b.goalDiff - a.goalDiff;
+          return b.goalsFor - a.goalsFor;
+        });
+        html += `<div class="group-card"><div class="group-title">المجموعة ${group}</div><table class="standings-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>ف</th><th>ت</th><th>خ</th><th>له</th><th>عليه</th><th>فارق</th><th>نقاط</th></tr></thead><tbody>`;
+        tableRows.forEach((row, idx) => {
+          html += `<tr><td>${idx+1}</td><td style="text-align:right;"><div class="team-name-td"><span>${getFlag(row.team)}</span> ${row.team}</div></td><td>${row.played}</td><td>${row.wins}</td><td>${row.draws}</td><td>${row.losses}</td><td>${row.goalsFor}</td><td>${row.goalsAgainst}</td><td>${row.goalDiff}</td><td>${row.points}</td></tr>`;
+        });
+        html += `</tbody></table></div>`;
+      }
+      container.innerHTML = html || `<div class="empty-state">📊 لا توجد نتائج كافية لحساب الترتيب.</div>`;
+    } catch (err) {
+      console.error("❌ calculateStandings:", err);
+      document.getElementById('standingsContainer').innerHTML = `<div class="empty-state">⚠️ حدث خطأ في حساب الترتيب.</div>`;
+    }
   }
-  localStorage.setItem('soundEnabled', soundEnabled);
-});
-function startTimer() {
-  timerInterval = setInterval(()=>{
-    timeLeft--;
-    updateTimerDisplay();
-    if(timeLeft<=0){ clearInterval(timerInterval); playSound('error'); finishQuiz(); }
-  },1000);
-}
-function updateTimerDisplay() {
-  let m = Math.floor(timeLeft/60);
-  let s = timeLeft%60;
-  document.getElementById('time-display').textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-  if(timeLeft<300) document.getElementById('timer').classList.add('timer-warning');
-  else document.getElementById('timer').classList.remove('timer-warning');
-}
-function openCurrentScoreModal(){
-  playSound('click');
-  let score = calculateScore();
-  let answered = userAnswers.filter(a=>a!==null).length;
-  let percent = (score.correct/questions.length*100).toFixed(2);
-  let circle = document.getElementById('score-circle-fill');
-  let circumference = 440;
-  let offset = circumference - (percent/100)*circumference;
-  circle.style.strokeDashoffset = offset;
-  document.getElementById('score-percentage').textContent = percent+'%';
-  document.getElementById('current-score-details').innerHTML = `<strong>Score:</strong> ${score.correct}/${questions.length}`;
-  document.getElementById('current-correct-details').innerHTML = `<strong>Correct:</strong> ${score.correct}`;
-  document.getElementById('current-progress-details').innerHTML = `<strong>Progress:</strong> ${answered}/${questions.length} (${Math.round(answered/questions.length*100)}%)`;
-  document.getElementById('currentScoreModal').style.display = 'block';
-}
-function closeCurrentScoreModal(){ playSound('click'); document.getElementById('currentScoreModal').style.display='none'; }
-function openQuestionsModal(){
-  playSound('click');
-  let grid = document.getElementById('questions-grid-modal');
-  grid.innerHTML = '';
-  questions.forEach((_,i)=>{
-    let btn = document.createElement('div');
-    btn.className = `question-status-grid-modal ${i===currentQuestionIndex?'current':''} ${userAnswers[i]!==null?'answered':''} ${markedQuestions.includes(i)?'flagged':''}`;
-    btn.innerHTML = `<span>${i+1}</span>`;
-    btn.onclick = ()=>{ playSound('click'); currentQuestionIndex=i; loadQuiz(); closeQuestionsModal(); };
-    grid.appendChild(btn);
-  });
-  document.getElementById('questionsModal').style.display = 'block';
-}
-function closeQuestionsModal(){ playSound('click'); document.getElementById('questionsModal').style.display='none'; }
-function toggleMarkForReview(){
-  playSound('click');
-  let idx = markedQuestions.indexOf(currentQuestionIndex);
-  let btn = document.getElementById('mark-review-btn');
-  if(idx===-1){
-    markedQuestions.push(currentQuestionIndex);
-    btn.innerHTML = '<i class="fas fa-flag"></i> Remove flag';
-    btn.style.background = 'var(--tertiary-gradient)';
-  } else {
-    markedQuestions.splice(idx,1);
-    btn.innerHTML = '<i class="fas fa-flag"></i> Mark for review';
-    btn.style.background = 'var(--secondary-gradient)';
+
+  // ============================================================
+  //  البحث الشامل
+  // ============================================================
+  function performGlobalSearch() {
+    try {
+      const keyword = document.getElementById('globalSearchInput').value.trim();
+      const searchContainer = document.getElementById('quickSearchResults');
+      const keywordSpan = document.getElementById('searchKeyword');
+      const resultsContainer = document.getElementById('quickResultsContainer');
+      if (keyword === "") { searchContainer.classList.remove('visible'); return; }
+      searchContainer.classList.add('visible');
+      keywordSpan.innerText = keyword;
+      let upcomingFiltered = upcomingMatches(matchesData).filter(m => m.team1.includes(keyword) || m.team2.includes(keyword));
+      let previousFiltered = previousGamesData.filter(g => g.homeAr.includes(keyword) || g.awayAr.includes(keyword));
+      let html = '';
+      if (upcomingFiltered.length === 0 && previousFiltered.length === 0) {
+        html = `<div class="empty-state" style="grid-column:1/-1; padding:20px;">❌ لا توجد مباريات قادمة أو سابقة تحمل اسم "${keyword}"</div>`;
+      } else {
+        if (upcomingFiltered.length) {
+          html += `<div style="grid-column:1/-1; margin:5px 0 8px 0; font-weight:bold; color:#FFE0A3;">⚡ المباريات القادمة والجارية (${upcomingFiltered.length})</div>`;
+          upcomingFiltered.forEach(m => {
+            const st = getMatchStatus(m);
+            const dateTimeDisplay = getDateTimeDisplay(m.timeISO);
+            const isLive = st.live;
+            const scoreDisplay = isLive ? '🔴 LIVE' : '🆚';
+            html += `<div class="quick-match-card">
+              <div class="quick-match-teams"><span>${getFlag(m.team1)}</span> ${m.team1} <span style="background:#ffb347;padding:0 8px;border-radius:12px;font-weight:bold;color:#1a2f2f;">${scoreDisplay}</span> ${m.team2} <span>${getFlag(m.team2)}</span></div>
+              <div class="quick-result">${isLive ? '🔴 تُلعب الآن' : (st.text.includes('h') ? '⏳ ' + st.text : '✅ انتهت')}</div>
+              <div style="font-size:0.7rem; text-align:center;">${getDay(m.timeISO)} ${dateTimeDisplay}</div>
+            </div>`;
+          });
+        }
+        if (previousFiltered.length) {
+          html += `<div style="grid-column:1/-1; margin:15px 0 8px 0; font-weight:bold; color:#FFE0A3;">📋 المباريات السابقة (${previousFiltered.length})</div>`;
+          previousFiltered.forEach(g => {
+            const dateTimeDisplay = g.timeMatch ? `${g.formattedDate} - ${g.timeMatch}` : g.formattedDate;
+            html += `<div class="quick-match-card">
+              <div class="quick-match-teams"><span>${getFlag(g.homeAr)}</span> ${g.homeAr} <span style="background:#4CAF50;padding:0 8px;border-radius:12px;font-weight:bold;color:white;">${g.homeScore}-${g.awayScore}</span> ${g.awayAr} <span>${getFlag(g.awayAr)}</span></div>
+              <div class="quick-result">النتيجة النهائية</div>
+              <div style="font-size:0.7rem; text-align:center;">${g.dayName} ${dateTimeDisplay}</div>
+            </div>`;
+          });
+        }
+      }
+      resultsContainer.innerHTML = html;
+    } catch (err) {
+      console.error("❌ performGlobalSearch:", err);
+      document.getElementById('quickResultsContainer').innerHTML = `<div class="empty-state" style="grid-column:1/-1; padding:20px;">⚠️ حدث خطأ في البحث.</div>`;
+    }
   }
-}
-function loadQuiz(){
-  if(shuffledQuestions.length===0) shuffledQuestions = questions.map(q=>shuffleOptions(q));
-  let q = shuffledQuestions[currentQuestionIndex];
-  let locked = answerLocked[currentQuestionIndex];
-  let html = `<div class="question-box fade-in"><div class="question-number"><i class="fas fa-question-circle"></i> Question ${currentQuestionIndex+1} of ${questions.length} ${locked?'<span style="color:var(--accent); margin-right:10px;"><i class="fas fa-lock"></i> Locked</span>':''} ${markedQuestions.includes(currentQuestionIndex)?'<span style="background:var(--tertiary-gradient); color:white; padding:5px 10px; border-radius:10px;"><i class="fas fa-flag"></i> Flagged</span>':''}</div><div class="question-text">${q.q}</div><div class="options">`;
-  q.options.forEach((opt,i)=>{
-    let checked = userAnswers[currentQuestionIndex]===i;
-    let disabled = locked;
-    let labelClass = '';
-    if(locked){
-      labelClass = 'locked';
-      if(checked) labelClass += userAnswers[currentQuestionIndex]===q.answer ? ' correct-answer' : ' wrong-answer';
-      else if(i===q.answer) labelClass += ' correct-answer';
-    } else if(checked) labelClass = 'selected';
-    html += `<label class="${labelClass}"><input type="radio" name="q${currentQuestionIndex}" value="${i}" ${checked?'checked':''} ${disabled?'disabled':''} onchange="selectAnswer(${i})"> ${opt} ${locked && i===q.answer?' <i class="fas fa-check" style="color:var(--secondary);"></i>':''}</label>`;
-  });
-  html += `</div><div id="explanation" class="explanation"></div></div><div class="navigation"><button class="btn btn-secondary" onclick="previousQuestion()" ${currentQuestionIndex===0?'disabled':''}><i class="fas fa-arrow-left"></i> Previous</button><button class="btn btn-primary" onclick="nextQuestion()" ${currentQuestionIndex===questions.length-1?'disabled':''}>Next <i class="fas fa-arrow-right"></i></button></div>`;
-  document.getElementById('quiz').innerHTML = html;
-  document.getElementById('progress').style.width = `${((currentQuestionIndex+1)/questions.length)*100}%`;
-  document.getElementById('quiz-info').innerHTML = `Question ${currentQuestionIndex+1} of ${questions.length}`;
-  let markBtn = document.getElementById('mark-review-btn');
-  if(markedQuestions.includes(currentQuestionIndex)){
-    markBtn.innerHTML = '<i class="fas fa-flag"></i> Remove flag';
-    markBtn.style.background = 'var(--tertiary-gradient)';
-  } else {
-    markBtn.innerHTML = '<i class="fas fa-flag"></i> Mark for review';
-    markBtn.style.background = 'var(--secondary-gradient)';
+
+  // ============================================================
+  //  دوال مساعدة (العلم، التاريخ)
+  // ============================================================
+  function getFlag(name) {
+    const map = {
+      "المكسيك":"🇲🇽","جنوب أفريقيا":"🇿🇦","الأرجنتين":"🇦🇷","الجزائر":"🇩🇿","النمسا":"🇦🇹","الأردن":"🇯🇴","البرتغال":"🇵🇹","الكونغو الديمقراطية":"🇨🇩","كوريا الجنوبية":"🇰🇷","التشيك":"🇨🇿","كندا":"🇨🇦","البوسنة والهرسك":"🇧🇦","أمريكا":"🇺🇸","العراق":"🇮🇶","سويسرا":"🇨🇭","قطر":"🇶🇦","البرازيل":"🇧🇷","المغرب":"🇲🇦","هايتي":"🇭🇹","إسكتلندا":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","أستراليا":"🇦🇺","تركيا":"🇹🇷","ألمانيا":"🇩🇪","كوراساو":"🇨🇼","اليابان":"🇯🇵","هولندا":"🇳🇱","الإكوادور":"🇪🇨","ساحل العاج":"🇨🇮","السويد":"🇸🇪","تونس":"🇹🇳","إسبانيا":"🇪🇸","الرأس الأخضر":"🇨🇻","مصر":"🇪🇬","بلجيكا":"🇧🇪","السعودية":"🇸🇦","أوروغواي":"🇺🇾","إيران":"🇮🇷","نيوزيلندا":"🇳🇿","السنغال":"🇸🇳","فرنسا":"🇫🇷","النرويج":"🇳🇴","إنجلترا":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","كرواتيا":"🇭🇷","بنما":"🇵🇦","كولومبيا":"🇨🇴","أوزبكستان":"🇺🇿","غانا":"🇬🇭","باراغواي":"🇵🇾"
+    };
+    return map[name] || "🏁";
   }
-  if(userAnswers[currentQuestionIndex]!==null) showExplanation();
-}
-function selectAnswer(ans){
-  if(answerLocked[currentQuestionIndex]) return;
-  playSound('click');
-  userAnswers[currentQuestionIndex] = ans;
-  answerLocked[currentQuestionIndex] = true;
-  let q = shuffledQuestions[currentQuestionIndex];
-  if(ans===q.answer) { playCorrectSound(); playSound('success'); } else { playWrongSound(); playSound('error'); }
-  let radios = document.querySelectorAll(`input[name="q${currentQuestionIndex}"]`);
-  radios.forEach(r=>r.disabled=true);
-  radios.forEach(r=>r.closest('label').classList.add('locked'));
-  // إضافة الألوان بعد الإجابة
-  let labels = document.querySelectorAll(`.options label`);
-  labels.forEach((label, idx) => {
-    if(idx === q.answer) label.classList.add('correct-answer');
-    else if(idx === ans && ans !== q.answer) label.classList.add('wrong-answer');
-  });
-  showExplanation();
-}
-function showExplanation(){
-  let q = shuffledQuestions[currentQuestionIndex];
-  let originalQ = questions[currentQuestionIndex]; // للوصول للشروح الأصلية
-  let expDiv = document.getElementById('explanation');
-  let userAns = userAnswers[currentQuestionIndex];
-  if(userAns===null) return;
-  expDiv.style.display = 'block';
-  
-  // رسالة صحة/خطأ باللغتين
-  let resultHTML = userAns===q.answer 
-    ? `<p class="correct"><i class="fas fa-check-circle"></i> Correct! / أحسنت!</p>` 
-    : `<p class="wrong"><i class="fas fa-times-circle"></i> Wrong — الإجابة الصحيحة: <span class="correct">${q.options[q.answer]}</span></p>`;
-  
-  // شرح الإجابة الصحيحة بالعربية والإنجليزية
-  resultHTML += `<div class="explanation-line explanation-correct"><strong>📚 Explanation / شرح:</strong><br>🇬🇧 ${originalQ.explanations.en}<br>🇸🇦 ${originalQ.explanations.ar}</div>`;
-  
-  // إضافة شروح الخيارات الخاطئة إذا وجدت
-  if (originalQ.wrong_explanations) {
-    originalQ.wrong_explanations.en.forEach((enExp, i) => {
-      let arExp = originalQ.wrong_explanations.ar[i] || '';
-      resultHTML += `<div class="explanation-line explanation-wrong-${i+1}"><strong>💡 Note / ملاحظة:</strong><br>🇬🇧 ${enExp}<br>🇸🇦 ${arExp}</div>`;
+
+  function getDay(t) { return ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][new Date(t).getDay()]; }
+  function getDateFmt(t) {
+    const d = new Date(t);
+    const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  }
+  function getTimeFromISO(t) {
+    const d = new Date(t);
+    let hours = d.getHours();
+    let minutes = d.getMinutes();
+    hours = hours < 10 ? '0'+hours : hours;
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    return `${hours}:${minutes}`;
+  }
+  function getDateTimeDisplay(t) { return `${getDateFmt(t)} - ${getTimeFromISO(t)}`; }
+
+  // ============================================================
+  //  إدارة التبويبات
+  // ============================================================
+  function initTabs() {
+    const btns = document.querySelectorAll('.tab-btn');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-tab');
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById(`${id}Tab`).classList.add('active');
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (id === 'previous' && previousGamesData.length === 0) loadPreviousGames();
+        if (id === 'standings') {
+          if (previousGamesData.length === 0) loadPreviousGames();
+          else calculateStandings();
+        }
+        if (id === 'predictions') {
+          renderAllPredictions();
+        }
+      });
     });
   }
-  
-  expDiv.innerHTML = resultHTML;
-}
-function nextQuestion(){ playSound('pageTurn'); if(currentQuestionIndex<questions.length-1){ currentQuestionIndex++; loadQuiz(); } }
-function previousQuestion(){ playSound('pageTurn'); if(currentQuestionIndex>0){ currentQuestionIndex--; loadQuiz(); } }
-function calculateScore(){
-  let correct = 0;
-  userAnswers.forEach((ans,i)=>{ if(ans===questions[i].answer) correct++; });
-  let percent = (correct/questions.length*100).toFixed(2);
-  let eval = '';
-  if(percent>=90) eval = 'Excellent!';
-  else if(percent>=75) eval = 'Very Good';
-  else if(percent>=60) eval = 'Good';
-  else if(percent>=50) eval = 'Pass';
-  else eval = 'Needs Improvement';
-  return {correct, total:questions.length, percentage:parseFloat(percent), evaluation:eval};
-}
-function finishQuiz(){
-  clearInterval(timerInterval);
-  let score = calculateScore();
-  savePerformanceRecord();
-  playFinishSound(); playSound('success');
-  document.getElementById('result-box').style.display = 'block';
-  document.getElementById('result').innerHTML = `Result: ${score.correct}/${score.total}`;
-  document.getElementById('percentage').innerHTML = `Percentage: ${score.percentage}%`;
-  document.getElementById('evaluation').innerHTML = `Evaluation: ${score.evaluation}`;
-  document.getElementById('quiz').style.display = 'none';
-  document.querySelector('.controls').style.display = 'none';
-  document.getElementById('advanced-results').style.display = 'block';
-  setTimeout(()=>{ createPerformanceChart(); createCustomTips(); },100);
-}
-function savePerformanceRecord(){
-  let s = calculateScore();
-  performanceHistory.push({date:new Date().toISOString(), score:s.correct, total:s.total, percentage:s.percentage});
-  if(performanceHistory.length>10) performanceHistory = performanceHistory.slice(-10);
-  savePerformanceHistory();
-}
-function createPerformanceChart(){
-  let ctx = document.getElementById('performanceChart').getContext('2d');
-  let dates = performanceHistory.map(a=>new Date(a.date).toLocaleDateString());
-  let scores = performanceHistory.map(a=>a.percentage);
-  let curr = calculateScore().percentage;
-  dates.push('Now'); scores.push(curr);
-  if(window.performanceChartInstance) window.performanceChartInstance.destroy();
-  window.performanceChartInstance = new Chart(ctx, {
-    type:'line', data:{ labels:dates, datasets:[{ label:'Percentage %', data:scores, borderColor:'#1A5F7A', backgroundColor:'rgba(26,95,122,0.1)', borderWidth:3, fill:true, tension:0.4 }] },
-    options:{ responsive:true, maintainAspectRatio:false }
-  });
-}
-function createCustomTips(){
-  let score = calculateScore();
-  let tips = document.getElementById('tips-container');
-  let html = '';
-  if(score.percentage>=90) html = `<div class="tip-card"><h4><i class="fas fa-star"></i> Outstanding</h4><p>You have a strong grasp of modals and adverbs.</p></div><div class="tip-card"><h4><i class="fas fa-lightbulb"></i> Keep practicing</h4><p>Try using these in your own sentences.</p></div>`;
-  else if(score.percentage>=70) html = `<div class="tip-card"><h4><i class="fas fa-check-circle"></i> Good work</h4><p>Review the questions you missed, especially the differences between must/should.</p></div><div class="tip-card"><h4><i class="fas fa-book-open"></i> Focus on</h4><p>Adverb formation and when to use must vs should.</p></div>`;
-  else html = `<div class="tip-card"><h4><i class="fas fa-exclamation-triangle"></i> Need practice</h4><p>Study the rules for must/should and adverbs again.</p></div><div class="tip-card"><h4><i class="fas fa-redo"></i> Keep trying</h4><p>Retake the quiz after reviewing the explanations.</p></div>`;
-  tips.innerHTML = html;
-}
-function generatePDF(){
-  playSound('click');
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.setFont('Tajawal');
-  doc.setR2L(false);
-  doc.setFontSize(22); doc.text('Grammar Quiz Report – Unit 8', 105, 20, null, null, 'center');
-  doc.setFontSize(12); doc.text(`Date: ${new Date().toLocaleDateString()}`, 105, 30, null, null, 'center');
-  let score = calculateScore();
-  doc.text(`Score: ${score.correct}/${score.total} (${score.percentage}%)`, 20, 50);
-  doc.text(`Evaluation: ${score.evaluation}`, 20, 60);
-  doc.save(`Grammar_Quiz_Report_${new Date().toISOString().slice(0,10)}.pdf`);
-  alert('PDF report generated!');
-}
-function restartQuiz(){
-  playSound('pageTurn');
-  currentQuestionIndex=0;
-  userAnswers=Array(questions.length).fill(null);
-  timeLeft=15*60;
-  markedQuestions=[];
-  answerLocked=Array(questions.length).fill(false);
-  shuffledQuestions=[];
-  document.getElementById('quiz').style.display='block';
-  document.querySelector('.controls').style.display='flex';
-  document.getElementById('result-box').style.display='none';
-  clearInterval(timerInterval);
-  startTimer();
-  loadQuiz();
-  updateTimerDisplay();
-}
-window.onload = async function(){
-  checkDarkModePreference();
-  loadPerformanceHistory();
-  let savedSound = localStorage.getItem('soundEnabled');
-  if(savedSound!==null) soundEnabled = savedSound==='true';
-  let soundBtn = document.getElementById('soundToggleBtn');
-  let icon = soundBtn.querySelector('i');
-  let span = soundBtn.nextElementSibling;
-  if(soundEnabled){ icon.classList.remove('fa-volume-mute'); icon.classList.add('fa-volume-up'); soundBtn.classList.remove('muted'); span.textContent='Sound On'; }
-  else { icon.classList.remove('fa-volume-up'); icon.classList.add('fa-volume-mute'); soundBtn.classList.add('muted'); span.textContent='Sound Off'; }
-  await soundManager.init();
-  loadQuiz();
-  startTimer();
-  window.onclick = (e)=>{
-    if(e.target==document.getElementById('currentScoreModal')) closeCurrentScoreModal();
-    if(e.target==document.getElementById('questionsModal')) closeQuestionsModal();
-  };
-}
+
+  // ============================================================
+  //  ربط الأحداث العامة
+  // ============================================================
+  function bindEvents() {
+    document.getElementById('roundFilter').addEventListener('change', renderUpcoming);
+    document.getElementById('prevSearchInput').addEventListener('input', renderPreviousGamesFiltered);
+    document.getElementById('globalSearchInput').addEventListener('input', performGlobalSearch);
+  }
+
+  function startAutoUpdate() {
+    setInterval(renderUpcoming, 1000);
+    setInterval(async () => {
+      try {
+        const activeTab = document.querySelector('.tab-btn.active')?.getAttribute('data-tab');
+        if (activeTab === 'previous') loadPreviousGames();
+        if (activeTab === 'standings') { if (previousGamesData.length) calculateStandings(); else loadPreviousGames(); }
+        performGlobalSearch();
+        if (activeTab === 'predictions') {
+          renderAllPredictions();
+        }
+        await renderLeaderboard();
+      } catch (err) {
+        console.error("❌ تحديث تلقائي:", err);
+      }
+    }, 60000);
+  }
+
+  // ============================================================
+  //  التهيئة
+  // ============================================================
+  async function init() {
+    try {
+      console.log("🚀 تهيئة التطبيق...");
+      bindEvents();
+      renderUpcoming();
+      startAutoUpdate();
+      initTabs();
+      
+      if (!loadFromCache()) {
+        console.log("📭 لا توجد بيانات في الكاش، جاري التحميل من API...");
+      }
+      
+      setTimeout(() => {
+        loadPreviousGames();
+      }, 500);
+      
+      renderAllPredictions();
+      await renderLeaderboard();
+      console.log("✅ التطبيق جاهز.");
+    } catch (err) {
+      console.error("❌ فشل التهيئة:", err);
+    }
+  }
+  init();
 </script>
 </body>
 </html>
