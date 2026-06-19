@@ -178,7 +178,7 @@
     .news-ticker-wrapper:hover .news-ticker { animation-play-state: paused; }
     
     /* ============================================================
-       شريط التحكم (مبسط)
+       شريط التحكم
        ============================================================ */
     .controls-bar {
       display: flex;
@@ -277,12 +277,16 @@
     }
     
     .day-filter-tabs {
-      display: flex;
+      display: none;
       gap: 6px;
       background: rgba(255,255,255,0.04);
       padding: 4px;
       border-radius: 40px;
       border: 1px solid var(--border-color);
+    }
+    
+    .day-filter-tabs.visible {
+      display: flex;
     }
     
     .day-filter-tabs .day-btn {
@@ -1057,58 +1061,6 @@
     .modal-message.error { color: var(--danger); background: rgba(231,76,60,0.08); }
     .modal-message.warning { color: var(--gold-light); background: rgba(240,180,41,0.08); }
     
-    /* ============================================================
-       المسابقات (معدلة)
-       ============================================================ */
-    .competitions-section {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      border: 1px solid var(--border-gold);
-      margin-bottom: 20px;
-    }
-    
-    .competitions-section .comp-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    
-    .competitions-section .comp-header h3 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--gold-light);
-    }
-    
-    .competitions-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 12px;
-    }
-    
-    .competition-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      padding: 14px;
-      text-align: center;
-      transition: var(--transition);
-    }
-    
-    .competition-card:hover {
-      border-color: var(--gold);
-      transform: translateY(-2px);
-    }
-    
-    .competition-card .comp-icon { font-size: 2rem; display: block; margin-bottom: 4px; }
-    .competition-card .comp-name { font-weight: 700; font-size: 0.85rem; }
-    .competition-card .comp-desc { font-size: 0.65rem; color: var(--text-secondary); margin: 4px 0; }
-    .competition-card .comp-prize { font-size: 0.7rem; color: var(--gold-light); font-weight: 600; }
-    
     .footer {
       margin-top: 48px;
       text-align: center;
@@ -1183,8 +1135,6 @@
       .modal-teams { flex-wrap: wrap; gap: 6px; }
       .modal-teams .m-team { font-size: 0.85rem; }
       .modal-options label { padding: 10px 14px; }
-      
-      .competitions-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     }
     
     @media (min-width: 768px) {
@@ -1257,7 +1207,7 @@
   </div>
   
   <!-- ============================================================
-       شريط التحكم (مبسط - فقط مجموعة وبحث)
+       شريط التحكم
        ============================================================ -->
   <div class="controls-bar">
     <div class="control-group">
@@ -1285,48 +1235,6 @@
   </div>
   
   <!-- ============================================================
-       المسابقات (معدلة - ألغيت السرعة القصوى)
-       ============================================================ -->
-  <div class="competitions-section" id="competitionsSection">
-    <div class="comp-header">
-      <h3>🏆 المسابقات والفعاليات</h3>
-      <span style="font-size:0.7rem;color:var(--text-secondary);">انضم وتنافس!</span>
-    </div>
-    <div class="competitions-grid" id="competitionsContainer">
-      <div class="competition-card">
-        <span class="comp-icon">🔥</span>
-        <div class="comp-name">سلسلة الانتصارات</div>
-        <div class="comp-desc">أطول سلسلة توقعات صحيحة</div>
-        <div class="comp-prize">🏅 5 نقاط إضافية</div>
-      </div>
-      <div class="competition-card">
-        <span class="comp-icon">🎯</span>
-        <div class="comp-name">خبير التوقعات</div>
-        <div class="comp-desc">80%+ دقة مع 20+ توقع</div>
-        <div class="comp-prize">⭐ شارة "خبير"</div>
-      </div>
-      <div class="competition-card">
-        <span class="comp-icon">👑</span>
-        <div class="comp-name">ملك التوقعات</div>
-        <div class="comp-desc">أفضل لاعب في البطولة</div>
-        <div class="comp-prize">👑 شارة "ملك"</div>
-      </div>
-      <div class="competition-card">
-        <span class="comp-icon">📊</span>
-        <div class="comp-name">المحلل الذكي</div>
-        <div class="comp-desc">100+ توقع</div>
-        <div class="comp-prize">📊 شارة "محلل"</div>
-      </div>
-      <div class="competition-card">
-        <span class="comp-icon">🎲</span>
-        <div class="comp-name">الحظ السعيد</div>
-        <div class="comp-desc">جائزة عشوائية للمتوقعين</div>
-        <div class="comp-prize">🎁 جائزة مفاجئة</div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- ============================================================
        التبويبات مع فلتر اليوم
        ============================================================ -->
   <div class="tabs-container">
@@ -1337,8 +1245,8 @@
       <button class="tab-btn" data-tab="predictions">🗳️ جميع التوقعات</button>
     </div>
     
-    <!-- فلتر اليوم بجانب التبويبات -->
-    <div class="day-filter-tabs" id="dayFilterTabs">
+    <!-- فلتر اليوم - يظهر فقط عند اختيار تبويب "القادمة والجارية" -->
+    <div class="day-filter-tabs visible" id="dayFilterTabs">
       <button class="day-btn active" data-day="all">📅 الكل</button>
       <button class="day-btn" data-day="today">📌 اليوم</button>
       <button class="day-btn" data-day="tomorrow">📌 غداً</button>
@@ -1834,7 +1742,19 @@
   let currentDayFilter = 'all';
   
   // ============================================================
-  //  عرض المباريات القادمة (مع فلتر اليوم وأزرار التوقع/الاستعراض)
+  //  إظهار/إخفاء فلتر اليوم حسب التبويب النشط
+  // ============================================================
+  function toggleDayFilter(tabId) {
+    const dayFilterTabs = document.getElementById('dayFilterTabs');
+    if (tabId === 'upcoming') {
+      dayFilterTabs.classList.add('visible');
+    } else {
+      dayFilterTabs.classList.remove('visible');
+    }
+  }
+  
+  // ============================================================
+  //  عرض المباريات القادمة
   // ============================================================
   function renderUpcoming() {
     try {
@@ -2569,6 +2489,9 @@
         btns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
+        // إظهار/إخفاء فلتر اليوم
+        toggleDayFilter(id);
+        
         if (id === 'previous' && !previousGamesData.length) loadPreviousGames();
         if (id === 'standings' && !previousGamesData.length) loadPreviousGames();
         if (id === 'standings' && previousGamesData.length) calculateStandings();
@@ -2670,6 +2593,9 @@
     initTabs();
     renderUpcoming();
     startAutoUpdate();
+    
+    // التأكد من ظهور فلتر اليوم للتبويب النشط افتراضياً
+    toggleDayFilter('upcoming');
     
     if (!loadFromCache()) {
       console.log("📭 لا توجد بيانات في الكاش");
