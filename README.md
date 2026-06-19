@@ -1157,7 +1157,7 @@
       <span class="icon">🏆</span>
       <div>
         <h1>كأس العالم 2026</h1>
-        <span class="sub">⚡ المتتبع التفاعلي · غرفة معلمي سعيد بن العاص</span>
+        <span class="sub">⚡ غرفة معلمي سعيد بن العاص</span>
       </div>
     </div>
     <div class="header-actions">
@@ -1176,7 +1176,7 @@
   <!-- ===== شريط الأخبار ===== -->
   <div class="news-ticker-wrapper">
     <div class="news-ticker">
-      <span>🏆 <span class="highlight">كأس العالم 2026</span> — تابع المباريات، توقع النتائج، وتنافس مع الأصدقاء</span>
+      <span>🏆 <span class="highlight">كأس العالم 2026</span> — تابع المباريات، توقع النتائج</span>
       <span class="sep">|</span>
       <span>🗳️ <span class="highlight">طريقة التوقع:</span> اختر المباراة → اختر الفائز أو التعادل → أدخل اسمك → احفظ التوقع</span>
       <span class="sep">|</span>
@@ -1304,8 +1304,7 @@
   </div>
   
   <footer class="footer">
-    🏆 كأس العالم 2026 · غرفة معلمي سعيد بن العاص<br>
-    <span class="gold-text">✨ توقع · تنافس · اربح ✨</span>
+    🏆 كأس العالم 2026 · غرفة معلمي سعيد بن العاص
   </footer>
 </div>
 
@@ -2137,7 +2136,7 @@
               <div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div>
               <span class="name-p">${p.user_name || 'مجهول'}</span>
             </div>
-            <div class="prediction-text">🔮 <span class="highlight">${text}</span></div>
+            <div class="prediction-text">🔮 <span>${text}</span></div>
             <div style="font-size:0.65rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? new Date(p.created_at).toLocaleString('ar') : 'تاريخ غير معروف'}</div>
           </div>
         `;
