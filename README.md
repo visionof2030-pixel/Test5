@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -67,134 +67,9 @@
     ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
     
     /* ============================================================
-       البار العلوي الأول (Top Bar 1) - معلومات التاريخ والوقت
+       البار العلوي (Top Bar) - يغطي العرض بالكامل
        ============================================================ */
-    .top-bar-1 {
-      width: 100%;
-      background: linear-gradient(135deg, #1a2a4a, #0f1f3a);
-      padding: 10px 20px;
-      border-bottom: 1px solid rgba(240, 180, 41, 0.15);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .top-bar-1::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(90deg, transparent, rgba(240, 180, 41, 0.03), transparent);
-      animation: shimmer 8s infinite;
-    }
-    
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-    
-    .top-bar-1 .top-bar-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .top-bar-1 .datetime-info {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    
-    .top-bar-1 .datetime-info .date-display {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--gold-light);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .top-bar-1 .datetime-info .time-display {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #88bbdd;
-      font-family: 'Courier New', monospace;
-      direction: ltr;
-    }
-    
-    .top-bar-1 .upcoming-matches {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    
-    .top-bar-1 .upcoming-matches .match-item {
-      background: rgba(255,255,255,0.05);
-      padding: 4px 14px;
-      border-radius: 40px;
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      border: 1px solid rgba(255,255,255,0.04);
-      animation: fadeInOut 4s ease-in-out infinite;
-    }
-    
-    .top-bar-1 .upcoming-matches .match-item:nth-child(1) { animation-delay: 0s; }
-    .top-bar-1 .upcoming-matches .match-item:nth-child(2) { animation-delay: 1.5s; }
-    .top-bar-1 .upcoming-matches .match-item:nth-child(3) { animation-delay: 3s; }
-    
-    @keyframes fadeInOut {
-      0%, 100% { opacity: 0.4; transform: scale(0.98); }
-      50% { opacity: 1; transform: scale(1); }
-    }
-    
-    .top-bar-1 .upcoming-matches .match-item .flag { font-size: 1rem; }
-    .top-bar-1 .upcoming-matches .match-item .vs { color: var(--gold); opacity: 0.5; font-size: 0.6rem; }
-    .top-bar-1 .upcoming-matches .match-item .time-tag {
-      background: rgba(240, 180, 41, 0.1);
-      color: var(--gold-light);
-      padding: 1px 8px;
-      border-radius: 20px;
-      font-size: 0.6rem;
-    }
-    
-    [data-theme="light"] .top-bar-1 {
-      background: linear-gradient(135deg, #d5dce6, #c8d0da);
-    }
-    
-    [data-theme="light"] .top-bar-1 .datetime-info .date-display {
-      color: #1a2332;
-    }
-    
-    [data-theme="light"] .top-bar-1 .datetime-info .time-display {
-      color: #3a5a7a;
-    }
-    
-    [data-theme="light"] .top-bar-1 .upcoming-matches .match-item {
-      background: rgba(0,0,0,0.04);
-      border-color: rgba(0,0,0,0.06);
-    }
-    
-    [data-theme="light"] .top-bar-1 .upcoming-matches .match-item .time-tag {
-      background: rgba(240, 180, 41, 0.15);
-      color: #b8860b;
-    }
-    
-    /* ============================================================
-       البار العلوي الثاني (Top Bar 2) - الشعار الرئيسي
-       ============================================================ */
-    .top-bar-2 {
+    .top-bar {
       width: 100%;
       background: linear-gradient(135deg, #0f1f3a, #1a2f4a);
       padding: 8px 20px;
@@ -204,7 +79,7 @@
       position: relative;
     }
     
-    .top-bar-2 .top-bar-content {
+    .top-bar .top-bar-content {
       max-width: 1200px;
       margin: 0 auto;
       display: flex;
@@ -214,7 +89,7 @@
       gap: 10px;
     }
     
-    .top-bar-2 .top-bar-title {
+    .top-bar .top-bar-title {
       font-size: 1.1rem;
       font-weight: 900;
       color: var(--gold-light);
@@ -224,20 +99,20 @@
       gap: 10px;
     }
     
-    .top-bar-2 .top-bar-title .icon { font-size: 1.5rem; }
+    .top-bar .top-bar-title .icon { font-size: 1.5rem; }
     
-    .top-bar-2 .top-bar-sub {
+    .top-bar .top-bar-sub {
       font-size: 0.7rem;
       color: var(--text-secondary);
       font-weight: 400;
     }
     
-    [data-theme="light"] .top-bar-2 {
+    [data-theme="light"] .top-bar {
       background: linear-gradient(135deg, #d5dce6, #e8edf5);
       border-bottom: 2px solid var(--gold);
     }
     
-    [data-theme="light"] .top-bar-2 .top-bar-title {
+    [data-theme="light"] .top-bar .top-bar-title {
       color: #1a2332;
     }
     
@@ -515,7 +390,7 @@
     }
     
     /* ============================================================
-       LEADERBOARD (بدون تظليل)
+       LEADERBOARD
        ============================================================ */
     .leaderboard-section {
       background: linear-gradient(145deg, rgba(10, 22, 40, 0.95), rgba(20, 40, 70, 0.9));
@@ -663,6 +538,7 @@
     }
     
     .champion-card .info .stats-row .item strong { color: var(--text-primary); font-weight: 700; }
+    .champion-card .info .stats-row .item .highlight { color: var(--gold-light); }
     
     .champion-card .progress-wrapper { width: 100%; margin-top: 12px; }
     
@@ -1250,14 +1126,9 @@
     @media (max-width: 640px) {
       .app-container { padding: 0 8px 30px; }
       
-      .top-bar-1 { padding: 8px 12px; }
-      .top-bar-1 .datetime-info .date-display { font-size: 0.7rem; }
-      .top-bar-1 .datetime-info .time-display { font-size: 0.7rem; }
-      .top-bar-1 .upcoming-matches .match-item { font-size: 0.6rem; padding: 3px 10px; }
-      
-      .top-bar-2 { padding: 6px 12px; }
-      .top-bar-2 .top-bar-title { font-size: 0.9rem; }
-      .top-bar-2 .top-bar-sub { font-size: 0.6rem; }
+      .top-bar { padding: 6px 12px; }
+      .top-bar .top-bar-title { font-size: 0.9rem; }
+      .top-bar .top-bar-sub { font-size: 0.6rem; }
       
       .sticky-header {
         padding: 10px 14px;
@@ -1331,28 +1202,9 @@
 <body>
 
 <!-- ============================================================
-     البار العلوي الأول (Top Bar 1) - تاريخ ووقت ومباريات اليومين القادمين
+     البار العلوي (Top Bar) - يغطي العرض بالكامل
      ============================================================ -->
-<div class="top-bar-1" id="topBar1">
-  <div class="top-bar-content">
-    <div class="datetime-info">
-      <div class="date-display">
-        <span>📅</span>
-        <span id="currentDate">جارٍ التحميل...</span>
-      </div>
-      <div class="time-display" id="currentTime">--:--:--</div>
-    </div>
-    <div class="upcoming-matches" id="upcomingMatchesBar">
-      <span style="font-size:0.65rem; color:var(--text-secondary);">⚡ المباريات القادمة:</span>
-      <span class="match-item">⏳ جاري التحميل...</span>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================
-     البار العلوي الثاني (Top Bar 2) - الشعار الرئيسي
-     ============================================================ -->
-<div class="top-bar-2">
+<div class="top-bar">
   <div class="top-bar-content">
     <div class="top-bar-title">
       <span class="icon">🏆</span>
@@ -1401,7 +1253,7 @@
   </div>
   
   <!-- ============================================================
-       🏆 LEADERBOARD (بدون تظليل)
+       🏆 LEADERBOARD
        ============================================================ -->
   <div class="leaderboard-section" id="leaderboardSection">
     <div class="lb-header">
@@ -1955,68 +1807,6 @@
   let currentDayFilter = 'all';
   
   // ============================================================
-  //  تحديث البار العلوي - التاريخ والوقت والمباريات
-  // ============================================================
-  function updateTopBar() {
-    // التاريخ والوقت
-    const now = new Date();
-    const dateEl = document.getElementById('currentDate');
-    const timeEl = document.getElementById('currentTime');
-    
-    const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
-    
-    dateEl.textContent = `${days[now.getDay()]}، ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-    timeEl.textContent = now.toLocaleTimeString('ar-EG', { hour12: false });
-    
-    // المباريات لليومين القادمين
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const dayAfterTomorrow = new Date(today);
-    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
-    
-    const upcoming = matchesData.filter(m => {
-      const matchDate = new Date(m.timeISO);
-      matchDate.setHours(0, 0, 0, 0);
-      return matchDate.getTime() === today.getTime() || 
-             matchDate.getTime() === tomorrow.getTime() ||
-             matchDate.getTime() === dayAfterTomorrow.getTime();
-    });
-    
-    const container = document.getElementById('upcomingMatchesBar');
-    
-    if (upcoming.length === 0) {
-      container.innerHTML = `
-        <span style="font-size:0.65rem; color:var(--text-secondary);">⚡ المباريات القادمة:</span>
-        <span class="match-item">📭 لا توجد مباريات في اليومين القادمين</span>
-      `;
-      return;
-    }
-    
-    // ترتيب حسب الوقت
-    upcoming.sort((a,b) => matchTime(a.timeISO) - matchTime(b.timeISO));
-    
-    // أخذ أول 3 مباريات فقط
-    const topMatches = upcoming.slice(0, 3);
-    
-    container.innerHTML = `
-      <span style="font-size:0.65rem; color:var(--text-secondary);">⚡ المباريات القادمة:</span>
-      ${topMatches.map(m => `
-        <span class="match-item">
-          <span class="flag">${getFlag(m.team1)}</span>
-          ${m.team1}
-          <span class="vs">vs</span>
-          ${m.team2}
-          <span class="flag">${getFlag(m.team2)}</span>
-          <span class="time-tag">${getTimeFromISO(m.timeISO)}</span>
-        </span>
-      `).join('')}
-    `;
-  }
-  
-  // ============================================================
   //  إظهار/إخفاء فلتر اليوم حسب التبويب النشط
   // ============================================================
   function toggleDayFilter(tabId) {
@@ -2197,7 +1987,7 @@
   document.getElementById('matchSearchInput')?.addEventListener('input', renderUpcoming);
   
   // ============================================================
-  //  🏆 LEADERBOARD (بدون تظليل)
+  //  🏆 LEADERBOARD
   // ============================================================
   function calculateLeaderboard(predictions, matches) {
     const scores = {};
@@ -2283,7 +2073,7 @@
             </div>
             <div class="stats-row">
               <span class="item">🏆 <strong>${champ.points}</strong> نقطة</span>
-              <span class="item">✅ <strong>${champ.correct}</strong> / ${champ.total}</span>
+              <span class="item">✅ <strong class="highlight">${champ.correct}</strong> / ${champ.total}</span>
               <span class="item">📊 <strong>${accuracy}%</strong> نجاح</span>
             </div>
             <div class="progress-wrapper">
@@ -2868,10 +2658,6 @@
     initTabs();
     renderUpcoming();
     startAutoUpdate();
-    
-    // تحديث البار العلوي
-    updateTopBar();
-    setInterval(updateTopBar, 1000);
     
     // التأكد من ظهور فلتر اليوم للتبويب النشط افتراضياً
     toggleDayFilter('upcoming');
