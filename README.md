@@ -268,8 +268,9 @@
       color: var(--text-primary);
     }
     
+    /* زر نسخ الروابط - مخفي تماماً */
     .share-all-container {
-      display: flex;
+      display: none;
       gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 16px;
@@ -279,6 +280,10 @@
       border-radius: var(--radius-md);
       align-items: center;
       justify-content: space-between;
+    }
+    
+    .share-all-container.visible {
+      display: flex;
     }
     
     .share-all-container .share-info {
@@ -318,6 +323,119 @@
     }
     
     .share-all-btn:active { transform: scale(0.97); }
+    
+    /* نافذة كلمة السر - مخفية */
+    .password-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 99999;
+      justify-content: center;
+      align-items: center;
+      animation: fadeInModal 0.3s ease;
+    }
+    
+    .password-overlay.active { display: flex; }
+    
+    .password-box {
+      background: linear-gradient(145deg, rgba(12, 28, 50, 0.98), rgba(6, 16, 30, 0.99));
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    }
+    
+    .password-box .lock-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 12px;
+    }
+    
+    .password-box .p-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      margin-bottom: 8px;
+    }
+    
+    .password-box .p-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    
+    .password-box input {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 60px;
+      border: 2px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      color: var(--text-primary);
+      font-size: 1rem;
+      outline: none;
+      transition: var(--transition);
+      font-family: inherit;
+      text-align: center;
+      letter-spacing: 4px;
+      font-size: 1.2rem;
+    }
+    
+    .password-box input:focus {
+      border-color: var(--gold);
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .password-box input::placeholder {
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+      font-size: 0.9rem;
+    }
+    
+    .password-box .p-btn {
+      margin-top: 16px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 60px;
+      background: linear-gradient(135deg, var(--gold), #d49a1a);
+      color: #0a1628;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    
+    .password-box .p-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(240, 180, 41, 0.2);
+    }
+    
+    .password-box .p-error {
+      margin-top: 12px;
+      color: var(--danger);
+      font-size: 0.85rem;
+      font-weight: 600;
+      min-height: 24px;
+    }
+    
+    .password-box .p-close {
+      margin-top: 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+    
+    .password-box .p-close:hover { color: var(--text-primary); }
     
     .tabs-container {
       display: flex;
@@ -1179,6 +1297,13 @@
       color: var(--text-secondary);
       border-top: 1px solid rgba(255,255,255,0.04);
       padding-top: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    
+    .footer:hover {
+      color: var(--gold-light);
     }
     
     .footer .gold-text { color: var(--gold-light); }
@@ -1226,6 +1351,7 @@
       .modal-teams { flex-wrap: wrap; gap: 6px; }
       .modal-teams .m-team { font-size: 0.85rem; }
       .modal-options label { padding: 10px 14px; }
+      .password-box { padding: 24px; }
     }
     
     @media (min-width: 768px) {
@@ -1316,7 +1442,7 @@
     </div>
   </div>
   
-  <!-- زر مشاركة جميع روابط اليوم والغد -->
+  <!-- زر نسخ الروابط - مخفي تماماً ولا يظهر إلا بكلمة السر -->
   <div class="share-all-container" id="shareAllContainer">
     <div class="share-info">
       📋 <span>روابط مباريات اليوم والغد</span>
@@ -1376,9 +1502,22 @@
     </div>
   </div>
   
-  <footer class="footer">
+  <footer class="footer" id="footerTrigger">
     🏆 كأس العالم 2026 · غرفة معلمي سعيد بن العاص
   </footer>
+</div>
+
+<!-- نافذة إدخال كلمة السر -->
+<div class="password-overlay" id="passwordOverlay">
+  <div class="password-box">
+    <span class="lock-icon">🔒</span>
+    <div class="p-title">تأكيد الوصول</div>
+    <div class="p-sub">يرجى إدخال رمز الوصول للمتابعة</div>
+    <input type="password" id="passwordInput" placeholder="••••" maxlength="10" autofocus>
+    <button class="p-btn" id="passwordSubmitBtn">تأكيد</button>
+    <div class="p-error" id="passwordError"></div>
+    <button class="p-close" id="passwordCloseBtn">إلغاء</button>
+  </div>
 </div>
 
 <div class="modal-overlay" id="predictionModal">
@@ -1446,6 +1585,45 @@
   } catch (e) {
     console.error("❌ Supabase فشل:", e);
     supabaseClient = null;
+  }
+  
+  // ============================================================
+  //  نظام كلمة السر
+  // ============================================================
+  const SECRET_CODE = "1406";
+  let isAuthorized = false;
+  
+  function showPasswordOverlay() {
+    document.getElementById('passwordOverlay').classList.add('active');
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordError').textContent = '';
+    setTimeout(() => {
+      document.getElementById('passwordInput').focus();
+    }, 300);
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function hidePasswordOverlay() {
+    document.getElementById('passwordOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  function checkPassword() {
+    const input = document.getElementById('passwordInput').value.trim();
+    const errorEl = document.getElementById('passwordError');
+    
+    if (input === SECRET_CODE) {
+      isAuthorized = true;
+      errorEl.textContent = '';
+      hidePasswordOverlay();
+      document.getElementById('shareAllContainer').classList.add('visible');
+      updateShareAllCount();
+      showCopyToast('✅ تم تفعيل أداة نسخ الروابط');
+    } else {
+      errorEl.textContent = '❌ رمز غير صحيح';
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordInput').focus();
+    }
   }
   
   // ============================================================
@@ -1842,18 +2020,21 @@
   let currentDayFilter = 'all';
   
   // ============================================================
-  //  دالة مشاركة جميع روابط اليوم والغد - مع روابط قابلة للضغط
+  //  دالة مشاركة جميع روابط اليوم والغد
   // ============================================================
   function shareAllTodayTomorrow() {
+    if (!isAuthorized) {
+      showPasswordOverlay();
+      return;
+    }
+    
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
-    // المباريات التي لم تنته بعد (قادمة أو جارية)
     const activeMatches = matchesData.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now());
     
-    // فلترة مباريات اليوم والغد
     const todayTomorrowMatches = activeMatches.filter(m => {
       const matchDate = new Date(m.timeISO);
       matchDate.setHours(0, 0, 0, 0);
@@ -1865,20 +2046,14 @@
       return;
     }
     
-    // ترتيب المباريات حسب التاريخ
     todayTomorrowMatches.sort((a, b) => matchTime(a.timeISO) - matchTime(b.timeISO));
     
-    // بناء النص للمشاركة مع روابط HTML قابلة للضغط
     const baseUrl = window.location.origin + window.location.pathname;
     
-    // نسخة HTML للنص مع روابط قابلة للضغط
-    let htmlText = '🏆 كأس العالم 2026 - روابط توقع مباريات اليوم والغد\n\n';
-    htmlText += `📅 اليوم: ${getDateFmt(new Date().toISOString())}\n`;
-    htmlText += `📅 غداً: ${getDateFmt(tomorrow.toISOString())}\n`;
-    htmlText += '━'.repeat(30) + '\n\n';
-    
-    // نسخة نصية عادية للروابط (تُنسخ مع التطبيقات التي تدعم الروابط)
-    let plainText = htmlText;
+    let shareText = '🏆 كأس العالم 2026 - روابط توقع مباريات اليوم والغد\n\n';
+    shareText += `📅 اليوم: ${getDateFmt(new Date().toISOString())}\n`;
+    shareText += `📅 غداً: ${getDateFmt(tomorrow.toISOString())}\n`;
+    shareText += '━'.repeat(30) + '\n\n';
     
     todayTomorrowMatches.forEach((m, index) => {
       const matchDate = new Date(m.timeISO);
@@ -1886,36 +2061,18 @@
       const timeStr = getTimeFromISO(m.timeISO);
       const link = `${baseUrl}?m=${m.id}`;
       
-      // في النص العادي نضع الرابط مباشرة
-      plainText += `${index + 1}. ${getFlag(m.team1)} ${m.team1} 🆚 ${getFlag(m.team2)} ${m.team2}\n`;
-      plainText += `   🕒 ${dayLabel} - ${timeStr}\n`;
-      plainText += `   🔗 ${link}\n\n`;
-      
-      // في HTML نضع الرابط كـ <a> tag
-      htmlText += `${index + 1}. ${getFlag(m.team1)} ${m.team1} 🆚 ${getFlag(m.team2)} ${m.team2}\n`;
-      htmlText += `   🕒 ${dayLabel} - ${timeStr}\n`;
-      htmlText += `   🔗 <${link}>\n\n`;
+      shareText += `${index + 1}. ${getFlag(m.team1)} ${m.team1} 🆚 ${getFlag(m.team2)} ${m.team2}\n`;
+      shareText += `   🕒 ${dayLabel} - ${timeStr}\n`;
+      shareText += `   🔗 <${link}>\n\n`;
     });
     
-    htmlText += '━'.repeat(30) + '\n';
-    htmlText += '✨ توقع · تنافس · اربح ✨\n';
-    htmlText += '#كأس_العالم_2026 #توقعات';
+    shareText += '━'.repeat(30) + '\n';
+    shareText += '✨ توقع · تنافس · اربح ✨\n';
+    shareText += '#كأس_العالم_2026 #توقعات';
     
-    plainText += '━'.repeat(30) + '\n';
-    plainText += '✨ توقع · تنافس · اربح ✨\n';
-    plainText += '#كأس_العالم_2026 #توقعات';
-    
-    // نستخدم HTML للنص المنسوخ مع الروابط القابلة للضغط
-    // في تطبيقات مثل واتساب، بعض التطبيقات تدعم تنسيق HTML
-    // لكننا سنستخدم الطريقة التي تعمل في معظم التطبيقات: وضع الروابط بين <>
-    
-    // نستخدم طريقة النسخ التي تدعم HTML
-    const shareText = plainText; // نستخدم النص العادي الذي يحتوي على الروابط كـ URL
-    
-    // محاولة نسخ النص مع الروابط
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(shareText).then(() => {
-        showCopyToast(`✅ تم نسخ روابط ${todayTomorrowMatches.length} مباراة! الروابط قابلة للضغط في معظم التطبيقات`);
+        showCopyToast(`✅ تم نسخ روابط ${todayTomorrowMatches.length} مباراة!`);
       }).catch(() => {
         fallbackCopy(shareText);
       });
@@ -1936,15 +2093,16 @@
       document.execCommand('copy');
       showCopyToast('✅ تم نسخ جميع الروابط!');
     } catch (e) {
-      // نعرض النص في نافذة منبثقة مع الروابط القابلة للضغط
-      const shareText = text;
-      // نستخدم prompt لعرض النص مع الروابط
-      const result = prompt('انسخ النص التالي للمشاركة (الروابط قابلة للضغط في معظم التطبيقات):', shareText);
+      const result = prompt('انسخ النص التالي للمشاركة:', text);
     }
     document.body.removeChild(textArea);
   }
   
   function updateShareAllCount() {
+    if (!isAuthorized) {
+      document.getElementById('shareAllCount').textContent = '🔒';
+      return;
+    }
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
@@ -1961,7 +2119,7 @@
   }
   
   // ============================================================
-  //  عرض المباريات حسب المجموعة مع المباريات السابقة
+  //  عرض المباريات حسب المجموعة
   // ============================================================
   function renderGroupMatches(groupId) {
     if (groupId === 'all') {
@@ -1972,19 +2130,15 @@
     const teams = finalGroups[groupId] || [];
     if (teams.length === 0) return;
     
-    // جميع المباريات التي تضم فرق من هذه المجموعة
     const groupMatches = matchesData.filter(m => 
       teams.includes(m.team1) || teams.includes(m.team2)
     );
     
-    // فصل المباريات إلى سابقة وقادمة
     const nowTime = now();
     const previous = groupMatches.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) < nowTime);
     const upcoming = groupMatches.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) >= nowTime);
     
-    // ترتيب القادمة حسب التاريخ
     upcoming.sort((a, b) => matchTime(a.timeISO) - matchTime(b.timeISO));
-    // ترتيب السابقة حسب التاريخ (الأحدث أولاً)
     previous.sort((a, b) => matchTime(b.timeISO) - matchTime(a.timeISO));
     
     const container = document.getElementById('matchesContainer');
@@ -1998,13 +2152,11 @@
     
     let html = '';
     
-    // المباريات القادمة والجارية
     if (upcoming.length > 0) {
       html += `<div style="grid-column:1/-1;margin-bottom:8px;font-weight:800;color:var(--gold-light);font-size:1.1rem;">⚡ المباريات القادمة والجارية (${upcoming.length})</div>`;
       html += upcoming.map(m => renderMatchCard(m, true)).join('');
     }
     
-    // المباريات السابقة مع النتائج
     if (previous.length > 0) {
       html += `<div style="grid-column:1/-1;margin-top:20px;margin-bottom:8px;font-weight:800;color:var(--text-secondary);font-size:1.1rem;">📋 المباريات السابقة (${previous.length})</div>`;
       html += previous.map(m => renderMatchCard(m, false)).join('');
@@ -2032,7 +2184,6 @@
       scoreClass = 'live';
       matchClass = 'live';
     } else if (!isUpcoming) {
-      // مباراة سابقة - نبحث عن النتيجة
       const previousMatch = previousGamesData.find(p => 
         (p.homeAr === m.team1 && p.awayAr === m.team2) || 
         (p.homeAr === m.team2 && p.awayAr === m.team1)
@@ -2112,7 +2263,6 @@
     `;
   }
   
-  // تعديل دالة renderUpcoming لتستخدم نظام المجموعات
   function renderUpcoming() {
     try {
       const groupFilter = document.getElementById('groupFilter')?.value || 'all';
@@ -2206,6 +2356,32 @@
   
   document.getElementById('groupFilter')?.addEventListener('change', renderUpcoming);
   document.getElementById('matchSearchInput')?.addEventListener('input', renderUpcoming);
+  
+  // أحداث نافذة كلمة السر
+  document.getElementById('footerTrigger').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (isAuthorized) {
+      document.getElementById('shareAllContainer').classList.toggle('visible');
+      if (document.getElementById('shareAllContainer').classList.contains('visible')) {
+        updateShareAllCount();
+        showCopyToast('🔓 تم إظهار أداة نسخ الروابط');
+      } else {
+        showCopyToast('🔒 تم إخفاء أداة نسخ الروابط');
+      }
+    } else {
+      showPasswordOverlay();
+    }
+  });
+  
+  document.getElementById('passwordSubmitBtn').addEventListener('click', checkPassword);
+  document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+    if (e.key === 'Escape') hidePasswordOverlay();
+  });
+  document.getElementById('passwordCloseBtn').addEventListener('click', hidePasswordOverlay);
+  document.getElementById('passwordOverlay').addEventListener('click', function(e) {
+    if (e.target === this) hidePasswordOverlay();
+  });
   
   function calculateLeaderboard(predictions, matches) {
     const scores = {};
