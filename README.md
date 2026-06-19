@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>🏆 كأس العالم 2026 – المتتبع التفاعلي</title>
+  <title>🏆 كأس العالم 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     /* ============================================================
@@ -52,7 +52,7 @@
     body {
       background: var(--bg-body);
       font-family: 'Cairo', 'Segoe UI', sans-serif;
-      padding: 16px 12px 40px;
+      padding: 0;
       min-height: 100vh;
       color: var(--text-primary);
       font-size: 14px;
@@ -60,11 +60,61 @@
       transition: var(--transition);
     }
     
-    .app-container { max-width: 1200px; margin: 0 auto; width: 100%; }
+    .app-container { max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 12px 40px; }
     
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 10px; }
     ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+    
+    /* ============================================================
+       البار العلوي (Top Bar) - يغطي العرض بالكامل
+       ============================================================ */
+    .top-bar {
+      width: 100%;
+      background: linear-gradient(135deg, #0f1f3a, #1a2f4a);
+      padding: 8px 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      box-shadow: 0 2px 20px rgba(240, 180, 41, 0.1);
+      position: relative;
+    }
+    
+    .top-bar .top-bar-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .top-bar .top-bar-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--gold-light);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .top-bar .top-bar-title .icon { font-size: 1.5rem; }
+    
+    .top-bar .top-bar-sub {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+    
+    [data-theme="light"] .top-bar {
+      background: linear-gradient(135deg, #d5dce6, #e8edf5);
+      border-bottom: 2px solid var(--gold);
+    }
+    
+    [data-theme="light"] .top-bar .top-bar-title {
+      color: #1a2332;
+    }
     
     /* ============================================================
        الهيدر
@@ -78,7 +128,7 @@
       -webkit-backdrop-filter: blur(16px);
       border-radius: 0 0 32px 32px;
       padding: 14px 20px;
-      margin: -16px -12px 20px;
+      margin: 0 -12px 20px;
       border-bottom: 1px solid var(--border-gold);
       box-shadow: 0 4px 30px rgba(0,0,0,0.4);
       display: flex;
@@ -168,7 +218,6 @@
     
     .news-ticker span { display: inline-block; padding: 0 14px; }
     .news-ticker .sep { color: var(--gold); opacity: 0.3; }
-    .news-ticker .highlight { color: var(--gold-light); font-weight: 700; }
     
     @keyframes tickerScroll {
       0% { transform: translateX(-100%); }
@@ -865,7 +914,6 @@
     
     .prediction-card .user .name-p { font-weight: 700; }
     .prediction-card .prediction-text { font-size: 0.85rem; color: var(--text-secondary); }
-    .prediction-card .prediction-text .highlight { color: var(--gold-light); font-weight: 700; }
     
     /* ============================================================
        حالة عدم وجود بيانات
@@ -1076,11 +1124,15 @@
        استعلامات الوسائط
        ============================================================ */
     @media (max-width: 640px) {
-      body { padding: 10px 8px 30px; }
+      .app-container { padding: 0 8px 30px; }
+      
+      .top-bar { padding: 6px 12px; }
+      .top-bar .top-bar-title { font-size: 0.9rem; }
+      .top-bar .top-bar-sub { font-size: 0.6rem; }
       
       .sticky-header {
         padding: 10px 14px;
-        margin: -10px -8px 16px;
+        margin: 0 -8px 16px;
         border-radius: 0 0 24px 24px;
       }
       
@@ -1149,15 +1201,29 @@
 </head>
 <body>
 
+<!-- ============================================================
+     البار العلوي (Top Bar) - يغطي العرض بالكامل
+     ============================================================ -->
+<div class="top-bar">
+  <div class="top-bar-content">
+    <div class="top-bar-title">
+      <span class="icon">🏆</span>
+      كأس العالم 2026
+    </div>
+    <div class="top-bar-sub">
+      ⚡ غرفة معلمي سعيد بن العاص
+    </div>
+  </div>
+</div>
+
 <div class="app-container">
   
   <!-- ===== الهيدر الثابت ===== -->
   <header class="sticky-header">
     <div class="brand">
-      <span class="icon">🏆</span>
       <div>
-        <h1>كأس العالم 2026</h1>
-        <span class="sub">⚡ غرفة معلمي سعيد بن العاص</span>
+        <h1>🏆 المتابعة التفاعلية</h1>
+        <span class="sub">⚡ تابع المباريات وتوقع النتائج</span>
       </div>
     </div>
     <div class="header-actions">
@@ -1176,11 +1242,11 @@
   <!-- ===== شريط الأخبار ===== -->
   <div class="news-ticker-wrapper">
     <div class="news-ticker">
-      <span>🏆 <span class="highlight">كأس العالم 2026</span> — تابع المباريات، توقع النتائج</span>
+      <span>🏆 كأس العالم 2026 — تابع المباريات وتوقع النتائج</span>
       <span class="sep">|</span>
-      <span>🗳️ <span class="highlight">طريقة التوقع:</span> اختر المباراة → اختر الفائز أو التعادل → أدخل اسمك → احفظ التوقع</span>
+      <span>🗳️ طريقة التوقع: اختر المباراة → اختر الفائز أو التعادل → أدخل اسمك → احفظ التوقع</span>
       <span class="sep">|</span>
-      <span>🏅 كل توقع صحيح = <span class="highlight">نقطة</span> · تصدر لوحة المتصدرين!</span>
+      <span>🏅 كل توقع صحيح = نقطة · تصدر لوحة المتصدرين!</span>
       <span class="sep">|</span>
       <span>⛔ لا يمكن التوقع على المباريات الجارية</span>
     </div>
@@ -2136,7 +2202,7 @@
               <div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div>
               <span class="name-p">${p.user_name || 'مجهول'}</span>
             </div>
-            <div class="prediction-text">🔮 <span>${text}</span></div>
+            <div class="prediction-text">🔮 ${text}</div>
             <div style="font-size:0.65rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? new Date(p.created_at).toLocaleString('ar') : 'تاريخ غير معروف'}</div>
           </div>
         `;
