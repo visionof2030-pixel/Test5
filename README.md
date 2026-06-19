@@ -5,21 +5,1369 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>🏆 كأس العالم 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <!-- ===== مكتبة ضغط LZString ===== -->
-  <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/lz-string.min.js"></script>
   <style>
-    /* ... كل الأنماط كما هي ... */
-    /* (احتفظ بالأنماط السابقة كاملة) */
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
+    :root {
+      --primary: #0a1628;
+      --secondary: #111f33;
+      --card-bg: rgba(18, 30, 50, 0.85);
+      --gold: #f0b429;
+      --gold-glow: rgba(240, 180, 41, 0.25);
+      --gold-light: #ffd966;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --text-primary: #f0f4ff;
+      --text-secondary: #8899bb;
+      --border-gold: rgba(240, 180, 41, 0.25);
+      --shadow-gold: 0 8px 32px rgba(240, 180, 41, 0.08);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      --bg-body: radial-gradient(ellipse at 20% 20%, #0f1f3a, #060e1a);
+      --bg-header: rgba(10, 22, 40, 0.92);
+      --bg-card: rgba(18, 30, 50, 0.85);
+      --border-color: rgba(255,255,255,0.05);
+    }
+    
+    [data-theme="light"] {
+      --primary: #f0f4ff;
+      --secondary: #e8edf5;
+      --card-bg: rgba(255, 255, 255, 0.92);
+      --text-primary: #1a2332;
+      --text-secondary: #5a6a7e;
+      --bg-body: radial-gradient(ellipse at 20% 20%, #e8edf5, #d5dce6);
+      --bg-header: rgba(255, 255, 255, 0.92);
+      --bg-card: rgba(255, 255, 255, 0.92);
+      --border-color: rgba(0,0,0,0.06);
+      --shadow-gold: 0 8px 32px rgba(240, 180, 41, 0.12);
+    }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      background: var(--bg-body);
+      font-family: 'Cairo', 'Segoe UI', sans-serif;
+      padding: 0;
+      min-height: 100vh;
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.6;
+      transition: var(--transition);
+    }
+    
+    .app-container { max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 12px 40px; }
+    
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+    
+    .top-bar {
+      width: 100%;
+      background: linear-gradient(135deg, #0f1f3a, #1a2f4a);
+      padding: 8px 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--gold);
+      box-shadow: 0 2px 20px rgba(240, 180, 41, 0.1);
+      position: relative;
+    }
+    
+    .top-bar .top-bar-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .top-bar .top-bar-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--gold-light);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .top-bar .top-bar-title .icon { font-size: 1.5rem; }
+    
+    .top-bar .top-bar-sub {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+    
+    [data-theme="light"] .top-bar {
+      background: linear-gradient(135deg, #d5dce6, #e8edf5);
+      border-bottom: 2px solid var(--gold);
+    }
+    
+    [data-theme="light"] .top-bar .top-bar-title {
+      color: #1a2332;
+    }
+    
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-header);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 0 0 32px 32px;
+      padding: 14px 20px;
+      margin: 0 -12px 20px;
+      border-bottom: 1px solid var(--border-gold);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      transition: var(--transition);
+    }
+    
+    .sticky-header .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .sticky-header .brand .icon { font-size: 1.8rem; }
+    .sticky-header .brand h1 {
+      font-size: 1.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+    
+    .sticky-header .brand .sub {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+      display: block;
+      margin-top: -2px;
+    }
+    
+    .sticky-header .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .sticky-header .header-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-secondary);
+      padding: 8px 14px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+    
+    .sticky-header .header-btn:hover {
+      background: rgba(240, 180, 41, 0.12);
+      border-color: var(--gold);
+      color: var(--gold-light);
+      transform: translateY(-1px);
+    }
+    
+    .news-ticker-wrapper {
+      background: rgba(240, 180, 41, 0.06);
+      border: 1px solid var(--border-gold);
+      border-radius: 60px;
+      padding: 6px 18px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-gold);
+    }
+    
+    .news-ticker {
+      display: inline-block;
+      white-space: nowrap;
+      animation: tickerScroll 45s linear infinite;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    
+    .news-ticker span { display: inline-block; padding: 0 14px; }
+    .news-ticker .sep { color: var(--gold); opacity: 0.3; }
+    
+    @keyframes tickerScroll {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .news-ticker-wrapper:hover .news-ticker { animation-play-state: paused; }
+    
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+    
+    .controls-bar .control-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      flex: 1;
+      min-width: 140px;
+    }
+    
+    .controls-bar .control-group label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .controls-bar select, .controls-bar input {
+      padding: 8px 14px;
+      border-radius: 40px;
+      border: 2px solid var(--border-color);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      outline: none;
+      transition: var(--transition);
+      font-family: inherit;
+      flex: 1;
+      min-width: 100px;
+    }
+    
+    .controls-bar select:focus, .controls-bar input:focus {
+      border-color: var(--gold);
+      background: rgba(240, 180, 41, 0.04);
+    }
+    
+    .controls-bar select option {
+      background: var(--primary);
+      color: var(--text-primary);
+    }
+    
+    .tabs-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 20px;
+      align-items: center;
+    }
+    
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      flex: 1;
+    }
+    
+    .tab-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 10px 20px;
+      border-radius: 60px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .tab-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(240, 180, 41, 0.2), rgba(240, 180, 41, 0.05));
+      border-color: var(--gold);
+      color: var(--gold-light);
+      box-shadow: 0 0 30px rgba(240, 180, 41, 0.05);
+    }
+    
+    .day-filter-tabs {
+      display: none;
+      gap: 6px;
+      background: rgba(255,255,255,0.04);
+      padding: 4px;
+      border-radius: 40px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .day-filter-tabs.visible {
+      display: flex;
+    }
+    
+    .day-filter-tabs .day-btn {
+      padding: 6px 14px;
+      border-radius: 30px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    
+    .day-filter-tabs .day-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.04);
+    }
+    
+    .day-filter-tabs .day-btn.active {
+      background: rgba(240, 180, 41, 0.15);
+      color: var(--gold-light);
+    }
+    
+    .tab-content { display: none; animation: fadeUp 0.4s ease; }
+    .tab-content.active { display: block; }
+    
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .section-title .gold { color: var(--gold); }
+    .section-title .badge-count {
+      background: rgba(240, 180, 41, 0.15);
+      color: var(--gold-light);
+      font-size: 0.7rem;
+      padding: 2px 12px;
+      border-radius: 40px;
+      font-weight: 600;
+    }
+    
+    .leaderboard-section {
+      background: linear-gradient(145deg, rgba(10, 22, 40, 0.95), rgba(20, 40, 70, 0.9));
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin: 0 0 28px 0;
+      box-shadow: 0 12px 48px rgba(240, 180, 41, 0.06), inset 0 1px 0 rgba(240, 180, 41, 0.1);
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    
+    [data-theme="light"] .leaderboard-section {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 245, 250, 0.9));
+      border-color: rgba(240, 180, 41, 0.3);
+    }
+    
+    .leaderboard-section .lb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .leaderboard-section .lb-header .title {
+      font-size: 1.4rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .leaderboard-section .lb-header .title .trophy { font-size: 1.8rem; }
+    .leaderboard-section .lb-header .title span { background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    
+    .leaderboard-section .lb-header .lb-stats {
+      display: flex;
+      gap: 16px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .leaderboard-section .lb-header .lb-stats .stat { display: flex; align-items: center; gap: 4px; }
+    .leaderboard-section .lb-header .lb-stats .stat .num { color: var(--gold-light); font-weight: 800; }
+    
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 40px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    
+    .share-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold-light);
+      background: rgba(240, 180, 41, 0.06);
+    }
+    
+    .champion-card {
+      background: linear-gradient(135deg, rgba(240, 180, 41, 0.12), rgba(240, 180, 41, 0.03));
+      border: 1px solid var(--gold);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      box-shadow: 0 0 40px rgba(240, 180, 41, 0.05);
+    }
+    
+    .champion-card .rank-badge { font-size: 2.8rem; min-width: 60px; text-align: center; }
+    
+    .champion-card .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #d49a1a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #0a1628;
+      box-shadow: 0 0 30px rgba(240, 180, 41, 0.2);
+      flex-shrink: 0;
+    }
+    
+    .champion-card .info { flex: 1; min-width: 150px; }
+    
+    .champion-card .info .name {
+      font-size: 1.3rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .champion-card .info .name .badge {
+      font-size: 0.55rem;
+      padding: 2px 12px;
+      border-radius: 40px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .champion-card .info .name .badge.gold { background: rgba(240, 180, 41, 0.2); color: var(--gold-light); border: 1px solid rgba(240, 180, 41, 0.2); }
+    .champion-card .info .name .badge.precision { background: rgba(46, 204, 113, 0.15); color: var(--success); border: 1px solid rgba(46, 204, 113, 0.15); }
+    .champion-card .info .name .badge.speed { background: rgba(52, 152, 219, 0.15); color: #5dade2; border: 1px solid rgba(52, 152, 219, 0.15); }
+    
+    .champion-card .info .stats-row {
+      display: flex;
+      gap: 20px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .champion-card .info .stats-row .item {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .champion-card .info .stats-row .item strong { color: var(--text-primary); font-weight: 700; }
+    .champion-card .info .stats-row .item .highlight { color: var(--gold-light); }
+    
+    .champion-card .progress-wrapper { width: 100%; margin-top: 12px; }
+    
+    .champion-card .progress-wrapper .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    
+    .champion-card .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    .champion-card .progress-bar .fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      border-radius: 10px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+      position: relative;
+    }
+    
+    .players-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .player-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .player-card:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: var(--border-gold);
+      transform: translateX(-4px);
+    }
+    
+    .player-card .rank {
+      font-size: 1.1rem;
+      font-weight: 800;
+      min-width: 32px;
+      color: var(--text-secondary);
+    }
+    
+    .player-card .rank.gold { color: #FFD700; }
+    .player-card .rank.silver { color: #C0C0C0; }
+    .player-card .rank.bronze { color: #CD7F32; }
+    
+    .player-card .avatar-sm {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(240, 180, 41, 0.2), rgba(240, 180, 41, 0.05));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      flex-shrink: 0;
+      border: 2px solid transparent;
+      transition: var(--transition);
+    }
+    
+    .player-card .avatar-sm.gold-border { border-color: var(--gold); }
+    .player-card .avatar-sm.silver-border { border-color: #C0C0C0; }
+    .player-card .avatar-sm.bronze-border { border-color: #CD7F32; }
+    
+    .player-card .info-sm { flex: 1; min-width: 0; }
+    
+    .player-card .info-sm .name-sm {
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    
+    .player-card .info-sm .name-sm .mini-badge {
+      font-size: 0.45rem;
+      padding: 1px 8px;
+      border-radius: 40px;
+      font-weight: 700;
+    }
+    
+    .player-card .info-sm .name-sm .mini-badge.gold { background: rgba(240, 180, 41, 0.15); color: var(--gold-light); }
+    .player-card .info-sm .name-sm .mini-badge.green { background: rgba(46, 204, 113, 0.12); color: var(--success); }
+    .player-card .info-sm .name-sm .mini-badge.blue { background: rgba(52, 152, 219, 0.12); color: #5dade2; }
+    
+    .player-card .info-sm .sub-sm {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .player-card .info-sm .sub-sm .highlight { color: var(--gold-light); font-weight: 600; }
+    
+    .player-card .points-sm {
+      background: linear-gradient(135deg, var(--gold), #d49a1a);
+      padding: 2px 14px;
+      border-radius: 40px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #0a1628;
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    .player-card .progress-mini {
+      width: 60px;
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    
+    .player-card .progress-mini .fill-mini {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      border-radius: 10px;
+      transition: width 0.6s ease;
+      width: 0%;
+    }
+    
+    .player-card .current-user-indicator {
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      border: 2px solid var(--gold);
+      border-radius: var(--radius-md);
+      pointer-events: none;
+      opacity: 0;
+      transition: var(--transition);
+      box-shadow: 0 0 30px rgba(240, 180, 41, 0.05);
+    }
+    
+    .player-card .current-user-indicator.active { opacity: 1; }
+    
+    .player-card .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulseDot 1.5s infinite;
+    }
+    
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    
+    .matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+    
+    .match-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    
+    .match-card:hover { transform: translateY(-3px); border-color: var(--border-gold); }
+    .match-card.live { border-color: var(--danger); box-shadow: 0 0 30px rgba(231, 76, 60, 0.15); }
+    
+    .match-teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,0,0,0.25);
+      padding: 12px 14px;
+      border-radius: 60px;
+    }
+    
+    .match-team {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex: 1;
+      justify-content: center;
+    }
+    
+    .match-team .flag { font-size: 1.3rem; }
+    
+    .match-score {
+      background: linear-gradient(135deg, var(--gold), #d49a1a);
+      padding: 2px 16px;
+      border-radius: 40px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #0a1628;
+      min-width: 50px;
+      text-align: center;
+    }
+    
+    .match-score.live { background: linear-gradient(135deg, var(--danger), #c0392b); animation: pulseScore 1.2s infinite; color: white; }
+    .match-score.finished { background: linear-gradient(135deg, var(--success), #27ae60); color: white; }
+    
+    @keyframes pulseScore {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(231,76,60,0.3); }
+    }
+    
+    .match-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .match-meta .tag {
+      background: rgba(255,255,255,0.05);
+      padding: 4px 14px;
+      border-radius: 40px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    
+    .match-meta .timer {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    
+    .match-meta .timer.live { color: var(--danger); animation: pulseText 1s infinite; }
+    
+    @keyframes pulseText {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .share-link-btn {
+      background: rgba(52, 152, 219, 0.1);
+      border: 1px solid rgba(52, 152, 219, 0.2);
+      color: #5dade2;
+      padding: 6px 12px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .share-link-btn:hover {
+      background: rgba(52, 152, 219, 0.2);
+      border-color: #5dade2;
+      transform: translateY(-1px);
+    }
+    
+    .share-link-btn .icon { font-size: 0.9rem; }
+    
+    .copy-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(46, 204, 113, 0.95);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      z-index: 99999;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      animation: fadeInModal 0.3s ease;
+      backdrop-filter: blur(8px);
+      display: none;
+    }
+    
+    .copy-toast.show { display: block; }
+    
+    .groups-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+    
+    .group-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+    
+    .group-card:hover { border-color: var(--border-gold); }
+    
+    .group-card .group-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 14px;
+      color: var(--gold-light);
+    }
+    
+    .standings-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.7rem;
+    }
+    
+    .standings-table th {
+      background: rgba(255,255,255,0.04);
+      color: var(--text-secondary);
+      padding: 8px 4px;
+      text-align: center;
+      font-weight: 700;
+      border-radius: 8px 8px 0 0;
+    }
+    
+    .standings-table td {
+      padding: 6px 4px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      color: #000000;
+      font-weight: 600;
+    }
+    
+    .standings-table .team-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: flex-start;
+      font-weight: 700;
+      color: #000000;
+    }
+    
+    .standings-table .team-cell span:last-child { color: #000000; }
+    .standings-table td:last-child { color: #000000; font-weight: 800; }
+    
+    .predictions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    
+    .prediction-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+    
+    .prediction-card:hover { border-color: var(--border-gold); transform: translateY(-2px); }
+    
+    .prediction-card .user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    
+    .prediction-card .user .avatar-p {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #d49a1a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #0a1628;
+      font-size: 0.8rem;
+    }
+    
+    .prediction-card .user .name-p { font-weight: 700; }
+    .prediction-card .prediction-text { font-size: 0.85rem; color: var(--text-secondary); }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.02);
+      border-radius: var(--radius-lg);
+      border: 1px dashed rgba(255,255,255,0.06);
+      grid-column: 1/-1;
+    }
+    
+    .empty-state .icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+    
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(16px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      animation: fadeInModal 0.3s ease;
+    }
+    
+    .modal-overlay.active { display: flex; }
+    
+    @keyframes fadeInModal {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .modal-content {
+      background: linear-gradient(145deg, rgba(12, 28, 50, 0.97), rgba(6, 16, 30, 0.98));
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      max-width: 460px;
+      width: 95%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      background: rgba(255,255,255,0.04);
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.4rem;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    
+    .modal-close:hover { background: rgba(231,76,60,0.15); color: var(--danger); }
+    
+    .modal-title {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      margin-bottom: 16px;
+      padding-top: 6px;
+    }
+    
+    .modal-teams {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.2);
+      padding: 12px;
+      border-radius: 60px;
+      margin-bottom: 16px;
+    }
+    
+    .modal-teams .m-team { font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .modal-teams .m-team .flag { font-size: 1.4rem; }
+    .modal-teams .m-vs { color: var(--text-secondary); font-size: 0.7rem; }
+    
+    .modal-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    .modal-options label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 60px;
+      background: rgba(255,255,255,0.03);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .modal-options label:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.06); }
+    .modal-options input[type="radio"] {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--text-secondary);
+      border-radius: 50%;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+    
+    .modal-options input[type="radio"]:checked {
+      border-color: var(--gold);
+      background: var(--gold);
+    }
+    
+    .modal-options input[type="radio"]:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #0a1628;
+      font-weight: 900;
+      font-size: 10px;
+    }
+    
+    .modal-options .opt-label { font-weight: 600; }
+    .modal-options .opt-sub { font-size: 0.65rem; color: var(--text-secondary); }
+    
+    .modal-input { margin-bottom: 16px; }
+    
+    .modal-input input {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 60px;
+      border: 2px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    
+    .modal-input input:focus { border-color: var(--gold); background: rgba(255,255,255,0.05); }
+    .modal-input input::placeholder { color: var(--text-secondary); }
+    
+    .modal-submit {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 60px;
+      background: linear-gradient(135deg, var(--gold), #d49a1a);
+      color: #0a1628;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    
+    .modal-submit:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(240, 180, 41, 0.2); }
+    .modal-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .modal-submit:active { transform: scale(0.97); }
+    
+    .modal-message {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 0.85rem;
+      padding: 8px 12px;
+      border-radius: 40px;
+      font-weight: 600;
+    }
+    
+    .modal-message.success { color: var(--success); background: rgba(46,204,113,0.08); }
+    .modal-message.error { color: var(--danger); background: rgba(231,76,60,0.08); }
+    .modal-message.warning { color: var(--gold-light); background: rgba(240,180,41,0.08); }
+    
+    .footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding-top: 20px;
+    }
+    
+    .footer .gold-text { color: var(--gold-light); }
+    
+    @media (max-width: 640px) {
+      .app-container { padding: 0 8px 30px; }
+      .top-bar { padding: 6px 12px; }
+      .top-bar .top-bar-title { font-size: 0.9rem; }
+      .top-bar .top-bar-sub { font-size: 0.6rem; }
+      .sticky-header { padding: 10px 14px; margin: 0 -8px 16px; border-radius: 0 0 24px 24px; }
+      .sticky-header .brand h1 { font-size: 1rem; }
+      .sticky-header .brand .sub { font-size: 0.5rem; }
+      .sticky-header .header-btn { padding: 6px 10px; font-size: 0.6rem; }
+      .controls-bar { padding: 12px 14px; }
+      .controls-bar .control-group { min-width: 100%; }
+      .controls-bar select, .controls-bar input { font-size: 0.7rem; padding: 6px 10px; }
+      .tabs-container { flex-direction: column; align-items: stretch; }
+      .tabs { justify-content: center; }
+      .day-filter-tabs { justify-content: center; }
+      .leaderboard-section { padding: 16px; margin: 0 0 20px 0; }
+      .leaderboard-section .lb-header .title { font-size: 1.1rem; }
+      .leaderboard-section .lb-header .lb-stats { font-size: 0.65rem; gap: 8px; flex-wrap: wrap; }
+      .champion-card { padding: 18px; flex-direction: column; text-align: center; gap: 12px; }
+      .champion-card .rank-badge { font-size: 2.2rem; min-width: auto; }
+      .champion-card .avatar { width: 60px; height: 60px; font-size: 1.4rem; }
+      .champion-card .info .name { font-size: 1.1rem; justify-content: center; }
+      .champion-card .info .stats-row { justify-content: center; gap: 12px; }
+      .players-list { grid-template-columns: 1fr; gap: 8px; }
+      .player-card { padding: 12px 14px; }
+      .player-card .info-sm .name-sm { font-size: 0.8rem; }
+      .player-card .points-sm { font-size: 0.75rem; padding: 2px 10px; }
+      .player-card .progress-mini { width: 40px; }
+      .tab-btn { padding: 8px 14px; font-size: 0.7rem; }
+      .day-filter-tabs .day-btn { padding: 4px 10px; font-size: 0.65rem; }
+      .matches-grid { grid-template-columns: 1fr; gap: 14px; }
+      .match-team { font-size: 0.75rem; }
+      .match-team .flag { font-size: 1.1rem; }
+      .groups-container { grid-template-columns: 1fr; }
+      .standings-table { font-size: 0.6rem; }
+      .standings-table th, .standings-table td { padding: 4px 2px; }
+      .predictions-grid { grid-template-columns: 1fr; }
+      .modal-content { padding: 20px; }
+      .modal-teams { flex-wrap: wrap; gap: 6px; }
+      .modal-teams .m-team { font-size: 0.85rem; }
+      .modal-options label { padding: 10px 14px; }
+    }
+    
+    @media (min-width: 768px) {
+      .matches-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+      .players-list { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    }
+    
+    @media (min-width: 1024px) {
+      .matches-grid { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); }
+    }
   </style>
 </head>
 <body>
-<!-- ... كل HTML كما هو ... -->
+
+<div class="top-bar">
+  <div class="top-bar-content">
+    <div class="top-bar-title">
+      <span class="icon">🏆</span>
+      كأس العالم 2026
+    </div>
+    <div class="top-bar-sub">
+      ⚡ غرفة معلمي سعيد بن العاص
+    </div>
+  </div>
+</div>
+
+<div class="app-container">
+  
+  <header class="sticky-header">
+    <div class="brand">
+      <div>
+        <h1>🏆 المتابعة التفاعلية</h1>
+        <span class="sub">⚡ تابع المباريات وتوقع النتائج</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙 الوضع المظلم</button>
+      <button class="header-btn" onclick="shareResults()">📤 مشاركة</button>
+      <button class="header-btn" onclick="location.reload()">🔄 تحديث</button>
+    </div>
+  </header>
+  
+  <div class="news-ticker-wrapper">
+    <div class="news-ticker">
+      <span>🏆 كأس العالم 2026 — تابع المباريات وتوقع النتائج</span>
+      <span class="sep">|</span>
+      <span>🗳️ طريقة التوقع: اختر المباراة → اختر الفائز أو التعادل → أدخل اسمك → احفظ التوقع</span>
+      <span class="sep">|</span>
+      <span>🏅 كل توقع صحيح = نقطة · تصدر لوحة المتصدرين!</span>
+      <span class="sep">|</span>
+      <span>⛔ لا يمكن التوقع على المباريات الجارية</span>
+    </div>
+  </div>
+  
+  <div class="leaderboard-section" id="leaderboardSection">
+    <div class="lb-header">
+      <div class="title">
+        <span class="trophy">🏆</span>
+        <span>لوحة المتصدرين</span>
+      </div>
+      <div class="lb-stats">
+        <span class="stat">👥 <span class="num" id="lbTotalPlayers">0</span> لاعب</span>
+        <span class="stat">📊 <span class="num" id="lbTotalPredictions">0</span> توقع</span>
+        <button class="share-btn" onclick="shareResults()">📤 مشاركة</button>
+      </div>
+    </div>
+    <div id="leaderboardContainer">
+      <div class="empty-state"><span class="icon">⏳</span> جاري تحميل الترتيب...</div>
+    </div>
+  </div>
+  
+  <div class="controls-bar">
+    <div class="control-group">
+      <label>🏷️ المجموعة</label>
+      <select id="groupFilter">
+        <option value="all">جميع المجموعات</option>
+        <option value="A">المجموعة A</option><option value="B">المجموعة B</option>
+        <option value="C">المجموعة C</option><option value="D">المجموعة D</option>
+        <option value="E">المجموعة E</option><option value="F">المجموعة F</option>
+        <option value="G">المجموعة G</option><option value="H">المجموعة H</option>
+        <option value="I">المجموعة I</option><option value="J">المجموعة J</option>
+        <option value="K">المجموعة K</option><option value="L">المجموعة L</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>🔍 بحث</label>
+      <input type="text" id="matchSearchInput" placeholder="ابحث عن فريق...">
+    </div>
+  </div>
+  
+  <div class="tabs-container">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="upcoming">⚡ القادمة والجارية</button>
+      <button class="tab-btn" data-tab="previous">📋 السابقة</button>
+      <button class="tab-btn" data-tab="standings">📊 ترتيب المجموعات</button>
+      <button class="tab-btn" data-tab="predictions">🗳️ جميع التوقعات</button>
+    </div>
+    <div class="day-filter-tabs visible" id="dayFilterTabs">
+      <button class="day-btn active" data-day="all">📅 الكل</button>
+      <button class="day-btn" data-day="today">📌 اليوم</button>
+      <button class="day-btn" data-day="tomorrow">📌 غداً</button>
+      <button class="day-btn" data-day="week">📅 هذا الأسبوع</button>
+    </div>
+  </div>
+  
+  <div id="upcomingTab" class="tab-content active">
+    <div class="section-title">
+      ⚡ المباريات القادمة والجارية
+      <span class="badge-count" id="upcomingCount">0</span>
+    </div>
+    <div id="matchesContainer" class="matches-grid">
+      <div class="empty-state"><span class="icon">⏳</span> جاري تحميل المباريات...</div>
+    </div>
+  </div>
+  
+  <div id="previousTab" class="tab-content">
+    <div class="section-title">📋 المباريات السابقة</div>
+    <div style="margin-bottom: 16px;">
+      <input type="text" id="prevSearchInput" placeholder="🔍 بحث في المباريات السابقة..." style="width:100%;padding:12px 20px;border-radius:60px;border:2px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);color:var(--text-primary);font-size:0.85rem;outline:none;transition:var(--transition);font-family:inherit;">
+    </div>
+    <div id="previousMatchesContainer" class="matches-grid">
+      <div class="empty-state"><span class="icon">⏳</span> جاري تحميل المباريات السابقة...</div>
+    </div>
+  </div>
+  
+  <div id="standingsTab" class="tab-content">
+    <div class="section-title">📊 ترتيب المجموعات</div>
+    <div id="standingsContainer" class="groups-container">
+      <div class="empty-state"><span class="icon">⏳</span> جاري حساب الترتيب...</div>
+    </div>
+  </div>
+  
+  <div id="predictionsTab" class="tab-content">
+    <div class="section-title">🗳️ جميع التوقعات <span class="badge-count" id="predictionsCount">0</span></div>
+    <div id="allPredictions" class="predictions-grid">
+      <div class="empty-state"><span class="icon">⏳</span> جاري تحميل التوقعات...</div>
+    </div>
+  </div>
+  
+  <footer class="footer">
+    🏆 كأس العالم 2026 · غرفة معلمي سعيد بن العاص
+  </footer>
+</div>
+
+<div class="modal-overlay" id="predictionModal">
+  <div class="modal-content">
+    <button class="modal-close" id="modalCloseBtn">✕</button>
+    <div class="modal-title">📝 توقع نتيجة المباراة</div>
+    <div class="modal-teams" id="modalTeams">
+      <div class="m-team"><span class="flag" id="modalFlag1">🏁</span> <span id="modalTeam1">الفريق الأول</span></div>
+      <div class="m-vs">🆚</div>
+      <div class="m-team"><span class="flag" id="modalFlag2">🏁</span> <span id="modalTeam2">الفريق الثاني</span></div>
+    </div>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-secondary);margin-bottom:14px;" id="modalDateTime">📅 التاريخ والوقت</div>
+    <div class="modal-options" id="modalOptions">
+      <label><input type="radio" name="prediction" value="HOME"><span class="opt-label">🏆 <span id="optTeam1">الفريق الأول</span></span><span class="opt-sub">فوز</span></label>
+      <label><input type="radio" name="prediction" value="AWAY"><span class="opt-label">🏆 <span id="optTeam2">الفريق الثاني</span></span><span class="opt-sub">فوز</span></label>
+      <label><input type="radio" name="prediction" value="DRAW"><span class="opt-label">🤝 تعادل</span><span class="opt-sub">النتيجة متساوية</span></label>
+    </div>
+    <div class="modal-input">
+      <input type="text" id="modalUserName" placeholder="👤 أدخل اسمك" maxlength="30">
+    </div>
+    <button class="modal-submit" id="modalSubmitBtn">💾 حفظ التوقع</button>
+    <div class="modal-message" id="modalMessage"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="playerPredictionsModal">
+  <div class="modal-content">
+    <button class="modal-close" id="playerModalCloseBtn">✕</button>
+    <div class="modal-title">📋 توقعات <span id="playerModalName"></span></div>
+    <div id="playerPredictionsList" class="predictions-grid" style="max-height:400px;overflow-y:auto;">
+      <div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذا اللاعب</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="viewPredictionsModal">
+  <div class="modal-content">
+    <button class="modal-close" id="viewModalCloseBtn">✕</button>
+    <div class="modal-title">📋 توقعات المباراة</div>
+    <div class="modal-teams" id="viewModalTeams">
+      <div class="m-team"><span class="flag" id="viewFlag1">🏁</span> <span id="viewTeam1">الفريق الأول</span></div>
+      <div class="m-vs">🆚</div>
+      <div class="m-team"><span class="flag" id="viewFlag2">🏁</span> <span id="viewTeam2">الفريق الثاني</span></div>
+    </div>
+    <div style="text-align:center;font-size:0.8rem;color:var(--text-secondary);margin:8px 0 14px;">
+      عدد التوقعات: <span id="viewPredictionsCount" style="color:var(--gold-light);font-weight:800;">0</span>
+    </div>
+    <div id="viewPredictionsList" style="max-height:400px;overflow-y:auto;">
+      <div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذه المباراة</div>
+    </div>
+  </div>
+</div>
+
+<div class="copy-toast" id="copyToast">✅ تم نسخ الرابط!</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // ============================================================
-  //  Supabase الاتصال
-  // ============================================================
   const SUPABASE_URL = "https://szjxwhsmefqpfcebtvei.supabase.co";
   const SUPABASE_KEY = "sb_publishable_0um28lgPMHcjDOThT0UgDA_K-Y7Wmx3";
   
@@ -32,9 +1380,6 @@
     supabaseClient = null;
   }
   
-  // ============================================================
-  //  التخزين المحلي
-  // ============================================================
   function getLocalPredictions() {
     try {
       const data = localStorage.getItem('predictions');
@@ -61,9 +1406,6 @@
     return getLocalPredictions()[`${userName}_${matchId}`] || null;
   }
   
-  // ============================================================
-  //  دوال API مع تخزين مؤقت
-  // ============================================================
   const CACHE_KEY = 'worldcup_data';
   const CACHE_DURATION = 5 * 60 * 1000;
   
@@ -92,16 +1434,9 @@
   async function getAllPredictions() {
     if (!supabaseClient) return [];
     const cached = getCachedData('predictions');
-    if (cached) {
-      console.log("📦 جلب التوقعات من cache");
-      return cached;
-    }
+    if (cached) return cached;
     try {
-      const { data, error } = await supabaseClient
-        .from("predictions")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(100);
+      const { data, error } = await supabaseClient.from("predictions").select("*").order("created_at", { ascending: false }).limit(100);
       if (error) throw error;
       const result = data || [];
       setCachedData('predictions', result);
@@ -115,12 +1450,7 @@
   async function getPredictionsForMatch(matchId) {
     if (!supabaseClient) return [];
     try {
-      const { data, error } = await supabaseClient
-        .from("predictions")
-        .select("*")
-        .eq("match_id", matchId)
-        .order("created_at", { ascending: false })
-        .limit(20);
+      const { data, error } = await supabaseClient.from("predictions").select("*").eq("match_id", matchId).order("created_at", { ascending: false }).limit(20);
       if (error) throw error;
       return data || [];
     } catch (e) {
@@ -132,12 +1462,7 @@
   async function getPredictionsForUser(userName) {
     if (!supabaseClient || !userName) return [];
     try {
-      const { data, error } = await supabaseClient
-        .from("predictions")
-        .select("*")
-        .eq("user_name", userName)
-        .order("created_at", { ascending: false })
-        .limit(20);
+      const { data, error } = await supabaseClient.from("predictions").select("*").eq("user_name", userName).order("created_at", { ascending: false }).limit(20);
       if (error) throw error;
       return data || [];
     } catch (e) {
@@ -153,9 +1478,7 @@
       return { success: false, message: `⚠️ توقعت مسبقاً: ${existing.prediction === 'DRAW' ? 'تعادل' : existing.prediction}`, duplicate: true };
     }
     try {
-      const { error } = await supabaseClient
-        .from("predictions")
-        .insert([{ user_name: userName, match_id: matchId, prediction }]);
+      const { error } = await supabaseClient.from("predictions").insert([{ user_name: userName, match_id: matchId, prediction }]);
       if (error) throw error;
       saveLocalPrediction(userName, matchId, prediction);
       localStorage.removeItem(`${CACHE_KEY}_predictions`);
@@ -165,9 +1488,6 @@
     }
   }
   
-  // ============================================================
-  //  دوال الوقت والمباريات
-  // ============================================================
   function now() { return Date.now(); }
   function matchTime(t) { return new Date(t).getTime(); }
   const MATCH_DURATION = 105 * 60 * 1000;
@@ -199,9 +1519,6 @@
     return arr.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now());
   }
   
-  // ============================================================
-  //  التحقق من أيام المباريات (اليوم وغداً)
-  // ============================================================
   function isMatchTodayOrTomorrow(timeISO) {
     const matchDate = new Date(timeISO);
     matchDate.setHours(0, 0, 0, 0);
@@ -209,13 +1526,9 @@
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
     return matchDate.getTime() === today.getTime() || matchDate.getTime() === tomorrow.getTime();
   }
   
-  // ============================================================
-  //  ترجمة الأسماء والأعلام
-  // ============================================================
   const nameMapping = new Map([
     ["مکزیک", "المكسيك"], ["Mexico", "المكسيك"],
     ["آفریقای جنوبی", "جنوب أفريقيا"], ["South Africa", "جنوب أفريقيا"],
@@ -298,46 +1611,82 @@
   function getDateTimeDisplay(t) { return `${getDateFmt(t)} - ${getTimeFromISO(t)}`; }
   
   // ============================================================
-  //  بيانات المباريات القادمة
+  //  بيانات المباريات مع أرقام فريدة
   // ============================================================
   const rawMatches = [
-    { team1:"المكسيك", team2:"جنوب أفريقيا", time:"2026-06-11T22:00:00", round:"first" },{ team1:"الأرجنتين", team2:"الجزائر", time:"2026-06-11T04:00:00", round:"first" },
-    { team1:"النمسا", team2:"الأردن", time:"2026-06-11T07:00:00", round:"first" },{ team1:"البرتغال", team2:"الكونغو الديمقراطية", time:"2026-06-11T20:00:00", round:"first" },
-    { team1:"كوريا الجنوبية", team2:"التشيك", time:"2026-06-12T05:00:00", round:"first" },{ team1:"كندا", team2:"البوسنة والهرسك", time:"2026-06-12T22:00:00", round:"first" },
-    { team1:"أمريكا", team2:"العراق", time:"2026-06-13T04:00:00", round:"first" },{ team1:"سويسرا", team2:"قطر", time:"2026-06-13T22:00:00", round:"first" },
-    { team1:"البرازيل", team2:"المغرب", time:"2026-06-14T01:00:00", round:"first" },{ team1:"هايتي", team2:"إسكتلندا", time:"2026-06-14T04:00:00", round:"first" },
-    { team1:"أستراليا", team2:"تركيا", time:"2026-06-14T07:00:00", round:"first" },{ team1:"ألمانيا", team2:"كوراساو", time:"2026-06-14T20:00:00", round:"first" },
-    { team1:"اليابان", team2:"هولندا", time:"2026-06-14T23:00:00", round:"first" },{ team1:"الإكوادور", team2:"ساحل العاج", time:"2026-06-15T02:00:00", round:"first" },
-    { team1:"السويد", team2:"تونس", time:"2026-06-15T05:00:00", round:"first" },{ team1:"إسبانيا", team2:"الرأس الأخضر", time:"2026-06-15T19:00:00", round:"first" },
-    { team1:"مصر", team2:"بلجيكا", time:"2026-06-15T22:00:00", round:"first" },{ team1:"السعودية", team2:"أوروغواي", time:"2026-06-16T01:00:00", round:"first" },
-    { team1:"إيران", team2:"نيوزيلندا", time:"2026-06-16T04:00:00", round:"first" },{ team1:"السنغال", team2:"فرنسا", time:"2026-06-16T22:00:00", round:"first" },
-    { team1:"النرويج", team2:"العراق", time:"2026-06-17T01:00:00", round:"first" },{ team1:"الجزائر", team2:"الأرجنتين", time:"2026-06-17T04:00:00", round:"first" },
-    { team1:"الأردن", team2:"النمسا", time:"2026-06-17T07:00:00", round:"first" },{ team1:"البرتغال", team2:"كرواتيا", time:"2026-06-17T20:00:00", round:"first" },
-    { team1:"إنجلترا", team2:"كرواتيا", time:"2026-06-17T23:00:00", round:"first" },{ team1:"جنوب أفريقيا", team2:"التشيك", time:"2026-06-18T19:00:00", round:"second" },
-    { team1:"سويسرا", team2:"البوسنة والهرسك", time:"2026-06-18T22:00:00", round:"second" },{ team1:"قطر", team2:"كندا", time:"2026-06-19T01:00:00", round:"second" },
-    { team1:"المكسيك", team2:"كوريا الجنوبية", time:"2026-06-19T04:00:00", round:"second" },{ team1:"أستراليا", team2:"أمريكا", time:"2026-06-19T22:00:00", round:"second" },
-    { team1:"المغرب", team2:"إسكتلندا", time:"2026-06-20T01:00:00", round:"second" },{ team1:"البرازيل", team2:"هايتي", time:"2026-06-20T03:30:00", round:"second" },
-    { team1:"تركيا", team2:"باراغواي", time:"2026-06-20T06:00:00", round:"second" },{ team1:"السويد", team2:"هولندا", time:"2026-06-20T20:00:00", round:"second" },
-    { team1:"ساحل العاج", team2:"ألمانيا", time:"2026-06-20T23:00:00", round:"second" },{ team1:"الإكوادور", team2:"كوراساو", time:"2026-06-21T03:00:00", round:"second" },
-    { team1:"اليابان", team2:"تونس", time:"2026-06-21T07:00:00", round:"second" },{ team1:"إسبانيا", team2:"السعودية", time:"2026-06-21T19:00:00", round:"second" },
-    { team1:"بلجيكا", team2:"إيران", time:"2026-06-21T22:00:00", round:"second" },{ team1:"أوروغواي", team2:"الرأس الأخضر", time:"2026-06-22T01:00:00", round:"second" },
-    { team1:"مصر", team2:"نيوزيلندا", time:"2026-06-22T04:00:00", round:"second" },{ team1:"الأرجنتين", team2:"النمسا", time:"2026-06-22T20:00:00", round:"second" },
-    { team1:"العراق", team2:"فرنسا", time:"2026-06-23T00:00:00", round:"second" },{ team1:"النرويج", team2:"السنغال", time:"2026-06-23T03:00:00", round:"second" },
-    { team1:"الأردن", team2:"الجزائر", time:"2026-06-23T06:00:00", round:"second" },{ team1:"البرتغال", team2:"أوزبكستان", time:"2026-06-23T20:00:00", round:"second" },
-    { team1:"إنجلترا", team2:"غانا", time:"2026-06-23T23:00:00", round:"second" },{ team1:"بنما", team2:"كرواتيا", time:"2026-06-24T02:00:00", round:"second" },
-    { team1:"كولومبيا", team2:"الكونغو الديمقراطية", time:"2026-06-24T05:00:00", round:"second" },{ team1:"كندا", team2:"سويسرا", time:"2026-06-24T22:00:00", round:"third" },
-    { team1:"قطر", team2:"البوسنة والهرسك", time:"2026-06-24T22:00:00", round:"third" },{ team1:"المغرب", team2:"هايتي", time:"2026-06-25T01:00:00", round:"third" },
-    { team1:"إسكتلندا", team2:"البرازيل", time:"2026-06-25T01:00:00", round:"third" },{ team1:"جنوب أفريقيا", team2:"كوريا الجنوبية", time:"2026-06-25T04:00:00", round:"third" },
-    { team1:"المكسيك", team2:"التشيك", time:"2026-06-25T04:00:00", round:"third" },{ team1:"كوراساو", team2:"ساحل العاج", time:"2026-06-25T23:00:00", round:"third" },
-    { team1:"ألمانيا", team2:"الإكوادور", time:"2026-06-25T23:00:00", round:"third" },{ team1:"هولندا", team2:"تونس", time:"2026-06-26T02:00:00", round:"third" },
-    { team1:"اليابان", team2:"السويد", time:"2026-06-26T02:00:00", round:"third" },{ team1:"أمريكا", team2:"تركيا", time:"2026-06-26T05:00:00", round:"third" },
-    { team1:"أستراليا", team2:"باراغواي", time:"2026-06-26T05:00:00", round:"third" },{ team1:"فرنسا", team2:"النرويج", time:"2026-06-26T22:00:00", round:"third" },
-    { team1:"السنغال", team2:"العراق", time:"2026-06-26T22:00:00", round:"third" },{ team1:"السعودية", team2:"الرأس الأخضر", time:"2026-06-27T03:00:00", round:"third" },
-    { team1:"إسبانيا", team2:"أوروغواي", time:"2026-06-27T03:00:00", round:"third" },{ team1:"إيران", team2:"مصر", time:"2026-06-27T06:00:00", round:"third" },
-    { team1:"نيوزيلندا", team2:"بلجيكا", time:"2026-06-27T06:00:00", round:"third" },{ team1:"إنجلترا", team2:"بنما", time:"2026-06-28T00:00:00", round:"third" },
-    { team1:"كرواتيا", team2:"غانا", time:"2026-06-28T00:00:00", round:"third" },{ team1:"البرتغال", team2:"كولومبيا", time:"2026-06-28T02:30:00", round:"third" },
-    { team1:"الكونغو الديمقراطية", team2:"أوزبكستان", time:"2026-06-28T02:30:00", round:"third" },{ team1:"الجزائر", team2:"النمسا", time:"2026-06-28T05:00:00", round:"third" },
-    { team1:"الأردن", team2:"الأرجنتين", time:"2026-06-28T05:00:00", round:"third" }
+    { id: 1, team1:"المكسيك", team2:"جنوب أفريقيا", time:"2026-06-11T22:00:00", round:"first" },
+    { id: 2, team1:"الأرجنتين", team2:"الجزائر", time:"2026-06-11T04:00:00", round:"first" },
+    { id: 3, team1:"النمسا", team2:"الأردن", time:"2026-06-11T07:00:00", round:"first" },
+    { id: 4, team1:"البرتغال", team2:"الكونغو الديمقراطية", time:"2026-06-11T20:00:00", round:"first" },
+    { id: 5, team1:"كوريا الجنوبية", team2:"التشيك", time:"2026-06-12T05:00:00", round:"first" },
+    { id: 6, team1:"كندا", team2:"البوسنة والهرسك", time:"2026-06-12T22:00:00", round:"first" },
+    { id: 7, team1:"أمريكا", team2:"العراق", time:"2026-06-13T04:00:00", round:"first" },
+    { id: 8, team1:"سويسرا", team2:"قطر", time:"2026-06-13T22:00:00", round:"first" },
+    { id: 9, team1:"البرازيل", team2:"المغرب", time:"2026-06-14T01:00:00", round:"first" },
+    { id: 10, team1:"هايتي", team2:"إسكتلندا", time:"2026-06-14T04:00:00", round:"first" },
+    { id: 11, team1:"أستراليا", team2:"تركيا", time:"2026-06-14T07:00:00", round:"first" },
+    { id: 12, team1:"ألمانيا", team2:"كوراساو", time:"2026-06-14T20:00:00", round:"first" },
+    { id: 13, team1:"اليابان", team2:"هولندا", time:"2026-06-14T23:00:00", round:"first" },
+    { id: 14, team1:"الإكوادور", team2:"ساحل العاج", time:"2026-06-15T02:00:00", round:"first" },
+    { id: 15, team1:"السويد", team2:"تونس", time:"2026-06-15T05:00:00", round:"first" },
+    { id: 16, team1:"إسبانيا", team2:"الرأس الأخضر", time:"2026-06-15T19:00:00", round:"first" },
+    { id: 17, team1:"مصر", team2:"بلجيكا", time:"2026-06-15T22:00:00", round:"first" },
+    { id: 18, team1:"السعودية", team2:"أوروغواي", time:"2026-06-16T01:00:00", round:"first" },
+    { id: 19, team1:"إيران", team2:"نيوزيلندا", time:"2026-06-16T04:00:00", round:"first" },
+    { id: 20, team1:"السنغال", team2:"فرنسا", time:"2026-06-16T22:00:00", round:"first" },
+    { id: 21, team1:"النرويج", team2:"العراق", time:"2026-06-17T01:00:00", round:"first" },
+    { id: 22, team1:"الجزائر", team2:"الأرجنتين", time:"2026-06-17T04:00:00", round:"first" },
+    { id: 23, team1:"الأردن", team2:"النمسا", time:"2026-06-17T07:00:00", round:"first" },
+    { id: 24, team1:"البرتغال", team2:"كرواتيا", time:"2026-06-17T20:00:00", round:"first" },
+    { id: 25, team1:"إنجلترا", team2:"كرواتيا", time:"2026-06-17T23:00:00", round:"first" },
+    { id: 26, team1:"جنوب أفريقيا", team2:"التشيك", time:"2026-06-18T19:00:00", round:"second" },
+    { id: 27, team1:"سويسرا", team2:"البوسنة والهرسك", time:"2026-06-18T22:00:00", round:"second" },
+    { id: 28, team1:"قطر", team2:"كندا", time:"2026-06-19T01:00:00", round:"second" },
+    { id: 29, team1:"المكسيك", team2:"كوريا الجنوبية", time:"2026-06-19T04:00:00", round:"second" },
+    { id: 30, team1:"أستراليا", team2:"أمريكا", time:"2026-06-19T22:00:00", round:"second" },
+    { id: 31, team1:"المغرب", team2:"إسكتلندا", time:"2026-06-20T01:00:00", round:"second" },
+    { id: 32, team1:"البرازيل", team2:"هايتي", time:"2026-06-20T03:30:00", round:"second" },
+    { id: 33, team1:"تركيا", team2:"باراغواي", time:"2026-06-20T06:00:00", round:"second" },
+    { id: 34, team1:"السويد", team2:"هولندا", time:"2026-06-20T20:00:00", round:"second" },
+    { id: 35, team1:"ساحل العاج", team2:"ألمانيا", time:"2026-06-20T23:00:00", round:"second" },
+    { id: 36, team1:"الإكوادور", team2:"كوراساو", time:"2026-06-21T03:00:00", round:"second" },
+    { id: 37, team1:"اليابان", team2:"تونس", time:"2026-06-21T07:00:00", round:"second" },
+    { id: 38, team1:"إسبانيا", team2:"السعودية", time:"2026-06-21T19:00:00", round:"second" },
+    { id: 39, team1:"بلجيكا", team2:"إيران", time:"2026-06-21T22:00:00", round:"second" },
+    { id: 40, team1:"أوروغواي", team2:"الرأس الأخضر", time:"2026-06-22T01:00:00", round:"second" },
+    { id: 41, team1:"مصر", team2:"نيوزيلندا", time:"2026-06-22T04:00:00", round:"second" },
+    { id: 42, team1:"الأرجنتين", team2:"النمسا", time:"2026-06-22T20:00:00", round:"second" },
+    { id: 43, team1:"العراق", team2:"فرنسا", time:"2026-06-23T00:00:00", round:"second" },
+    { id: 44, team1:"النرويج", team2:"السنغال", time:"2026-06-23T03:00:00", round:"second" },
+    { id: 45, team1:"الأردن", team2:"الجزائر", time:"2026-06-23T06:00:00", round:"second" },
+    { id: 46, team1:"البرتغال", team2:"أوزبكستان", time:"2026-06-23T20:00:00", round:"second" },
+    { id: 47, team1:"إنجلترا", team2:"غانا", time:"2026-06-23T23:00:00", round:"second" },
+    { id: 48, team1:"بنما", team2:"كرواتيا", time:"2026-06-24T02:00:00", round:"second" },
+    { id: 49, team1:"كولومبيا", team2:"الكونغو الديمقراطية", time:"2026-06-24T05:00:00", round:"second" },
+    { id: 50, team1:"كندا", team2:"سويسرا", time:"2026-06-24T22:00:00", round:"third" },
+    { id: 51, team1:"قطر", team2:"البوسنة والهرسك", time:"2026-06-24T22:00:00", round:"third" },
+    { id: 52, team1:"المغرب", team2:"هايتي", time:"2026-06-25T01:00:00", round:"third" },
+    { id: 53, team1:"إسكتلندا", team2:"البرازيل", time:"2026-06-25T01:00:00", round:"third" },
+    { id: 54, team1:"جنوب أفريقيا", team2:"كوريا الجنوبية", time:"2026-06-25T04:00:00", round:"third" },
+    { id: 55, team1:"المكسيك", team2:"التشيك", time:"2026-06-25T04:00:00", round:"third" },
+    { id: 56, team1:"كوراساو", team2:"ساحل العاج", time:"2026-06-25T23:00:00", round:"third" },
+    { id: 57, team1:"ألمانيا", team2:"الإكوادور", time:"2026-06-25T23:00:00", round:"third" },
+    { id: 58, team1:"هولندا", team2:"تونس", time:"2026-06-26T02:00:00", round:"third" },
+    { id: 59, team1:"اليابان", team2:"السويد", time:"2026-06-26T02:00:00", round:"third" },
+    { id: 60, team1:"أمريكا", team2:"تركيا", time:"2026-06-26T05:00:00", round:"third" },
+    { id: 61, team1:"أستراليا", team2:"باراغواي", time:"2026-06-26T05:00:00", round:"third" },
+    { id: 62, team1:"فرنسا", team2:"النرويج", time:"2026-06-26T22:00:00", round:"third" },
+    { id: 63, team1:"السنغال", team2:"العراق", time:"2026-06-26T22:00:00", round:"third" },
+    { id: 64, team1:"السعودية", team2:"الرأس الأخضر", time:"2026-06-27T03:00:00", round:"third" },
+    { id: 65, team1:"إسبانيا", team2:"أوروغواي", time:"2026-06-27T03:00:00", round:"third" },
+    { id: 66, team1:"إيران", team2:"مصر", time:"2026-06-27T06:00:00", round:"third" },
+    { id: 67, team1:"نيوزيلندا", team2:"بلجيكا", time:"2026-06-27T06:00:00", round:"third" },
+    { id: 68, team1:"إنجلترا", team2:"بنما", time:"2026-06-28T00:00:00", round:"third" },
+    { id: 69, team1:"كرواتيا", team2:"غانا", time:"2026-06-28T00:00:00", round:"third" },
+    { id: 70, team1:"البرتغال", team2:"كولومبيا", time:"2026-06-28T02:30:00", round:"third" },
+    { id: 71, team1:"الكونغو الديمقراطية", team2:"أوزبكستان", time:"2026-06-28T02:30:00", round:"third" },
+    { id: 72, team1:"الجزائر", team2:"النمسا", time:"2026-06-28T05:00:00", round:"third" },
+    { id: 73, team1:"الأردن", team2:"الأرجنتين", time:"2026-06-28T05:00:00", round:"third" }
   ];
   
   const matchesData = rawMatches.map(m => ({
@@ -346,9 +1695,6 @@
     roundLabel: m.round === 'first' ? 'الجولة الأولى' : (m.round === 'second' ? 'الجولة الثانية' : 'الجولة الثالثة')
   }));
   
-  // ============================================================
-  //  المجموعات
-  // ============================================================
   const finalGroups = {
     "A": ["المكسيك","جنوب أفريقيا","كوريا الجنوبية","التشيك"],
     "B": ["كندا","البوسنة والهرسك","قطر","سويسرا"],
@@ -364,9 +1710,6 @@
     "L": ["إنجلترا","كرواتيا","غانا","بنما"]
   };
   
-  // ============================================================
-  //  المتغيرات العامة
-  // ============================================================
   let previousGamesData = [];
   let allPredictionsCache = [];
   let currentMatchId = null;
@@ -376,9 +1719,6 @@
   let currentUserName = localStorage.getItem('lastUserName') || '';
   let currentDayFilter = 'all';
   
-  // ============================================================
-  //  إظهار/إخفاء فلتر اليوم حسب التبويب النشط
-  // ============================================================
   function toggleDayFilter(tabId) {
     const dayFilterTabs = document.getElementById('dayFilterTabs');
     if (tabId === 'upcoming') {
@@ -389,96 +1729,61 @@
   }
   
   // ============================================================
-  //  دوال ضغط البيانات (لجعل الرابط قصيراً جداً)
+  //  دوال مشاركة الرابط - نسخة قصيرة جداً (رقم المباراة فقط)
   // ============================================================
-  function compressData(data) {
-    const json = JSON.stringify(data);
-    const compressed = LZString.compressToEncodedURIComponent(json);
-    return compressed;
-  }
-  
-  function decompressData(compressed) {
-    try {
-      const decompressed = LZString.decompressFromEncodedURIComponent(compressed);
-      if (!decompressed) return null;
-      return JSON.parse(decompressed);
-    } catch (e) {
-      return null;
-    }
-  }
-  
-  // ============================================================
-  //  دوال مشاركة الرابط (نسخة مضغوطة جداً)
-  // ============================================================
-  function copyMatchLink(encodedData, team1, team2) {
-    const shareUrl = `${window.location.origin}${window.location.pathname}?m=${encodedData}`;
+  function copyMatchLink(matchId, team1, team2) {
+    const shareUrl = `${window.location.origin}${window.location.pathname}?m=${matchId}`;
     
-    if (navigator.share && window.innerWidth < 768) {
+    if (navigator.share) {
       navigator.share({
         title: `🏆 توقع مباراة ${team1} 🆚 ${team2}`,
         text: `🔮 توقع نتيجة مباراة ${team1} 🆚 ${team2} في كأس العالم 2026`,
         url: shareUrl
       }).catch(() => {});
     } else {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          showCopyToast(`✅ تم نسخ الرابط!\n📋 ${shareUrl}`);
-        }).catch(() => {
-          fallbackCopy(shareUrl);
-        });
-      } else {
-        fallbackCopy(shareUrl);
-      }
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showCopyToast('✅ تم نسخ رابط المباراة!');
+      }).catch(() => {
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showCopyToast('✅ تم نسخ رابط المباراة!');
+      });
     }
-  }
-  
-  function fallbackCopy(text) {
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-9999px';
-    textArea.style.top = '-9999px';
-    document.body.appendChild(textArea);
-    textArea.select();
-    try {
-      document.execCommand('copy');
-      showCopyToast('✅ تم نسخ الرابط!');
-    } catch (e) {
-      prompt('انسخ الرابط يدوياً:', text);
-    }
-    document.body.removeChild(textArea);
   }
   
   function showCopyToast(message) {
     const toast = document.getElementById('copyToast');
     toast.textContent = message;
-    toast.style.whiteSpace = 'pre-wrap';
-    toast.style.textAlign = 'center';
-    toast.style.fontSize = '0.8rem';
-    toast.style.maxWidth = '90%';
     toast.classList.add('show');
     setTimeout(() => {
       toast.classList.remove('show');
-    }, 4000);
+    }, 3000);
   }
   
   // ============================================================
-  //  فحص الرابط عند التحميل (نسخة مضغوطة)
+  //  فحص الرابط عند التحميل - باستخدام رقم المباراة
   // ============================================================
   function checkUrlForMatch() {
     const params = new URLSearchParams(window.location.search);
-    const encodedData = params.get('m');
+    const matchId = params.get('m');
     
-    if (encodedData) {
-      try {
-        const decoded = decompressData(encodedData);
-        if (decoded && decoded.matchId && decoded.team1 && decoded.team2 && decoded.timeISO) {
-          setTimeout(() => {
-            openPredictionModal(decoded.matchId, decoded.team1, decoded.team2, decoded.timeISO);
-          }, 800);
-        }
-      } catch (e) {
-        console.error('❌ فشل فك تشفير الرابط:', e);
+    if (matchId && !isNaN(matchId)) {
+      const match = matchesData.find(m => m.id === parseInt(matchId));
+      if (match) {
+        setTimeout(() => {
+          openPredictionModal(
+            `${match.timeISO}_${match.team1}_${match.team2}`,
+            match.team1,
+            match.team2,
+            match.timeISO
+          );
+        }, 800);
+      } else {
+        console.warn('⚠️ مباراة غير موجودة بالرقم:', matchId);
       }
     }
   }
@@ -580,14 +1885,6 @@
         
         const groupName = Object.keys(finalGroups).find(g => finalGroups[g].includes(m.team1)) || '';
         
-        // تشفير بيانات المباراة للرابط - باستخدام ضغط LZString
-        const encodedData = compressData({
-          matchId: matchId,
-          team1: m.team1,
-          team2: m.team2,
-          timeISO: m.timeISO
-        });
-        
         return `
           <div class="match-card ${isLive ? 'live' : ''}">
             <div class="match-teams">
@@ -616,7 +1913,7 @@
                       onclick="${showActions ? `openViewPredictionsModal('${matchId}','${m.team1}','${m.team2}')` : ''}">
                 <span>📋</span> استعراض التوقعات
               </button>
-              <button class="share-link-btn" onclick="copyMatchLink('${encodedData}', '${m.team1}', '${m.team2}')">
+              <button class="share-link-btn" onclick="copyMatchLink('${m.id}', '${m.team1}', '${m.team2}')">
                 <span class="icon">🔗</span> مشاركة الرابط
               </button>
             </div>
@@ -638,9 +1935,6 @@
     }
   }
   
-  // ============================================================
-  //  أحداث فلتر اليوم
-  // ============================================================
   document.querySelectorAll('.day-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
@@ -650,15 +1944,9 @@
     });
   });
   
-  // ============================================================
-  //  ربط أحداث الفلاتر الأخرى
-  // ============================================================
   document.getElementById('groupFilter')?.addEventListener('change', renderUpcoming);
   document.getElementById('matchSearchInput')?.addEventListener('input', renderUpcoming);
   
-  // ============================================================
-  //  🏆 LEADERBOARD
-  // ============================================================
   function calculateLeaderboard(predictions, matches) {
     const scores = {};
     predictions.forEach(p => {
@@ -811,9 +2099,6 @@
     container.innerHTML = html;
   }
   
-  // ============================================================
-  //  النوافذ المنبثقة
-  // ============================================================
   function openPredictionModal(matchId, team1, team2, timeISO) {
     currentMatchId = matchId;
     currentTeam1 = team1;
@@ -913,9 +2198,6 @@
     document.body.style.overflow = 'hidden';
   }
   
-  // ============================================================
-  //  إغلاق النوافذ
-  // ============================================================
   function closePredictionModal() {
     document.getElementById('predictionModal').classList.remove('active');
     document.body.style.overflow = '';
@@ -931,9 +2213,6 @@
     document.body.style.overflow = '';
   }
   
-  // ============================================================
-  //  حفظ التوقع
-  // ============================================================
   document.getElementById('modalSubmitBtn').addEventListener('click', async function() {
     const userName = document.getElementById('modalUserName').value.trim();
     const selected = document.querySelector('input[name="prediction"]:checked');
@@ -993,9 +2272,28 @@
     }
   });
   
-  // ============================================================
-  //  عرض جميع التوقعات
-  // ============================================================
+  document.getElementById('modalCloseBtn').addEventListener('click', closePredictionModal);
+  document.getElementById('viewModalCloseBtn').addEventListener('click', closeViewPredictionsModal);
+  document.getElementById('playerModalCloseBtn').addEventListener('click', closePlayerPredictionsModal);
+  
+  document.getElementById('predictionModal').addEventListener('click', function(e) {
+    if (e.target === this) closePredictionModal();
+  });
+  document.getElementById('viewPredictionsModal').addEventListener('click', function(e) {
+    if (e.target === this) closeViewPredictionsModal();
+  });
+  document.getElementById('playerPredictionsModal').addEventListener('click', function(e) {
+    if (e.target === this) closePlayerPredictionsModal();
+  });
+  
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closePredictionModal();
+      closeViewPredictionsModal();
+      closePlayerPredictionsModal();
+    }
+  });
+  
   async function renderAllPredictions() {
     const container = document.getElementById('allPredictions');
     const countSpan = document.getElementById('predictionsCount');
@@ -1028,12 +2326,9 @@
     }).join('');
   }
   
-  // ============================================================
-  //  المباريات السابقة
-  // ============================================================
+  document.getElementById('prevSearchInput')?.addEventListener('input', renderPreviousGamesFiltered);
+  
   let isLoadingPrevious = false;
-  let retryCount = 0;
-  const MAX_RETRIES = 2;
   
   function loadFromCache() {
     try {
@@ -1091,7 +2386,6 @@
       
       previousGamesData = newData;
       saveToCache(newData);
-      retryCount = 0;
       renderPreviousGamesFiltered();
       calculateStandings();
       await renderLeaderboard();
@@ -1138,9 +2432,6 @@
     `).join('');
   }
   
-  // ============================================================
-  //  ترتيب المجموعات
-  // ============================================================
   function calculateStandings() {
     try {
       const standings = {};
@@ -1211,9 +2502,6 @@
     }
   }
   
-  // ============================================================
-  //  إدارة التبويبات
-  // ============================================================
   function initTabs() {
     const btns = document.querySelectorAll('.tab-btn[data-tab]');
     btns.forEach(btn => {
@@ -1234,39 +2522,6 @@
     });
   }
   
-  // ============================================================
-  //  أحداث النوافذ
-  // ============================================================
-  document.getElementById('modalCloseBtn').addEventListener('click', closePredictionModal);
-  document.getElementById('viewModalCloseBtn').addEventListener('click', closeViewPredictionsModal);
-  document.getElementById('playerModalCloseBtn').addEventListener('click', closePlayerPredictionsModal);
-  
-  document.getElementById('predictionModal').addEventListener('click', function(e) {
-    if (e.target === this) closePredictionModal();
-  });
-  document.getElementById('viewPredictionsModal').addEventListener('click', function(e) {
-    if (e.target === this) closeViewPredictionsModal();
-  });
-  document.getElementById('playerPredictionsModal').addEventListener('click', function(e) {
-    if (e.target === this) closePlayerPredictionsModal();
-  });
-  
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closePredictionModal();
-      closeViewPredictionsModal();
-      closePlayerPredictionsModal();
-    }
-  });
-  
-  // ============================================================
-  //  البحث السريع
-  // ============================================================
-  document.getElementById('prevSearchInput')?.addEventListener('input', renderPreviousGamesFiltered);
-  
-  // ============================================================
-  //  التحديث التلقائي
-  // ============================================================
   function startAutoUpdate() {
     setInterval(renderUpcoming, 1000);
     setInterval(async () => {
@@ -1278,9 +2533,6 @@
     }, 60000);
   }
   
-  // ============================================================
-  //  الوضع المظلم/الفاتح
-  // ============================================================
   function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -1294,9 +2546,6 @@
     document.getElementById('themeToggleBtn').textContent = '☀️ الوضع الفاتح';
   }
   
-  // ============================================================
-  //  مشاركة النتائج
-  // ============================================================
   function shareResults() {
     const currentUser = localStorage.getItem('lastUserName') || 'لاعب';
     const userScore = document.querySelector('.champion-card .info .stats-row .item:first-child strong')?.textContent || '0';
@@ -1319,9 +2568,6 @@
     }
   }
   
-  // ============================================================
-  //  التهيئة
-  // ============================================================
   async function init() {
     console.log("🚀 تهيئة التطبيق...");
     initTabs();
@@ -1338,7 +2584,7 @@
     await renderAllPredictions();
     await renderLeaderboard();
     
-    // فحص الرابط عند التحميل
+    // فحص الرابط عند التحميل - الآن باستخدام رقم المباراة
     checkUrlForMatch();
     
     console.log("✅ التطبيق جاهز");
