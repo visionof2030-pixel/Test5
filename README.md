@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -1868,10 +1869,10 @@
   }
   
   // ============================================================
-  //  دوال مشاركة الرابط
+  //  دوال مشاركة الرابط (نسخة قصيرة)
   // ============================================================
   function copyMatchLink(encodedData, team1, team2) {
-    const shareUrl = `${window.location.origin}${window.location.pathname}?match=${encodedData}`;
+    const shareUrl = `${window.location.origin}${window.location.pathname}?m=${encodedData}`;
     
     if (navigator.share) {
       navigator.share({
@@ -1883,7 +1884,6 @@
       navigator.clipboard.writeText(shareUrl).then(() => {
         showCopyToast('✅ تم نسخ رابط المباراة!');
       }).catch(() => {
-        // نسخ احتياطي
         const textArea = document.createElement('textarea');
         textArea.value = shareUrl;
         document.body.appendChild(textArea);
@@ -1905,17 +1905,16 @@
   }
   
   // ============================================================
-  //  فحص الرابط عند التحميل
+  //  فحص الرابط عند التحميل (نسخة قصيرة)
   // ============================================================
   function checkUrlForMatch() {
     const params = new URLSearchParams(window.location.search);
-    const encodedData = params.get('match');
+    const encodedData = params.get('m');
     
     if (encodedData) {
       try {
-        const decoded = JSON.parse(decodeURIComponent(atob(encodedData)));
+        const decoded = JSON.parse(decodeURIComponent(atob(encodedData.replace(/-/g, '+').replace(/_/g, '/'))));
         if (decoded.matchId && decoded.team1 && decoded.team2 && decoded.timeISO) {
-          // تأخير بسيط لضمان تحميل الصفحة بالكامل
           setTimeout(() => {
             openPredictionModal(decoded.matchId, decoded.team1, decoded.team2, decoded.timeISO);
           }, 800);
@@ -2023,13 +2022,13 @@
         
         const groupName = Object.keys(finalGroups).find(g => finalGroups[g].includes(m.team1)) || '';
         
-        // تشفير بيانات المباراة للرابط
+        // تشفير بيانات المباراة للرابط - باستخدام Base64 URL-safe
         const encodedData = btoa(encodeURIComponent(JSON.stringify({
           matchId: matchId,
           team1: m.team1,
           team2: m.team2,
           timeISO: m.timeISO
-        })));
+        }))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
         
         return `
           <div class="match-card ${isLive ? 'live' : ''}">
