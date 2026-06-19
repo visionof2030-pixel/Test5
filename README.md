@@ -1,4 +1,3 @@
-
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -810,6 +809,53 @@
     }
     
     /* ============================================================
+       زر مشاركة الرابط
+       ============================================================ */
+    .share-link-btn {
+      background: rgba(52, 152, 219, 0.1);
+      border: 1px solid rgba(52, 152, 219, 0.2);
+      color: #5dade2;
+      padding: 6px 12px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .share-link-btn:hover {
+      background: rgba(52, 152, 219, 0.2);
+      border-color: #5dade2;
+      transform: translateY(-1px);
+    }
+    
+    .share-link-btn .icon { font-size: 0.9rem; }
+    
+    .copy-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(46, 204, 113, 0.95);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      z-index: 99999;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      animation: fadeInModal 0.3s ease;
+      backdrop-filter: blur(8px);
+      display: none;
+    }
+    
+    .copy-toast.show { display: block; }
+    
+    /* ============================================================
        المجموعات
        ============================================================ */
     .groups-container {
@@ -1445,6 +1491,9 @@
   </div>
 </div>
 
+<!-- ===== رسالة تأكيد النسخ ===== -->
+<div class="copy-toast" id="copyToast">✅ تم نسخ الرابط!</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   // ============================================================
@@ -1819,20 +1868,77 @@
   }
   
   // ============================================================
+  //  دوال مشاركة الرابط
+  // ============================================================
+  function copyMatchLink(encodedData, team1, team2) {
+    const shareUrl = `${window.location.origin}${window.location.pathname}?match=${encodedData}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: `🏆 توقع مباراة ${team1} 🆚 ${team2}`,
+        text: `🔮 توقع نتيجة مباراة ${team1} 🆚 ${team2} في كأس العالم 2026`,
+        url: shareUrl
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showCopyToast('✅ تم نسخ رابط المباراة!');
+      }).catch(() => {
+        // نسخ احتياطي
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showCopyToast('✅ تم نسخ رابط المباراة!');
+      });
+    }
+  }
+  
+  function showCopyToast(message) {
+    const toast = document.getElementById('copyToast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+  
+  // ============================================================
+  //  فحص الرابط عند التحميل
+  // ============================================================
+  function checkUrlForMatch() {
+    const params = new URLSearchParams(window.location.search);
+    const encodedData = params.get('match');
+    
+    if (encodedData) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(atob(encodedData)));
+        if (decoded.matchId && decoded.team1 && decoded.team2 && decoded.timeISO) {
+          // تأخير بسيط لضمان تحميل الصفحة بالكامل
+          setTimeout(() => {
+            openPredictionModal(decoded.matchId, decoded.team1, decoded.team2, decoded.timeISO);
+          }, 800);
+        }
+      } catch (e) {
+        console.error('❌ فشل فك تشفير الرابط:', e);
+      }
+    }
+  }
+  
+  // ============================================================
   //  عرض المباريات القادمة
   // ============================================================
   function renderUpcoming() {
     try {
       let active = upcomingMatches(matchesData);
       
-      // فلتر المجموعة
       const groupFilter = document.getElementById('groupFilter')?.value || 'all';
       if (groupFilter !== 'all') {
         const teams = finalGroups[groupFilter] || [];
         active = active.filter(m => teams.includes(m.team1) || teams.includes(m.team2));
       }
       
-      // فلتر اليوم
       if (currentDayFilter === 'today') {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -1862,10 +1968,8 @@
         });
       }
       
-      // ترتيب حسب الوقت
       active.sort((a,b) => matchTime(a.timeISO) - matchTime(b.timeISO));
       
-      // بحث
       const searchQuery = document.getElementById('matchSearchInput')?.value || '';
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
@@ -1892,7 +1996,6 @@
         const savedUserName = localStorage.getItem('lastUserName') || '';
         const hasPredicted = savedUserName && hasUserPredicted(savedUserName, matchId);
         
-        // التحقق إذا كانت المباراة اليوم أو غداً
         const showActions = isMatchTodayOrTomorrow(m.timeISO);
         
         let scoreDisplay = '🆚';
@@ -1919,6 +2022,14 @@
         }
         
         const groupName = Object.keys(finalGroups).find(g => finalGroups[g].includes(m.team1)) || '';
+        
+        // تشفير بيانات المباراة للرابط
+        const encodedData = btoa(encodeURIComponent(JSON.stringify({
+          matchId: matchId,
+          team1: m.team1,
+          team2: m.team2,
+          timeISO: m.timeISO
+        })));
         
         return `
           <div class="match-card ${isLive ? 'live' : ''}">
@@ -1948,12 +2059,14 @@
                       onclick="${showActions ? `openViewPredictionsModal('${matchId}','${m.team1}','${m.team2}')` : ''}">
                 <span>📋</span> استعراض التوقعات
               </button>
+              <button class="share-link-btn" onclick="copyMatchLink('${encodedData}', '${m.team1}', '${m.team2}')">
+                <span class="icon">🔗</span> مشاركة الرابط
+              </button>
             </div>
           </div>
         `;
       }).join('');
       
-      // ربط أزرار التوقع
       document.querySelectorAll('[data-matchid][data-team1]').forEach(btn => {
         if (!btn.disabled && !btn.onclick) {
           btn.addEventListener('click', function() {
@@ -2554,7 +2667,6 @@
         btns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
-        // إظهار/إخفاء فلتر اليوم
         toggleDayFilter(id);
         
         if (id === 'previous' && !previousGamesData.length) loadPreviousGames();
@@ -2659,7 +2771,6 @@
     renderUpcoming();
     startAutoUpdate();
     
-    // التأكد من ظهور فلتر اليوم للتبويب النشط افتراضياً
     toggleDayFilter('upcoming');
     
     if (!loadFromCache()) {
@@ -2669,6 +2780,10 @@
     setTimeout(loadPreviousGames, 500);
     await renderAllPredictions();
     await renderLeaderboard();
+    
+    // فحص الرابط عند التحميل
+    checkUrlForMatch();
+    
     console.log("✅ التطبيق جاهز");
   }
   
@@ -2677,6 +2792,7 @@
   window.loadPreviousGames = loadPreviousGames;
   window.toggleTheme = toggleTheme;
   window.shareResults = shareResults;
+  window.copyMatchLink = copyMatchLink;
   
   init();
 </script>
