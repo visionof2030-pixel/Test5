@@ -135,7 +135,7 @@
       border: 1px solid var(--border-gold);
       border-radius: 60px;
       padding: 6px 18px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       overflow: hidden;
       box-shadow: var(--shadow-gold);
     }
@@ -161,174 +161,14 @@
     .news-ticker-wrapper:hover .news-ticker { animation-play-state: paused; }
     
     /* ============================================================
-       أزرار التبويب
-       ============================================================ */
-    .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 16px 0 24px;
-      justify-content: center;
-    }
-    
-    .tab-btn {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
-      padding: 10px 20px;
-      border-radius: 60px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-      color: var(--text-secondary);
-      transition: var(--transition);
-      font-family: inherit;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .tab-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
-    .tab-btn.active {
-      background: linear-gradient(135deg, rgba(240, 180, 41, 0.2), rgba(240, 180, 41, 0.05));
-      border-color: var(--gold);
-      color: var(--gold-light);
-      box-shadow: 0 0 30px rgba(240, 180, 41, 0.05);
-    }
-    
-    .tab-content { display: none; animation: fadeUp 0.4s ease; }
-    .tab-content.active { display: block; }
-    
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* ============================================================
-       الأقسام العامة
-       ============================================================ */
-    .section-title {
-      font-size: 1.3rem;
-      font-weight: 800;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .section-title .gold { color: var(--gold); }
-    .section-title .badge-count {
-      background: rgba(240, 180, 41, 0.15);
-      color: var(--gold-light);
-      font-size: 0.7rem;
-      padding: 2px 12px;
-      border-radius: 40px;
-      font-weight: 600;
-    }
-    
-    /* ============================================================
-       بطاقات المباريات
-       ============================================================ */
-    .matches-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 18px;
-    }
-    
-    .match-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border-radius: var(--radius-lg);
-      padding: 18px;
-      border: 1px solid rgba(255,255,255,0.05);
-      transition: var(--transition);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    }
-    
-    .match-card:hover { transform: translateY(-3px); border-color: var(--border-gold); }
-    .match-card.live { border-color: var(--danger); box-shadow: 0 0 30px rgba(231, 76, 60, 0.15); }
-    
-    .match-teams {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      background: rgba(0,0,0,0.25);
-      padding: 12px 14px;
-      border-radius: 60px;
-    }
-    
-    .match-team {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      flex: 1;
-      justify-content: center;
-    }
-    
-    .match-team .flag { font-size: 1.3rem; }
-    
-    .match-score {
-      background: linear-gradient(135deg, var(--gold), #d49a1a);
-      padding: 2px 16px;
-      border-radius: 40px;
-      font-weight: 800;
-      font-size: 0.95rem;
-      color: #0a1628;
-      min-width: 50px;
-      text-align: center;
-    }
-    
-    .match-score.live { background: linear-gradient(135deg, var(--danger), #c0392b); animation: pulseScore 1.2s infinite; color: white; }
-    .match-score.finished { background: linear-gradient(135deg, var(--success), #27ae60); color: white; }
-    
-    @keyframes pulseScore {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(231,76,60,0.3); }
-    }
-    
-    .match-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 10px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    
-    .match-meta .tag {
-      background: rgba(255,255,255,0.05);
-      padding: 4px 14px;
-      border-radius: 40px;
-      font-size: 0.65rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    
-    .match-meta .timer {
-      font-family: 'Courier New', monospace;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-secondary);
-    }
-    
-    .match-meta .timer.live { color: var(--danger); animation: pulseText 1s infinite; }
-    
-    @keyframes pulseText {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    
-    /* ============================================================
-       🏆 LEADERBOARD - القسم المميز
+       🏆 LEADERBOARD - القسم المميز (في الأعلى)
        ============================================================ */
     .leaderboard-section {
       background: linear-gradient(145deg, rgba(10, 22, 40, 0.95), rgba(20, 40, 70, 0.9));
       border: 1px solid var(--border-gold);
       border-radius: var(--radius-lg);
       padding: 24px;
-      margin: 32px 0 28px;
+      margin: 0 0 28px 0;
       box-shadow: 0 12px 48px rgba(240, 180, 41, 0.06), inset 0 1px 0 rgba(240, 180, 41, 0.1);
       position: relative;
       overflow: hidden;
@@ -665,22 +505,167 @@
     }
     
     /* ============================================================
-       حالة عدم وجود بيانات
+       أزرار التبويب
        ============================================================ */
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-secondary);
-      background: rgba(255,255,255,0.02);
-      border-radius: var(--radius-lg);
-      border: 1px dashed rgba(255,255,255,0.06);
-      grid-column: 1/-1;
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 20px;
+      justify-content: center;
     }
     
-    .empty-state .icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+    .tab-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 10px 20px;
+      border-radius: 60px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .tab-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(240, 180, 41, 0.2), rgba(240, 180, 41, 0.05));
+      border-color: var(--gold);
+      color: var(--gold-light);
+      box-shadow: 0 0 30px rgba(240, 180, 41, 0.05);
+    }
+    
+    .tab-content { display: none; animation: fadeUp 0.4s ease; }
+    .tab-content.active { display: block; }
+    
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     
     /* ============================================================
-       باقي الأقسام (ترتيب المجموعات، التوقعات، إلخ)
+       الأقسام العامة
+       ============================================================ */
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title .gold { color: var(--gold); }
+    .section-title .badge-count {
+      background: rgba(240, 180, 41, 0.15);
+      color: var(--gold-light);
+      font-size: 0.7rem;
+      padding: 2px 12px;
+      border-radius: 40px;
+      font-weight: 600;
+    }
+    
+    /* ============================================================
+       بطاقات المباريات
+       ============================================================ */
+    .matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+    
+    .match-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: var(--transition);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    
+    .match-card:hover { transform: translateY(-3px); border-color: var(--border-gold); }
+    .match-card.live { border-color: var(--danger); box-shadow: 0 0 30px rgba(231, 76, 60, 0.15); }
+    
+    .match-teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,0,0,0.25);
+      padding: 12px 14px;
+      border-radius: 60px;
+    }
+    
+    .match-team {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex: 1;
+      justify-content: center;
+    }
+    
+    .match-team .flag { font-size: 1.3rem; }
+    
+    .match-score {
+      background: linear-gradient(135deg, var(--gold), #d49a1a);
+      padding: 2px 16px;
+      border-radius: 40px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #0a1628;
+      min-width: 50px;
+      text-align: center;
+    }
+    
+    .match-score.live { background: linear-gradient(135deg, var(--danger), #c0392b); animation: pulseScore 1.2s infinite; color: white; }
+    .match-score.finished { background: linear-gradient(135deg, var(--success), #27ae60); color: white; }
+    
+    @keyframes pulseScore {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(231,76,60,0.3); }
+    }
+    
+    .match-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .match-meta .tag {
+      background: rgba(255,255,255,0.05);
+      padding: 4px 14px;
+      border-radius: 40px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    
+    .match-meta .timer {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    
+    .match-meta .timer.live { color: var(--danger); animation: pulseText 1s infinite; }
+    
+    @keyframes pulseText {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* ============================================================
+       ترتيب المجموعات - لون الخط أسود
        ============================================================ */
     .groups-container {
       display: grid;
@@ -726,7 +711,7 @@
       padding: 6px 4px;
       text-align: center;
       border-bottom: 1px solid rgba(255,255,255,0.03);
-      color: var(--text-primary);
+      color: #000000;
       font-weight: 600;
     }
     
@@ -736,8 +721,16 @@
       gap: 6px;
       justify-content: flex-start;
       font-weight: 700;
+      color: #000000;
     }
     
+    .standings-table .team-cell span:last-child { color: #000000; }
+    
+    .standings-table td:last-child { color: #000000; font-weight: 800; }
+    
+    /* ============================================================
+       التوقعات
+       ============================================================ */
     .predictions-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -778,6 +771,21 @@
     .prediction-card .user .name-p { font-weight: 700; }
     .prediction-card .prediction-text { font-size: 0.85rem; color: var(--text-secondary); }
     .prediction-card .prediction-text .highlight { color: var(--gold-light); font-weight: 700; }
+    
+    /* ============================================================
+       حالة عدم وجود بيانات
+       ============================================================ */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.02);
+      border-radius: var(--radius-lg);
+      border: 1px dashed rgba(255,255,255,0.06);
+      grid-column: 1/-1;
+    }
+    
+    .empty-state .icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
     
     /* ============================================================
        نافذة التوقع المنبثقة
@@ -976,14 +984,7 @@
       .sticky-header .brand .sub { font-size: 0.5rem; }
       .sticky-header .header-btn { padding: 6px 12px; font-size: 0.65rem; }
       
-      .tabs { gap: 6px; }
-      .tab-btn { padding: 8px 14px; font-size: 0.7rem; }
-      
-      .matches-grid { grid-template-columns: 1fr; gap: 14px; }
-      .match-team { font-size: 0.75rem; }
-      .match-team .flag { font-size: 1.1rem; }
-      
-      .leaderboard-section { padding: 16px; margin: 20px 0; }
+      .leaderboard-section { padding: 16px; margin: 0 0 20px 0; }
       .leaderboard-section .lb-header .title { font-size: 1.1rem; }
       .leaderboard-section .lb-header .lb-stats { font-size: 0.65rem; gap: 8px; flex-wrap: wrap; }
       
@@ -1004,6 +1005,13 @@
       .player-card .info-sm .name-sm { font-size: 0.8rem; }
       .player-card .points-sm { font-size: 0.75rem; padding: 2px 10px; }
       .player-card .progress-mini { width: 40px; }
+      
+      .tabs { gap: 6px; }
+      .tab-btn { padding: 8px 14px; font-size: 0.7rem; }
+      
+      .matches-grid { grid-template-columns: 1fr; gap: 14px; }
+      .match-team { font-size: 0.75rem; }
+      .match-team .flag { font-size: 1.1rem; }
       
       .groups-container { grid-template-columns: 1fr; }
       .standings-table { font-size: 0.6rem; }
@@ -1035,24 +1043,6 @@
       .matches-grid { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); }
     }
     
-    /* ============================================================
-       تحميل Spinner
-       ============================================================ */
-    .spinner {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      border: 3px solid rgba(255,255,255,0.05);
-      border-radius: 50%;
-      border-top-color: var(--gold);
-      animation: spin 0.8s linear infinite;
-    }
-    
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    /* ============================================================
-       تذييل الصفحة
-       ============================================================ */
     .footer {
       margin-top: 48px;
       text-align: center;
@@ -1098,6 +1088,26 @@
     </div>
   </div>
   
+  <!-- ============================================================
+       🏆 LEADERBOARD - في أعلى الصفحة الرئيسية
+       ============================================================ -->
+  <div class="leaderboard-section" id="leaderboardSection">
+    <div class="lb-header">
+      <div class="title">
+        <span class="trophy">🏆</span>
+        <span>لوحة المتصدرين</span>
+      </div>
+      <div class="lb-stats">
+        <span class="stat">👥 <span class="num" id="lbTotalPlayers">0</span> لاعب</span>
+        <span class="stat">📊 <span class="num" id="lbTotalPredictions">0</span> توقع</span>
+      </div>
+    </div>
+    
+    <div id="leaderboardContainer">
+      <div class="empty-state"><span class="icon">⏳</span> جاري تحميل الترتيب...</div>
+    </div>
+  </div>
+  
   <!-- ===== أزرار التبويب ===== -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="upcoming">⚡ القادمة والجارية</button>
@@ -1114,24 +1124,6 @@
     </div>
     <div id="matchesContainer" class="matches-grid">
       <div class="empty-state"><span class="icon">⏳</span> جاري تحميل المباريات...</div>
-    </div>
-    
-    <!-- ===== 🏆 LEADERBOARD - داخل الصفحة الرئيسية ===== -->
-    <div class="leaderboard-section" id="leaderboardSection">
-      <div class="lb-header">
-        <div class="title">
-          <span class="trophy">🏆</span>
-          <span>لوحة المتصدرين</span>
-        </div>
-        <div class="lb-stats">
-          <span class="stat">👥 <span class="num" id="lbTotalPlayers">0</span> لاعب</span>
-          <span class="stat">📊 <span class="num" id="lbTotalPredictions">0</span> توقع</span>
-        </div>
-      </div>
-      
-      <div id="leaderboardContainer">
-        <div class="empty-state"><span class="icon">⏳</span> جاري تحميل الترتيب...</div>
-      </div>
     </div>
   </div>
   
@@ -1710,8 +1702,6 @@
     const currentUser = localStorage.getItem('lastUserName') || '';
     const topThree = board.slice(0, 3);
     const rest = board.slice(3, 10);
-    const totalCorrect = board.reduce((sum, p) => sum + p.correct, 0);
-    const totalPoints = board.reduce((sum, p) => sum + p.points, 0);
     
     let html = '';
     
@@ -2138,7 +2128,7 @@
   }
   
   // ============================================================
-  //  ترتيب المجموعات
+  //  ترتيب المجموعات - لون الخط أسود
   // ============================================================
   function calculateStandings() {
     try {
@@ -2191,11 +2181,11 @@
                 ${tableRows.map((row, idx) => `
                   <tr>
                     <td>${idx + 1}</td>
-                    <td><div class="team-cell"><span>${getFlag(row.team)}</span> ${row.team}</div></td>
+                    <td><div class="team-cell"><span>${getFlag(row.team)}</span> <span>${row.team}</span></div></td>
                     <td>${row.played}</td><td>${row.wins}</td><td>${row.draws}</td><td>${row.losses}</td>
                     <td>${row.goalsFor}</td><td>${row.goalsAgainst}</td>
                     <td>${row.diff}</td>
-                    <td style="color:var(--gold-light);font-weight:800;">${row.points}</td>
+                    <td style="color:#000000;font-weight:800;">${row.points}</td>
                   </tr>
                 `).join('')}
               </tbody>
