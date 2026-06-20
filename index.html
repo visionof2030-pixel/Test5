@@ -1924,7 +1924,7 @@
       <span class="sep">|</span>
       <span>🏅 كل توقع صحيح = نقطة · تصدر لوحة المتصدرين!</span>
       <span class="sep">|</span>
-      <span>⛔ لا يمكن التوقع على المباريات الجارية</span>
+      <span>⛔ لا يمكن التوقع على المباريات الجارية أو المنتهية</span>
     </div>
   </div>
   
@@ -2513,6 +2513,11 @@
     return cur >= start && cur <= end;
   }
   
+  function isMatchFinished(timeISO) {
+    const end = matchTime(timeISO) + MATCH_DURATION;
+    return now() > end;
+  }
+  
   function getMatchStatus(m) {
     const start = matchTime(m.timeISO);
     const end = start + MATCH_DURATION;
@@ -2522,11 +2527,11 @@
       const h = Math.floor(diff / 3600000);
       const min = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
-      return { live: false, text: `⏱️ ${h}h ${min}m ${s}s` };
+      return { live: false, finished: false, text: `⏱️ ${h}h ${min}m ${s}s` };
     } else if (cur <= end) {
-      return { live: true, text: "🔴 تُلعب الآن" };
+      return { live: true, finished: false, text: "🔴 تُلعب الآن" };
     }
-    return { live: false, text: "✅ انتهت" };
+    return { live: false, finished: true, text: "✅ انتهت" };
   }
   
   function upcomingMatches(arr) {
@@ -2923,12 +2928,15 @@
   function renderMatchCard(m, isUpcoming) {
     const st = getMatchStatus(m);
     const isLive = st.live;
+    const isFinished = st.finished;
     const matchId = `${m.timeISO}_${m.team1}_${m.team2}`;
     const isLiveMatch = isMatchLive(m.timeISO);
     const savedUserName = localStorage.getItem('lastUserName') || '';
     const hasPredicted = savedUserName && hasUserPredicted(savedUserName, matchId);
     
-    const showActions = isMatchTodayOrTomorrow(m.timeISO) && isUpcoming;
+    // المباراة قابلة للتوقع فقط إذا كانت قادمة (لم تبدأ بعد) وليس لها نتيجة.
+    // نمنع التوقع إذا كانت المباراة جارية أو منتهية.
+    const canPredict = !isFinished && !isLive && isUpcoming && isMatchTodayOrTomorrow(m.timeISO);
     
     let scoreDisplay = '🆚';
     let scoreClass = 'upcoming';
@@ -2941,7 +2949,7 @@
       scoreDisplay = '🔴 LIVE'; 
       scoreClass = 'live';
       matchClass = 'live';
-    } else if (!isUpcoming) {
+    } else if (isFinished) {
       const previousMatch = previousGamesData.find(p => 
         (p.homeAr === m.team1 && p.awayAr === m.team2) || 
         (p.homeAr === m.team2 && p.awayAr === m.team1)
@@ -2965,14 +2973,18 @@
     let predictDisabled = false;
     let predictBtnClass = '';
     
-    if (!showActions || !isUpcoming) {
+    if (!canPredict) {
       predictDisabled = true;
-      predictBtnHtml = isUpcoming ? `<span>⏳</span> قريباً` : `<span>📋</span> عرض التوقعات`;
-      predictBtnClass = 'style="opacity:0.7;cursor:pointer;"';
-    } else if (isLiveMatch) {
-      predictDisabled = true;
-      predictBtnHtml = `<span>⛔</span> جارية`;
-      predictBtnClass = 'style="opacity:0.5;cursor:not-allowed;"';
+      if (isFinished) {
+        predictBtnHtml = `<span>📋</span> عرض التوقعات`;
+        predictBtnClass = 'style="opacity:0.7;cursor:pointer;"';
+      } else if (isLive) {
+        predictBtnHtml = `<span>⛔</span> جارية`;
+        predictBtnClass = 'style="opacity:0.5;cursor:not-allowed;"';
+      } else {
+        predictBtnHtml = `<span>⏳</span> قريباً`;
+        predictBtnClass = 'style="opacity:0.7;cursor:pointer;"';
+      }
     } else if (hasPredicted) {
       const existing = getUserPrediction(savedUserName, matchId);
       predictDisabled = true;
@@ -2984,7 +2996,7 @@
     const isToday = isMatchToday(m.timeISO);
     const dayLabel = isToday ? '📌 اليوم' : (isMatchTodayOrTomorrow(m.timeISO) ? '📌 غداً' : '');
     
-    const onclickAttr = (!isUpcoming && matchResult) ? `onclick="openMatchPredictions('${matchId}', '${m.team1}', '${m.team2}', ${homeScore}, ${awayScore})"` : '';
+    const onclickAttr = (isFinished && matchResult) ? `onclick="openMatchPredictions('${matchId}', '${m.team1}', '${m.team2}', ${homeScore}, ${awayScore})"` : '';
     
     return `
       <div class="match-card ${matchClass}" ${onclickAttr}>
@@ -3010,10 +3022,10 @@
                     ${predictDisabled ? 'disabled' : ''} ${predictBtnClass}>
               ${predictBtnHtml}
             </button>
-            <button class="tab-btn" style="flex:1;justify-content:center;padding:10px 12px;font-size:0.75rem;background:rgba(52,152,219,0.06);border-color:rgba(52,152,219,0.15);color:#5dade2;${!showActions ? 'opacity:0.4;cursor:default;' : ''}"
+            <button class="tab-btn" style="flex:1;justify-content:center;padding:10px 12px;font-size:0.75rem;background:rgba(52,152,219,0.06);border-color:rgba(52,152,219,0.15);color:#5dade2;${!isUpcoming ? 'opacity:0.4;cursor:default;' : ''}"
                     data-matchid="${matchId}" data-team1="${m.team1}" data-team2="${m.team2}" 
-                    ${!showActions ? 'disabled' : ''}
-                    onclick="${showActions ? `openViewPredictionsModal('${matchId}','${m.team1}','${m.team2}')` : ''}">
+                    ${!isUpcoming ? 'disabled' : ''}
+                    onclick="${isUpcoming ? `openViewPredictionsModal('${matchId}','${m.team1}','${m.team2}')` : ''}">
               <span>📋</span> استعراض التوقعات
             </button>
             <button class="share-link-btn" onclick="copyMatchLink('${m.id}', '${m.team1}', '${m.team2}')">
@@ -3090,7 +3102,17 @@
       document.querySelectorAll('[data-matchid][data-team1]').forEach(btn => {
         if (!btn.disabled && !btn.onclick) {
           btn.addEventListener('click', function() {
-            openPredictionModal(this.dataset.matchid, this.dataset.team1, this.dataset.team2, this.dataset.timeiso);
+            const matchId = this.dataset.matchid;
+            const team1 = this.dataset.team1;
+            const team2 = this.dataset.team2;
+            const timeISO = this.dataset.timeiso;
+            
+            // تحقق إضافي قبل فتح النافذة
+            if (isMatchFinished(timeISO)) {
+              showCopyToast('⛔ هذه المباراة انتهت، لا يمكن التوقع.');
+              return;
+            }
+            openPredictionModal(matchId, team1, team2, timeISO);
           });
         }
       });
@@ -3316,6 +3338,12 @@
   }
   
   function openPredictionModal(matchId, team1, team2, timeISO) {
+    // التحقق من انتهاء المباراة قبل فتح النافذة
+    if (isMatchFinished(timeISO)) {
+      showCopyToast('⛔ هذه المباراة انتهت، لا يمكن التوقع.');
+      return;
+    }
+    
     currentMatchId = matchId;
     currentTeam1 = team1;
     currentTeam2 = team2;
@@ -3452,6 +3480,13 @@
     if (selected.value === 'HOME') prediction = currentTeam1;
     else if (selected.value === 'AWAY') prediction = currentTeam2;
     else prediction = 'DRAW';
+    
+    // التحقق من انتهاء المباراة قبل الحفظ
+    if (isMatchFinished(currentTimeISO)) {
+      msgEl.textContent = '⛔ هذه المباراة انتهت، لا يمكن حفظ التوقع.';
+      msgEl.className = 'modal-message error';
+      return;
+    }
     
     if (isMatchLive(currentTimeISO)) {
       msgEl.textContent = '⛔ لا يمكن التوقع على مباراة جارية';
@@ -3850,14 +3885,19 @@
     if (matchId && !isNaN(matchId)) {
       const match = matchesData.find(m => m.id === parseInt(matchId));
       if (match) {
-        setTimeout(() => {
-          openPredictionModal(
-            `${match.timeISO}_${match.team1}_${match.team2}`,
-            match.team1,
-            match.team2,
-            match.timeISO
-          );
-        }, 800);
+        // التحقق من أن المباراة لم تنتهِ قبل فتح النافذة
+        if (!isMatchFinished(match.timeISO)) {
+          setTimeout(() => {
+            openPredictionModal(
+              `${match.timeISO}_${match.team1}_${match.team2}`,
+              match.team1,
+              match.team2,
+              match.timeISO
+            );
+          }, 800);
+        } else {
+          showCopyToast('⛔ هذه المباراة انتهت، لا يمكن التوقع.');
+        }
       } else {
         console.warn('⚠️ مباراة غير موجودة بالرقم:', matchId);
       }
