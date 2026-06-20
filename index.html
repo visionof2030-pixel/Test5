@@ -765,6 +765,12 @@
       overflow: hidden;
       transition: var(--transition);
       box-shadow: 0 0 40px rgba(240, 180, 41, 0.05);
+      cursor: pointer;
+    }
+    
+    .champion-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 60px rgba(240, 180, 41, 0.1);
     }
     
     .champion-card .rank-badge { font-size: 2.8rem; min-width: 60px; text-align: center; }
@@ -1335,13 +1341,33 @@
     .prediction-card .user .name-p { font-weight: 700; }
     .prediction-card .prediction-text { font-size: 0.85rem; color: var(--text-secondary); }
     
+    .prediction-card .status-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 12px;
+      border-radius: 40px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    
+    .prediction-card .status-badge.correct {
+      background: rgba(46, 204, 113, 0.15);
+      color: var(--success);
+    }
+    
+    .prediction-card .status-badge.wrong {
+      background: rgba(231, 76, 60, 0.15);
+      color: var(--danger);
+    }
+    
+    .prediction-card .status-badge.pending {
+      background: rgba(240, 180, 41, 0.15);
+      color: var(--gold-light);
+    }
+    
     .prediction-card.correct {
       border-color: var(--success) !important;
       background: rgba(46, 204, 113, 0.08) !important;
-    }
-    
-    .prediction-card.correct .prediction-text {
-      color: var(--success) !important;
     }
     
     .prediction-card.wrong {
@@ -1349,25 +1375,9 @@
       background: rgba(231, 76, 60, 0.08) !important;
     }
     
-    .prediction-card.wrong .prediction-text {
-      color: var(--danger) !important;
-    }
-    
-    .prediction-card .status-badge {
-      font-size: 0.6rem;
-      padding: 2px 10px;
-      border-radius: 40px;
-      font-weight: 700;
-    }
-    
-    .prediction-card .status-badge.correct-badge {
-      background: rgba(46, 204, 113, 0.15);
-      color: var(--success);
-    }
-    
-    .prediction-card .status-badge.wrong-badge {
-      background: rgba(231, 76, 60, 0.15);
-      color: var(--danger);
+    .prediction-card.pending {
+      border-color: rgba(240, 180, 41, 0.3) !important;
+      background: rgba(240, 180, 41, 0.05) !important;
     }
     
     .empty-state {
@@ -2934,8 +2944,6 @@
     const savedUserName = localStorage.getItem('lastUserName') || '';
     const hasPredicted = savedUserName && hasUserPredicted(savedUserName, matchId);
     
-    // المباراة قابلة للتوقع فقط إذا كانت قادمة (لم تبدأ بعد) وليس لها نتيجة.
-    // نمنع التوقع إذا كانت المباراة جارية أو منتهية.
     const canPredict = !isFinished && !isLive && isUpcoming && isMatchTodayOrTomorrow(m.timeISO);
     
     let scoreDisplay = '🆚';
@@ -3107,7 +3115,6 @@
             const team2 = this.dataset.team2;
             const timeISO = this.dataset.timeiso;
             
-            // تحقق إضافي قبل فتح النافذة
             if (isMatchFinished(timeISO)) {
               showCopyToast('⛔ هذه المباراة انتهت، لا يمكن التوقع.');
               return;
@@ -3123,6 +3130,159 @@
       console.error("renderUpcoming:", e);
       document.getElementById('matchesContainer').innerHTML = `<div class="empty-state"><span class="icon">⚠️</span> حدث خطأ</div>`;
     }
+  }
+  
+  // ============================================================
+  //  دالة مساعدة لتحديد حالة التوقع
+  // ============================================================
+  function getPredictionStatus(prediction, previousGames) {
+    // prediction: { user_name, match_id, prediction, created_at }
+    // previousGames: array of { homeAr, awayAr, homeScore, awayScore }
+    const parts = prediction.match_id.split('_');
+    if (parts.length < 3) return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
+    const team1 = parts[1];
+    const team2 = parts[2];
+    
+    // البحث عن المباراة في السابقة
+    const match = previousGames.find(m => 
+      (m.homeAr === team1 && m.awayAr === team2) || 
+      (m.homeAr === team2 && m.awayAr === team1)
+    );
+    
+    if (!match) {
+      // قد تكون المباراة لم تنته بعد أو ليس لها نتيجة
+      return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
+    }
+    
+    // تحديد النتيجة الصحيحة
+    let correctResult;
+    if (match.homeScore > match.awayScore) correctResult = match.homeAr;
+    else if (match.awayScore > match.homeScore) correctResult = match.awayAr;
+    else correctResult = 'DRAW';
+    
+    const isCorrect = prediction.prediction === correctResult;
+    if (isCorrect) {
+      return { status: 'correct', text: '✅ توقع صحيح', color: 'var(--success)' };
+    } else {
+      return { status: 'wrong', text: '❌ توقع خاطئ', color: 'var(--danger)' };
+    }
+  }
+  
+  // ============================================================
+  //  عرض توقعات لاعب (مع الحالة)
+  // ============================================================
+  async function openPlayerPredictions(userName) {
+    document.getElementById('playerModalName').textContent = userName;
+    const listContainer = document.getElementById('playerPredictionsList');
+    
+    listContainer.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> جاري التحميل...</div>`;
+    
+    const predictions = await getPredictionsForUser(userName);
+    
+    if (!predictions || predictions.length === 0) {
+      listContainer.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذا اللاعب</div>`;
+      return;
+    }
+    
+    // ترتيب الأحدث أولاً
+    predictions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    let html = '';
+    predictions.forEach(p => {
+      const parts = p.match_id.split('_');
+      const team1 = parts[1] || '?';
+      const team2 = parts[2] || '?';
+      let predictionText = '';
+      if (p.prediction === 'DRAW') predictionText = '🤝 تعادل';
+      else predictionText = `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
+      
+      const status = getPredictionStatus(p, previousGamesData);
+      
+      let cardClass = '';
+      let badgeClass = '';
+      let badgeText = status.text;
+      if (status.status === 'correct') {
+        cardClass = 'correct';
+        badgeClass = 'correct';
+      } else if (status.status === 'wrong') {
+        cardClass = 'wrong';
+        badgeClass = 'wrong';
+      } else {
+        cardClass = 'pending';
+        badgeClass = 'pending';
+      }
+      
+      html += `
+        <div class="prediction-card ${cardClass}">
+          <div class="prediction-text">${team1} 🆚 ${team2}</div>
+          <div class="prediction-text" style="color:var(--gold-light);">🔮 ${predictionText}</div>
+          <span class="status-badge ${badgeClass}">${badgeText}</span>
+          <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? new Date(p.created_at).toLocaleString('ar') : 'تاريخ غير معروف'}</div>
+        </div>
+      `;
+    });
+    
+    listContainer.innerHTML = html;
+    document.getElementById('playerPredictionsModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  // ============================================================
+  //  عرض جميع التوقعات (مع الحالة)
+  // ============================================================
+  async function renderAllPredictions() {
+    const container = document.getElementById('allPredictions');
+    const countSpan = document.getElementById('predictionsCount');
+    
+    const predictions = await getAllPredictions();
+    allPredictionsCache = predictions;
+    countSpan.textContent = predictions.length;
+    
+    if (!predictions || predictions.length === 0) {
+      container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات بعد</div>`;
+      return;
+    }
+    
+    // ترتيب الأحدث أولاً
+    const sorted = [...predictions].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    container.innerHTML = sorted.slice(0, 20).map(p => {
+      const parts = p.match_id.split('_');
+      const team1 = parts[1] || '?';
+      const team2 = parts[2] || '?';
+      let predictionText = '';
+      if (p.prediction === 'DRAW') predictionText = '🤝 تعادل';
+      else predictionText = `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
+      
+      const status = getPredictionStatus(p, previousGamesData);
+      
+      let cardClass = '';
+      let badgeClass = '';
+      let badgeText = status.text;
+      if (status.status === 'correct') {
+        cardClass = 'correct';
+        badgeClass = 'correct';
+      } else if (status.status === 'wrong') {
+        cardClass = 'wrong';
+        badgeClass = 'wrong';
+      } else {
+        cardClass = 'pending';
+        badgeClass = 'pending';
+      }
+      
+      return `
+        <div class="prediction-card ${cardClass}">
+          <div class="user">
+            <div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div>
+            <span class="name-p">${p.user_name || 'مجهول'}</span>
+          </div>
+          <div class="prediction-text">${team1} 🆚 ${team2}</div>
+          <div class="prediction-text" style="color:var(--gold-light);">🔮 ${predictionText}</div>
+          <span class="status-badge ${badgeClass}">${badgeText}</span>
+          <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? new Date(p.created_at).toLocaleString('ar') : 'تاريخ غير معروف'}</div>
+        </div>
+      `;
+    }).join('');
   }
   
   // ============================================================
@@ -3246,7 +3406,7 @@
       const isCurrentUser = champ.name === currentUser;
       
       html += `
-        <div class="champion-card" style="${isCurrentUser ? 'border-color:#f0b429;box-shadow:0 0 40px rgba(240,180,41,0.12);' : ''}">
+        <div class="champion-card" onclick="openPlayerPredictions('${champ.name}')" style="${isCurrentUser ? 'border-color:#f0b429;box-shadow:0 0 40px rgba(240,180,41,0.12);' : ''}">
           <div class="rank-badge">🥇</div>
           <div class="avatar">${champ.name.charAt(0).toUpperCase()}</div>
           <div class="info">
@@ -3338,7 +3498,6 @@
   }
   
   function openPredictionModal(matchId, team1, team2, timeISO) {
-    // التحقق من انتهاء المباراة قبل فتح النافذة
     if (isMatchFinished(timeISO)) {
       showCopyToast('⛔ هذه المباراة انتهت، لا يمكن التوقع.');
       return;
@@ -3412,36 +3571,6 @@
     document.body.style.overflow = 'hidden';
   }
   
-  async function openPlayerPredictions(userName) {
-    document.getElementById('playerModalName').textContent = userName;
-    const listContainer = document.getElementById('playerPredictionsList');
-    
-    listContainer.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> جاري التحميل...</div>`;
-    
-    const predictions = await getPredictionsForUser(userName);
-    
-    if (!predictions || predictions.length === 0) {
-      listContainer.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذا اللاعب</div>`;
-    } else {
-      listContainer.innerHTML = predictions.map(p => {
-        const parts = p.match_id.split('_');
-        const team1 = parts[1] || '?';
-        const team2 = parts[2] || '?';
-        let text = p.prediction === 'DRAW' ? '🤝 تعادل' : `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
-        return `
-          <div class="prediction-card">
-            <div class="prediction-text">${team1} 🆚 ${team2}</div>
-            <div class="prediction-text" style="color:var(--gold-light);">🔮 ${text}</div>
-            <div style="font-size:0.6rem;color:var(--text-secondary);">🕒 ${p.created_at ? new Date(p.created_at).toLocaleString('ar') : 'تاريخ غير معروف'}</div>
-          </div>
-        `;
-      }).join('');
-    }
-    
-    document.getElementById('playerPredictionsModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-  
   function closePredictionModal() {
     document.getElementById('predictionModal').classList.remove('active');
     document.body.style.overflow = '';
@@ -3481,7 +3610,6 @@
     else if (selected.value === 'AWAY') prediction = currentTeam2;
     else prediction = 'DRAW';
     
-    // التحقق من انتهاء المباراة قبل الحفظ
     if (isMatchFinished(currentTimeISO)) {
       msgEl.textContent = '⛔ هذه المباراة انتهت، لا يمكن حفظ التوقع.';
       msgEl.className = 'modal-message error';
@@ -3545,38 +3673,6 @@
       closeMatchPredictionsModal();
     }
   });
-  
-  async function renderAllPredictions() {
-    const container = document.getElementById('allPredictions');
-    const countSpan = document.getElementById('predictionsCount');
-    
-    const predictions = await getAllPredictions();
-    allPredictionsCache = predictions;
-    countSpan.textContent = predictions.length;
-    
-    if (!predictions || predictions.length === 0) {
-      container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات بعد</div>`;
-      return;
-    }
-    
-    container.innerHTML = predictions.slice(0, 20).map(p => {
-      const parts = p.match_id.split('_');
-      const team1 = parts[1] || '?';
-      const team2 = parts[2] || '?';
-      let text = p.prediction === 'DRAW' ? '🤝 تعادل' : `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
-      return `
-        <div class="prediction-card">
-          <div class="user">
-            <div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div>
-            <span class="name-p">${p.user_name || 'مجهول'}</span>
-          </div>
-          <div class="prediction-text">${team1} 🆚 ${team2}</div>
-          <div class="prediction-text" style="color:var(--gold-light);">🔮 ${text}</div>
-          <div style="font-size:0.6rem;color:var(--text-secondary);">🕒 ${p.created_at ? new Date(p.created_at).toLocaleString('ar') : 'تاريخ غير معروف'}</div>
-        </div>
-      `;
-    }).join('');
-  }
   
   function renderPreviousGamesFiltered() {
     const searchText = document.getElementById('prevSearchInput')?.value.trim().toLowerCase() || '';
@@ -3692,6 +3788,9 @@
       renderPreviousGamesFiltered();
       calculateStandings();
       await renderLeaderboard();
+      // تحديث عرض التوقعات بعد تحميل النتائج
+      const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+      if (activeTab === 'predictions') await renderAllPredictions();
       
     } catch (e) {
       console.error("❌ تحميل السابقة:", e);
@@ -3885,7 +3984,6 @@
     if (matchId && !isNaN(matchId)) {
       const match = matchesData.find(m => m.id === parseInt(matchId));
       if (match) {
-        // التحقق من أن المباراة لم تنتهِ قبل فتح النافذة
         if (!isMatchFinished(match.timeISO)) {
           setTimeout(() => {
             openPredictionModal(
