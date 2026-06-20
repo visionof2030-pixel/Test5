@@ -1479,7 +1479,7 @@
     .modal-teams .m-vs { color: var(--text-secondary); font-size: 0.7rem; }
     
     /* ============================================================
-       جدول التوقعات المدمج - مع الأسماء في اليمين
+       جدول التوقعات المدمج - الأسماء في اليمين واللون أصفر غامق
        ============================================================ */
     .predictions-table-wrapper {
       overflow-x: auto;
@@ -1490,7 +1490,7 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 0.75rem;
-      direction: rtl; /* الاتجاه من اليمين لليسار */
+      direction: rtl;
     }
     
     .predictions-table th {
@@ -1510,18 +1510,6 @@
       font-size: 0.65rem;
     }
     
-    /* لون اسم المستخدم أسود */
-    .predictions-table .user-name {
-      font-weight: 700;
-      color: #000000 !important;
-    }
-    
-    /* في الوضع المظلم أيضاً */
-    [data-theme="dark"] .predictions-table .user-name,
-    [data-theme="light"] .predictions-table .user-name {
-      color: #000000 !important;
-    }
-    
     .predictions-table .status-correct {
       color: var(--success);
       font-weight: 700;
@@ -1530,6 +1518,14 @@
     .predictions-table .status-wrong {
       color: var(--danger);
       font-weight: 700;
+    }
+    
+    /* اسم المستخدم - في أقصى اليمين ولون أصفر غامق */
+    .predictions-table .user-name {
+      font-weight: 800;
+      color: #f0b429 !important;
+      /* أصفر غامق */
+      text-shadow: 0 0 20px rgba(240, 180, 41, 0.15);
     }
     
     .predictions-table .prediction-text {
@@ -1963,7 +1959,7 @@
   </div>
 </div>
 
-<!-- نافذة عرض توقعات المباراة السابقة - على شكل جدول مع الأسماء في اليمين -->
+<!-- نافذة عرض توقعات المباراة السابقة - على شكل جدول -->
 <div class="modal-overlay" id="matchPredictionsModal">
   <div class="modal-content" id="matchPredictionsContent">
     <button class="modal-close" id="matchPredictionsCloseBtn">✕</button>
@@ -1985,10 +1981,10 @@
         <table class="predictions-table" id="predictionsTable">
           <thead>
             <tr>
-              <th>المستخدم</th>
-              <th>التوقع</th>
-              <th>الحالة</th>
               <th>الوقت</th>
+              <th>الحالة</th>
+              <th>التوقع</th>
+              <th>المستخدم</th>
             </tr>
           </thead>
           <tbody id="predictionsTableBody">
@@ -2168,7 +2164,7 @@
   }
   
   // ============================================================
-  //  خاصية تصغير نافذة التوقعات
+  //  خاصية تصغير نافذة التوقعات (على شكل جدول)
   // ============================================================
   function toggleModalCompact() {
     const modalContent = document.getElementById('matchPredictionsContent');
@@ -2589,12 +2585,14 @@
     document.getElementById('mpFlag2').textContent = getFlag(team2);
     document.getElementById('mpResult').textContent = `النتيجة: ${homeScore} - ${awayScore}`;
     
+    // إظهار زر التصغير للمستخدم المصرح له
     if (isAuthorized) {
       document.getElementById('modalCompactBtn').classList.add('visible');
     } else {
       document.getElementById('modalCompactBtn').classList.remove('visible');
     }
     
+    // إعادة تعيين حالة التصغير
     if (isModalCompact) {
       isModalCompact = false;
       document.getElementById('matchPredictionsContent').classList.remove('compact-mode');
@@ -2631,6 +2629,7 @@
     let correctCount = 0;
     let wrongCount = 0;
     
+    // ترتيب التوقعات حسب التاريخ (الأحدث أولاً)
     const sortedPredictions = [...matchPredictions].sort((a, b) => {
       return new Date(b.created_at) - new Date(a.created_at);
     });
@@ -2660,10 +2659,10 @@
       
       rows += `
         <tr>
-          <td class="user-name">${p.user_name || 'مجهول'}</td>
-          <td class="prediction-text ${predClass}">${predictionText}</td>
-          <td class="${statusClass}">${statusText}</td>
           <td class="time-cell">${timeStr}</td>
+          <td class="${statusClass}">${statusText}</td>
+          <td class="prediction-text ${predClass}">${predictionText}</td>
+          <td class="user-name">${p.user_name || 'مجهول'}</td>
         </tr>
       `;
     });
@@ -3011,7 +3010,7 @@
   }
   
   // ============================================================
-  //  باقي الدوال - تم اختصارها للطول
+  //  باقي الدوال
   // ============================================================
   
   document.querySelectorAll('.day-btn').forEach(btn => {
@@ -3057,7 +3056,6 @@
     if (e.target === this) closeMatchPredictionsModal();
   });
   
-  // دوال leaderboard والمتبقي...
   function calculateLeaderboard(predictions, matches) {
     const scores = {};
     predictions.forEach(p => {
