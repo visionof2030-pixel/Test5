@@ -1342,91 +1342,69 @@
       transition: all 0.3s ease;
     }
     
-    /* أنماط التصغير لنافذة التوقعات */
+    /* ============================================================
+       نافذة التوقعات على شكل جدول مدمج
+       ============================================================ */
     .modal-content.compact-mode {
       padding: 12px !important;
-      max-width: 380px !important;
+      max-width: 420px !important;
     }
     
     .modal-content.compact-mode .modal-title {
-      font-size: 0.9rem !important;
-      margin-bottom: 8px !important;
+      font-size: 0.8rem !important;
+      margin-bottom: 4px !important;
+      padding-top: 0 !important;
     }
     
     .modal-content.compact-mode .modal-teams {
-      padding: 6px 10px !important;
-      gap: 6px !important;
-      margin-bottom: 8px !important;
+      padding: 3px 8px !important;
+      gap: 4px !important;
+      margin-bottom: 4px !important;
+      border-radius: 30px !important;
     }
     
     .modal-content.compact-mode .modal-teams .m-team {
-      font-size: 0.7rem !important;
+      font-size: 0.55rem !important;
     }
     
     .modal-content.compact-mode .modal-teams .m-team .flag {
-      font-size: 1rem !important;
+      font-size: 0.7rem !important;
     }
     
     .modal-content.compact-mode .modal-teams .m-vs {
-      font-size: 0.5rem !important;
+      font-size: 0.35rem !important;
     }
     
     .modal-content.compact-mode #mpResult {
-      font-size: 0.65rem !important;
+      font-size: 0.55rem !important;
+      margin: 1px 0 3px !important;
+    }
+    
+    .modal-content.compact-mode .predictions-stats {
+      gap: 4px !important;
       margin: 2px 0 4px !important;
     }
     
     .modal-content.compact-mode .predictions-stats .stat-item {
-      font-size: 0.6rem !important;
-      padding: 3px 8px !important;
-    }
-    
-    .modal-content.compact-mode .prediction-card {
-      padding: 6px 10px !important;
-      margin-bottom: 4px !important;
-    }
-    
-    .modal-content.compact-mode .prediction-card .user .avatar-p {
-      width: 20px !important;
-      height: 20px !important;
       font-size: 0.5rem !important;
-    }
-    
-    .modal-content.compact-mode .prediction-card .user .name-p {
-      font-size: 0.65rem !important;
-    }
-    
-    .modal-content.compact-mode .prediction-card .prediction-text {
-      font-size: 0.6rem !important;
-    }
-    
-    .modal-content.compact-mode .prediction-card .status-badge {
-      font-size: 0.45rem !important;
       padding: 1px 6px !important;
     }
     
-    .modal-content.compact-mode .prediction-card .user {
-      gap: 4px !important;
-      margin-bottom: 2px !important;
-    }
-    
-    .modal-content.compact-mode .prediction-card div[style*="font-size:0.6rem"] {
-      font-size: 0.45rem !important;
-    }
-    
     .modal-content.compact-mode .modal-close {
-      width: 24px !important;
-      height: 24px !important;
-      font-size: 0.9rem !important;
-      top: 6px !important;
-      left: 8px !important;
+      width: 18px !important;
+      height: 18px !important;
+      font-size: 0.6rem !important;
+      top: 4px !important;
+      left: 6px !important;
     }
     
-    .modal-content.compact-mode #matchPredictionsList {
-      max-height: 250px !important;
+    .modal-content.compact-mode .modal-compact-btn {
+      top: 3px !important;
+      right: 28px !important;
+      padding: 1px 6px !important;
+      font-size: 0.4rem !important;
     }
     
-    /* زر التصغير داخل النافذة */
     .modal-compact-btn {
       position: absolute;
       top: 10px;
@@ -1442,6 +1420,7 @@
       transition: var(--transition);
       font-family: inherit;
       display: none;
+      z-index: 10;
     }
     
     .modal-compact-btn.visible {
@@ -1452,13 +1431,6 @@
       background: rgba(240, 180, 41, 0.12);
       border-color: var(--gold);
       color: var(--gold-light);
-    }
-    
-    .modal-content.compact-mode .modal-compact-btn {
-      top: 6px;
-      right: 36px;
-      padding: 2px 8px;
-      font-size: 0.5rem;
     }
     
     .modal-close {
@@ -1477,6 +1449,7 @@
       align-items: center;
       justify-content: center;
       transition: var(--transition);
+      z-index: 10;
     }
     
     .modal-close:hover { background: rgba(231,76,60,0.15); color: var(--danger); }
@@ -1504,6 +1477,100 @@
     .modal-teams .m-team { font-weight: 700; display: flex; align-items: center; gap: 6px; }
     .modal-teams .m-team .flag { font-size: 1.4rem; }
     .modal-teams .m-vs { color: var(--text-secondary); font-size: 0.7rem; }
+    
+    /* ============================================================
+       جدول التوقعات المدمج
+       ============================================================ */
+    .predictions-table-wrapper {
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+    
+    .predictions-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      direction: rtl;
+    }
+    
+    .predictions-table th {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      padding: 6px 4px;
+      text-align: center;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border-gold);
+      font-size: 0.65rem;
+    }
+    
+    .predictions-table td {
+      padding: 4px 4px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.65rem;
+    }
+    
+    .predictions-table .status-correct {
+      color: var(--success);
+      font-weight: 700;
+    }
+    
+    .predictions-table .status-wrong {
+      color: var(--danger);
+      font-weight: 700;
+    }
+    
+    .predictions-table .user-name {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .predictions-table .prediction-text {
+      font-weight: 600;
+    }
+    
+    .predictions-table .prediction-text.correct {
+      color: var(--success);
+    }
+    
+    .predictions-table .prediction-text.wrong {
+      color: var(--danger);
+    }
+    
+    .predictions-table .time-cell {
+      font-size: 0.55rem;
+      color: var(--text-secondary);
+      font-family: monospace;
+      white-space: nowrap;
+    }
+    
+    /* وضع التصغير للجدول */
+    .modal-content.compact-mode .predictions-table {
+      font-size: 0.5rem !important;
+    }
+    
+    .modal-content.compact-mode .predictions-table th {
+      font-size: 0.45rem !important;
+      padding: 3px 2px !important;
+    }
+    
+    .modal-content.compact-mode .predictions-table td {
+      font-size: 0.45rem !important;
+      padding: 2px 2px !important;
+    }
+    
+    .modal-content.compact-mode .predictions-table .time-cell {
+      font-size: 0.4rem !important;
+    }
+    
+    .modal-content.compact-mode .predictions-table-wrapper {
+      margin-top: 4px !important;
+    }
+    
+    .modal-content.compact-mode #matchPredictionsList {
+      max-height: 180px !important;
+      overflow-y: auto;
+    }
     
     .modal-options {
       display: flex;
@@ -1693,16 +1760,19 @@
       .predictions-grid { grid-template-columns: 1fr; }
       .modal-content { padding: 20px; }
       .modal-content.compact-mode { padding: 8px !important; max-width: 320px !important; }
-      .modal-content.compact-mode .modal-teams .m-team { font-size: 0.6rem !important; }
-      .modal-content.compact-mode .prediction-card .user .name-p { font-size: 0.55rem !important; }
+      .modal-content.compact-mode .modal-teams .m-team { font-size: 0.45rem !important; }
+      .modal-content.compact-mode .predictions-table { font-size: 0.4rem !important; }
+      .modal-content.compact-mode .predictions-table th { font-size: 0.35rem !important; padding: 2px 1px !important; }
+      .modal-content.compact-mode .predictions-table td { font-size: 0.35rem !important; padding: 1px 1px !important; }
+      .modal-content.compact-mode .predictions-table .time-cell { font-size: 0.3rem !important; }
       .modal-teams { flex-wrap: wrap; gap: 6px; }
       .modal-teams .m-team { font-size: 0.85rem; }
       .modal-options label { padding: 10px 14px; }
       .password-box { padding: 24px; }
       .predictions-stats { gap: 10px; }
       .predictions-stats .stat-item { font-size: 0.7rem; padding: 4px 10px; }
-      .modal-compact-btn { top: 8px; right: 40px; padding: 3px 8px; font-size: 0.5rem; }
-      .modal-content.compact-mode .modal-compact-btn { top: 4px; right: 28px; padding: 2px 6px; font-size: 0.45rem; }
+      .modal-compact-btn { top: 8px; right: 36px; padding: 3px 8px; font-size: 0.45rem; }
+      .modal-content.compact-mode .modal-compact-btn { top: 2px; right: 24px; padding: 1px 5px; font-size: 0.35rem !important; }
     }
     
     @media (min-width: 768px) {
@@ -1886,7 +1956,7 @@
   </div>
 </div>
 
-<!-- نافذة عرض توقعات المباراة السابقة -->
+<!-- نافذة عرض توقعات المباراة السابقة - على شكل جدول -->
 <div class="modal-overlay" id="matchPredictionsModal">
   <div class="modal-content" id="matchPredictionsContent">
     <button class="modal-close" id="matchPredictionsCloseBtn">✕</button>
@@ -1904,7 +1974,21 @@
       <span class="stat-item">📊 المجموع: <span id="mpTotalCount">0</span></span>
     </div>
     <div id="matchPredictionsList" style="max-height:400px;overflow-y:auto;">
-      <div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذه المباراة</div>
+      <div class="predictions-table-wrapper">
+        <table class="predictions-table" id="predictionsTable">
+          <thead>
+            <tr>
+              <th>الوقت</th>
+              <th>الحالة</th>
+              <th>التوقع</th>
+              <th>المستخدم</th>
+            </tr>
+          </thead>
+          <tbody id="predictionsTableBody">
+            <tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-secondary);">📭 لا توجد توقعات لهذه المباراة</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -2077,7 +2161,7 @@
   }
   
   // ============================================================
-  //  خاصية تصغير نافذة التوقعات
+  //  خاصية تصغير نافذة التوقعات (على شكل جدول)
   // ============================================================
   function toggleModalCompact() {
     const modalContent = document.getElementById('matchPredictionsContent');
@@ -2088,10 +2172,10 @@
     
     if (isModalCompact) {
       btn.textContent = '📐 تكبير';
-      showCopyToast('📐 تم تصغير نافذة التوقعات');
+      showCopyToast('📐 تم تصغير جدول التوقعات للتصوير');
     } else {
       btn.textContent = '📐 تصغير';
-      showCopyToast('📐 تم تكبير نافذة التوقعات');
+      showCopyToast('📐 تم تكبير جدول التوقعات');
     }
   }
   
@@ -2489,7 +2573,7 @@
   let currentDayFilter = 'all';
   
   // ============================================================
-  //  دالة عرض توقعات المباراة السابقة
+  //  دالة عرض توقعات المباراة السابقة - على شكل جدول
   // ============================================================
   async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore) {
     document.getElementById('mpTeam1').textContent = team1;
@@ -2512,12 +2596,12 @@
       document.getElementById('modalCompactBtn').textContent = '📐 تصغير';
     }
     
-    const listContainer = document.getElementById('matchPredictionsList');
     const correctSpan = document.getElementById('mpCorrectCount');
     const wrongSpan = document.getElementById('mpWrongCount');
     const totalSpan = document.getElementById('mpTotalCount');
+    const tbody = document.getElementById('predictionsTableBody');
     
-    listContainer.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> جاري التحميل...</div>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-secondary);">⏳ جاري التحميل...</td></tr>`;
     correctSpan.textContent = '...';
     wrongSpan.textContent = '...';
     totalSpan.textContent = '...';
@@ -2528,7 +2612,7 @@
     totalSpan.textContent = matchPredictions.length;
     
     if (matchPredictions.length === 0) {
-      listContainer.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذه المباراة</div>`;
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-secondary);">📭 لا توجد توقعات لهذه المباراة</td></tr>`;
       correctSpan.textContent = '0';
       wrongSpan.textContent = '0';
       return;
@@ -2542,35 +2626,47 @@
     let correctCount = 0;
     let wrongCount = 0;
     
-    const predictionsHtml = matchPredictions.map(p => {
+    // ترتيب التوقعات حسب التاريخ (الأحدث أولاً)
+    const sortedPredictions = [...matchPredictions].sort((a, b) => {
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
+    
+    let rows = '';
+    sortedPredictions.forEach(p => {
       const isCorrect = p.prediction === correctResult;
       if (isCorrect) correctCount++;
       else wrongCount++;
       
       let predictionText = '';
-      if (p.prediction === 'DRAW') predictionText = '🤝 تعادل';
-      else predictionText = `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
+      if (p.prediction === 'DRAW') predictionText = 'تعادل';
+      else predictionText = `فوز ${p.prediction}`;
       
-      const statusText = isCorrect ? '✅ صحيح' : '❌ خاطئ';
-      const statusClass = isCorrect ? 'correct-badge' : 'wrong-badge';
-      const cardClass = isCorrect ? 'correct' : 'wrong';
+      const statusText = isCorrect ? 'صحيح' : 'خاطئ';
+      const statusClass = isCorrect ? 'status-correct' : 'status-wrong';
+      const predClass = isCorrect ? 'correct' : 'wrong';
       
-      return `
-        <div class="prediction-card ${cardClass}">
-          <div class="user">
-            <div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div>
-            <span class="name-p">${p.user_name || 'مجهول'}</span>
-            <span class="status-badge ${statusClass}">${statusText}</span>
-          </div>
-          <div class="prediction-text">🔮 ${predictionText}</div>
-          <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? new Date(p.created_at).toLocaleString('ar') : 'تاريخ غير معروف'}</div>
-        </div>
+      const timeStr = p.created_at ? new Date(p.created_at).toLocaleString('ar', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      }) : 'تاريخ غير معروف';
+      
+      rows += `
+        <tr>
+          <td class="time-cell">${timeStr}</td>
+          <td class="${statusClass}">${statusText}</td>
+          <td class="prediction-text ${predClass}">${predictionText}</td>
+          <td class="user-name">${p.user_name || 'مجهول'}</td>
+        </tr>
       `;
-    }).join('');
+    });
     
     correctSpan.textContent = correctCount;
     wrongSpan.textContent = wrongCount;
-    listContainer.innerHTML = predictionsHtml;
+    tbody.innerHTML = rows;
     
     document.getElementById('matchPredictionsModal').classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -3108,7 +3204,6 @@
     
     container.innerHTML = html;
     
-    // إعادة تطبيق وضع التصغير إذا كان مفعلاً
     if (isCompactMode) {
       const playersList = container.querySelector('.players-list');
       const championCard = container.querySelector('.champion-card');
