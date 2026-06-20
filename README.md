@@ -879,7 +879,7 @@
     .match-card:hover { transform: translateY(-3px); border-color: var(--border-gold); }
     .match-card.live { border-color: var(--danger); box-shadow: 0 0 30px rgba(231, 76, 60, 0.15); }
     .match-card.finished-match { border-color: var(--success); opacity: 0.85; cursor: pointer; }
-    .match-card.finished-match:hover { opacity: 1; border-color: var(--gold); }
+    .match-card.finished-match:hover { opacity: 1; transform: translateY(-3px); border-color: var(--gold); }
     
     .match-teams {
       display: flex;
@@ -1101,19 +1101,41 @@
     .prediction-card .user .name-p { font-weight: 700; }
     .prediction-card .prediction-text { font-size: 0.85rem; color: var(--text-secondary); }
     
+    /* تلوين التوقعات */
     .prediction-card.correct {
-      border-color: var(--success);
-      background: rgba(46, 204, 113, 0.08);
+      border-color: var(--success) !important;
+      background: rgba(46, 204, 113, 0.08) !important;
     }
     
-    .prediction-card.correct .prediction-text { color: var(--success); }
+    .prediction-card.correct .prediction-text {
+      color: var(--success) !important;
+    }
     
     .prediction-card.wrong {
-      border-color: var(--danger);
-      background: rgba(231, 76, 60, 0.08);
+      border-color: var(--danger) !important;
+      background: rgba(231, 76, 60, 0.08) !important;
     }
     
-    .prediction-card.wrong .prediction-text { color: var(--danger); }
+    .prediction-card.wrong .prediction-text {
+      color: var(--danger) !important;
+    }
+    
+    .prediction-card .status-badge {
+      font-size: 0.6rem;
+      padding: 2px 10px;
+      border-radius: 40px;
+      font-weight: 700;
+    }
+    
+    .prediction-card .status-badge.correct-badge {
+      background: rgba(46, 204, 113, 0.15);
+      color: var(--success);
+    }
+    
+    .prediction-card .status-badge.wrong-badge {
+      background: rgba(231, 76, 60, 0.15);
+      color: var(--danger);
+    }
     
     .empty-state {
       text-align: center;
@@ -1151,7 +1173,7 @@
       border: 1px solid var(--border-gold);
       border-radius: var(--radius-lg);
       padding: 28px;
-      max-width: 520px;
+      max-width: 500px;
       width: 95%;
       max-height: 90vh;
       overflow-y: auto;
@@ -1202,17 +1224,6 @@
     .modal-teams .m-team { font-weight: 700; display: flex; align-items: center; gap: 6px; }
     .modal-teams .m-team .flag { font-size: 1.4rem; }
     .modal-teams .m-vs { color: var(--text-secondary); font-size: 0.7rem; }
-    
-    .modal-result {
-      text-align: center;
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--gold-light);
-      margin-bottom: 16px;
-      padding: 8px;
-      background: rgba(240, 180, 41, 0.08);
-      border-radius: 40px;
-    }
     
     .modal-options {
       display: flex;
@@ -1314,108 +1325,30 @@
     .modal-message.error { color: var(--danger); background: rgba(231,76,60,0.08); }
     .modal-message.warning { color: var(--gold-light); background: rgba(240,180,41,0.08); }
     
-    /* ستايلات لعرض توقعات المباراة */
-    .match-predictions-list {
-      max-height: 400px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    
-    .match-predictions-list .prediction-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px;
-      border-radius: var(--radius-sm);
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.04);
-      transition: var(--transition);
-    }
-    
-    .match-predictions-list .prediction-item .p-user {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-    }
-    
-    .match-predictions-list .prediction-item .p-user .avatar-mini {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold), #d49a1a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.7rem;
-      color: #0a1628;
-    }
-    
-    .match-predictions-list .prediction-item .p-prediction {
-      font-weight: 700;
-      font-size: 0.85rem;
-    }
-    
-    .match-predictions-list .prediction-item.correct-prediction {
-      border-color: var(--success);
-      background: rgba(46, 204, 113, 0.1);
-    }
-    
-    .match-predictions-list .prediction-item.correct-prediction .p-prediction {
-      color: var(--success);
-    }
-    
-    .match-predictions-list .prediction-item.wrong-prediction {
-      border-color: var(--danger);
-      background: rgba(231, 76, 60, 0.08);
-    }
-    
-    .match-predictions-list .prediction-item.wrong-prediction .p-prediction {
-      color: var(--danger);
-    }
-    
-    .match-predictions-list .prediction-item .p-status {
-      font-size: 0.7rem;
-      font-weight: 700;
-    }
-    
-    .match-predictions-list .prediction-item .p-status.correct {
-      color: var(--success);
-    }
-    
-    .match-predictions-list .prediction-item .p-status.wrong {
-      color: var(--danger);
-    }
-    
-    .modal-stats {
+    .predictions-stats {
       display: flex;
       justify-content: center;
       gap: 20px;
-      margin-bottom: 16px;
-      padding: 10px;
-      background: rgba(255,255,255,0.03);
-      border-radius: var(--radius-sm);
+      margin: 12px 0 16px;
       flex-wrap: wrap;
     }
     
-    .modal-stats .stat-item {
-      text-align: center;
-    }
-    
-    .modal-stats .stat-item .stat-num {
-      font-size: 1.2rem;
-      font-weight: 800;
-      display: block;
-    }
-    
-    .modal-stats .stat-item .stat-num.green { color: var(--success); }
-    .modal-stats .stat-item .stat-num.red { color: var(--danger); }
-    .modal-stats .stat-item .stat-label {
-      font-size: 0.6rem;
+    .predictions-stats .stat-item {
+      font-size: 0.8rem;
       color: var(--text-secondary);
+      background: rgba(255,255,255,0.03);
+      padding: 6px 14px;
+      border-radius: 40px;
+    }
+    
+    .predictions-stats .stat-item .num-correct {
+      color: var(--success);
+      font-weight: 800;
+    }
+    
+    .predictions-stats .stat-item .num-wrong {
+      color: var(--danger);
+      font-weight: 800;
     }
     
     .footer {
@@ -1480,8 +1413,8 @@
       .modal-teams .m-team { font-size: 0.85rem; }
       .modal-options label { padding: 10px 14px; }
       .password-box { padding: 24px; }
-      .match-predictions-list .prediction-item { flex-direction: column; gap: 4px; text-align: center; }
-      .modal-stats { gap: 12px; }
+      .predictions-stats { gap: 10px; }
+      .predictions-stats .stat-item { font-size: 0.7rem; padding: 4px 10px; }
     }
     
     @media (min-width: 768px) {
@@ -1654,28 +1587,19 @@
   <div class="modal-content">
     <button class="modal-close" id="matchPredictionsCloseBtn">✕</button>
     <div class="modal-title">📋 توقعات المباراة</div>
-    <div class="modal-teams" id="mpModalTeams">
+    <div class="modal-teams" id="matchPredictionsTeams">
       <div class="m-team"><span class="flag" id="mpFlag1">🏁</span> <span id="mpTeam1">الفريق الأول</span></div>
       <div class="m-vs">🆚</div>
       <div class="m-team"><span class="flag" id="mpFlag2">🏁</span> <span id="mpTeam2">الفريق الثاني</span></div>
     </div>
-    <div class="modal-result" id="mpResult">النتيجة: 2 - 1</div>
-    <div class="modal-stats" id="mpStats">
-      <div class="stat-item">
-        <span class="stat-num green" id="mpCorrectCount">0</span>
-        <span class="stat-label">✅ صحيح</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num red" id="mpWrongCount">0</span>
-        <span class="stat-label">❌ خاطئ</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num" id="mpTotalCount" style="color:var(--gold-light);">0</span>
-        <span class="stat-label">📊 المجموع</span>
-      </div>
+    <div style="text-align:center;font-size:0.85rem;color:var(--gold-light);font-weight:700;margin:4px 0 8px;" id="mpResult">النتيجة: 0 - 0</div>
+    <div class="predictions-stats">
+      <span class="stat-item">✅ صحيح: <span class="num-correct" id="mpCorrectCount">0</span></span>
+      <span class="stat-item">❌ خاطئ: <span class="num-wrong" id="mpWrongCount">0</span></span>
+      <span class="stat-item">📊 المجموع: <span id="mpTotalCount">0</span></span>
     </div>
-    <div id="mpPredictionsList" class="match-predictions-list">
-      <div class="empty-state"><span class="icon">⏳</span> جاري تحميل التوقعات...</div>
+    <div id="matchPredictionsList" style="max-height:400px;overflow-y:auto;">
+      <div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذه المباراة</div>
     </div>
   </div>
 </div>
@@ -2182,33 +2106,34 @@
   // ============================================================
   //  دالة عرض توقعات المباراة السابقة
   // ============================================================
-  async function showMatchPredictions(matchId, team1, team2, homeScore, awayScore) {
-    const modal = document.getElementById('matchPredictionsModal');
+  async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore) {
     document.getElementById('mpTeam1').textContent = team1;
     document.getElementById('mpTeam2').textContent = team2;
     document.getElementById('mpFlag1').textContent = getFlag(team1);
     document.getElementById('mpFlag2').textContent = getFlag(team2);
-    document.getElementById('mpResult').textContent = `🏆 النتيجة: ${homeScore} - ${awayScore}`;
+    document.getElementById('mpResult').textContent = `النتيجة: ${homeScore} - ${awayScore}`;
     
-    const listContainer = document.getElementById('mpPredictionsList');
+    const listContainer = document.getElementById('matchPredictionsList');
     const correctSpan = document.getElementById('mpCorrectCount');
     const wrongSpan = document.getElementById('mpWrongCount');
     const totalSpan = document.getElementById('mpTotalCount');
     
-    listContainer.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> جاري تحميل التوقعات...</div>`;
-    correctSpan.textContent = '0';
-    wrongSpan.textContent = '0';
-    totalSpan.textContent = '0';
+    listContainer.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> جاري التحميل...</div>`;
+    correctSpan.textContent = '...';
+    wrongSpan.textContent = '...';
+    totalSpan.textContent = '...';
     
     // جلب جميع التوقعات
-    const allPredictions = await getAllPredictions();
+    const predictions = await getAllPredictions();
     
-    // فلترة التوقعات لهذه المباراة
-    const matchPredictions = allPredictions.filter(p => p.match_id === matchId);
+    // فلترة توقعات هذه المباراة
+    const matchPredictions = predictions.filter(p => p.match_id === matchId);
+    totalSpan.textContent = matchPredictions.length;
     
     if (matchPredictions.length === 0) {
       listContainer.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذه المباراة</div>`;
-      totalSpan.textContent = '0';
+      correctSpan.textContent = '0';
+      wrongSpan.textContent = '0';
       return;
     }
     
@@ -2222,35 +2147,37 @@
     let wrongCount = 0;
     
     // عرض التوقعات مع التلوين
-    let html = '';
-    matchPredictions.forEach(p => {
+    const predictionsHtml = matchPredictions.map(p => {
       const isCorrect = p.prediction === correctResult;
       if (isCorrect) correctCount++;
       else wrongCount++;
       
-      let predictionDisplay = p.prediction === 'DRAW' ? '🤝 تعادل' : `🏆 ${getFlag(p.prediction)} ${p.prediction}`;
-      let statusText = isCorrect ? '✅ صحيح' : '❌ خاطئ';
-      let statusClass = isCorrect ? 'correct' : 'wrong';
-      let itemClass = isCorrect ? 'correct-prediction' : 'wrong-prediction';
+      let predictionText = '';
+      if (p.prediction === 'DRAW') predictionText = '🤝 تعادل';
+      else predictionText = `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
       
-      html += `
-        <div class="prediction-item ${itemClass}">
-          <div class="p-user">
-            <div class="avatar-mini">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div>
-            <span>${p.user_name || 'مجهول'}</span>
+      const statusText = isCorrect ? '✅ صحيح' : '❌ خاطئ';
+      const statusClass = isCorrect ? 'correct-badge' : 'wrong-badge';
+      const cardClass = isCorrect ? 'correct' : 'wrong';
+      
+      return `
+        <div class="prediction-card ${cardClass}">
+          <div class="user">
+            <div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div>
+            <span class="name-p">${p.user_name || 'مجهول'}</span>
+            <span class="status-badge ${statusClass}">${statusText}</span>
           </div>
-          <div class="p-prediction">🔮 ${predictionDisplay}</div>
-          <div class="p-status ${statusClass}">${statusText}</div>
+          <div class="prediction-text">🔮 ${predictionText}</div>
+          <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? new Date(p.created_at).toLocaleString('ar') : 'تاريخ غير معروف'}</div>
         </div>
       `;
-    });
+    }).join('');
     
     correctSpan.textContent = correctCount;
     wrongSpan.textContent = wrongCount;
-    totalSpan.textContent = matchPredictions.length;
+    listContainer.innerHTML = predictionsHtml;
     
-    listContainer.innerHTML = html;
-    modal.classList.add('active');
+    document.getElementById('matchPredictionsModal').classList.add('active');
     document.body.style.overflow = 'hidden';
   }
   
@@ -2418,8 +2345,9 @@
     let scoreDisplay = '🆚';
     let scoreClass = 'upcoming';
     let matchClass = '';
-    let homeScore = null;
-    let awayScore = null;
+    let homeScore = 0;
+    let awayScore = 0;
+    let matchResult = null;
     
     if (isLive) { 
       scoreDisplay = '🔴 LIVE'; 
@@ -2437,6 +2365,7 @@
         scoreDisplay = `${homeScore} - ${awayScore}`;
         scoreClass = 'finished';
         matchClass = 'finished-match';
+        matchResult = { homeScore, awayScore };
       } else {
         scoreDisplay = '✅';
         scoreClass = 'finished';
@@ -2450,8 +2379,8 @@
     
     if (!showActions || !isUpcoming) {
       predictDisabled = true;
-      predictBtnHtml = isUpcoming ? `<span>⏳</span> قريباً` : `<span>📊</span> عرض التوقعات`;
-      predictBtnClass = 'style="opacity:0.8;cursor:pointer;background:rgba(52,152,219,0.08);border-color:rgba(52,152,219,0.15);color:#5dade2;"';
+      predictBtnHtml = isUpcoming ? `<span>⏳</span> قريباً` : `<span>📋</span> عرض التوقعات`;
+      predictBtnClass = 'style="opacity:0.7;cursor:pointer;"';
     } else if (isLiveMatch) {
       predictDisabled = true;
       predictBtnHtml = `<span>⛔</span> جارية`;
@@ -2467,16 +2396,11 @@
     const isToday = isMatchToday(m.timeISO);
     const dayLabel = isToday ? '📌 اليوم' : (isMatchTodayOrTomorrow(m.timeISO) ? '📌 غداً' : '');
     
-    // زر عرض التوقعات للمباريات السابقة
-    const showPredictionsBtn = !isUpcoming ? `
-      <button class="tab-btn" style="flex:1;justify-content:center;padding:10px 12px;font-size:0.75rem;background:rgba(52,152,219,0.08);border-color:rgba(52,152,219,0.15);color:#5dade2;" 
-              onclick="showMatchPredictions('${matchId}','${m.team1}','${m.team2}',${homeScore !== null ? homeScore : 0},${awayScore !== null ? awayScore : 0})">
-        <span>📊</span> عرض التوقعات
-      </button>
-    ` : '';
+    // إضافة حدث النقر للمباريات السابقة
+    const onclickAttr = (!isUpcoming && matchResult) ? `onclick="openMatchPredictions('${matchId}', '${m.team1}', '${m.team2}', ${homeScore}, ${awayScore})"` : '';
     
     return `
-      <div class="match-card ${matchClass}" ${!isUpcoming ? `onclick="showMatchPredictions('${matchId}','${m.team1}','${m.team2}',${homeScore !== null ? homeScore : 0},${awayScore !== null ? awayScore : 0})"` : ''}>
+      <div class="match-card ${matchClass}" ${onclickAttr}>
         <div class="match-teams">
           <div class="match-team"><span class="flag">${getFlag(m.team1)}</span> ${m.team1}</div>
           <div class="match-score ${scoreClass}">${scoreDisplay}</div>
@@ -2509,17 +2433,7 @@
               <span class="icon">🔗</span> مشاركة الرابط
             </button>
           </div>
-        ` : `
-          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            <button class="tab-btn" style="flex:1;justify-content:center;padding:10px 12px;font-size:0.75rem;background:rgba(52,152,219,0.08);border-color:rgba(52,152,219,0.15);color:#5dade2;" 
-                    onclick="event.stopPropagation();showMatchPredictions('${matchId}','${m.team1}','${m.team2}',${homeScore !== null ? homeScore : 0},${awayScore !== null ? awayScore : 0})">
-              <span>📊</span> عرض التوقعات
-            </button>
-            <button class="share-link-btn" onclick="event.stopPropagation();copyMatchLink('${m.id}', '${m.team1}', '${m.team2}')">
-              <span class="icon">🔗</span> مشاركة الرابط
-            </button>
-          </div>
-        `}
+        ` : ''}
       </div>
     `;
   }
@@ -2618,7 +2532,6 @@
   document.getElementById('groupFilter')?.addEventListener('change', renderUpcoming);
   document.getElementById('matchSearchInput')?.addEventListener('input', renderUpcoming);
   
-  // أحداث نافذة كلمة السر
   document.getElementById('footerTrigger').addEventListener('click', function(e) {
     e.preventDefault();
     if (isAuthorized) {
@@ -2644,15 +2557,9 @@
     if (e.target === this) hidePasswordOverlay();
   });
   
-  // أحداث نافذة توقعات المباراة
   document.getElementById('matchPredictionsCloseBtn').addEventListener('click', closeMatchPredictionsModal);
   document.getElementById('matchPredictionsModal').addEventListener('click', function(e) {
     if (e.target === this) closeMatchPredictionsModal();
-  });
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeMatchPredictionsModal();
-    }
   });
   
   function calculateLeaderboard(predictions, matches) {
@@ -2999,6 +2906,7 @@
       closePredictionModal();
       closeViewPredictionsModal();
       closePlayerPredictionsModal();
+      closeMatchPredictionsModal();
     }
   });
   
@@ -3055,33 +2963,37 @@
       return;
     }
     
-    container.innerHTML = filtered.map(g => {
-      // إنشاء matchId للتوقعات
-      const matchId = `${g.formattedDate}_${g.homeAr}_${g.awayAr}`;
-      return `
-        <div class="match-card finished-match" onclick="showMatchPredictions('${matchId}','${g.homeAr}','${g.awayAr}',${g.homeScore},${g.awayScore})">
-          <div class="match-teams">
-            <div class="match-team"><span class="flag">${getFlag(g.homeAr)}</span> ${g.homeAr}</div>
-            <div class="match-score finished">${g.homeScore} - ${g.awayScore}</div>
-            <div class="match-team"><span class="flag">${getFlag(g.awayAr)}</span> ${g.awayAr}</div>
-          </div>
-          <div class="match-meta">
-            <span class="tag">${g.dayName || 'تاريخ'}</span>
-            <span class="tag">${g.formattedDate || ''} ${g.timeMatch || ''}</span>
-            <span class="tag finished-tag">✅ انتهت - اضغط لعرض التوقعات</span>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            <button class="tab-btn" style="flex:1;justify-content:center;padding:10px 12px;font-size:0.75rem;background:rgba(52,152,219,0.08);border-color:rgba(52,152,219,0.15);color:#5dade2;" 
-                    onclick="event.stopPropagation();showMatchPredictions('${matchId}','${g.homeAr}','${g.awayAr}',${g.homeScore},${g.awayScore})">
-              <span>📊</span> عرض التوقعات
-            </button>
-            <button class="share-link-btn" onclick="event.stopPropagation();">
-              <span class="icon">🔗</span> مشاركة
-            </button>
-          </div>
+    container.innerHTML = filtered.map(g => `
+      <div class="match-card finished-match" onclick="openPreviousMatchPredictions('${g.homeAr}', '${g.awayAr}', ${g.homeScore}, ${g.awayScore})">
+        <div class="match-teams">
+          <div class="match-team"><span class="flag">${getFlag(g.homeAr)}</span> ${g.homeAr}</div>
+          <div class="match-score finished">${g.homeScore} - ${g.awayScore}</div>
+          <div class="match-team"><span class="flag">${getFlag(g.awayAr)}</span> ${g.awayAr}</div>
         </div>
-      `;
-    }).join('');
+        <div class="match-meta">
+          <span class="tag">${g.dayName || 'تاريخ'}</span>
+          <span class="tag">${g.formattedDate || ''} ${g.timeMatch || ''}</span>
+          <span class="tag finished-tag">✅ انتهت - اضغط لعرض التوقعات</span>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  // دالة مساعدة لعرض توقعات مباراة سابقة من البحث
+  async function openPreviousMatchPredictions(team1, team2, homeScore, awayScore) {
+    // البحث عن match_id من بيانات المباريات
+    const match = matchesData.find(m => 
+      (m.team1 === team1 && m.team2 === team2) || 
+      (m.team1 === team2 && m.team2 === team1)
+    );
+    
+    if (match) {
+      const matchId = `${match.timeISO}_${match.team1}_${match.team2}`;
+      await openMatchPredictions(matchId, team1, team2, homeScore, awayScore);
+    } else {
+      // إذا لم يتم العثور على المباراة في البيانات
+      showCopyToast('⚠️ لا توجد توقعات لهذه المباراة');
+    }
   }
   
   document.getElementById('prevSearchInput')?.addEventListener('input', renderPreviousGamesFiltered);
@@ -3392,7 +3304,8 @@
   window.shareResults = shareResults;
   window.copyMatchLink = copyMatchLink;
   window.shareAllTodayTomorrow = shareAllTodayTomorrow;
-  window.showMatchPredictions = showMatchPredictions;
+  window.openMatchPredictions = openMatchPredictions;
+  window.openPreviousMatchPredictions = openPreviousMatchPredictions;
   
   init();
 </script>
