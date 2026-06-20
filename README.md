@@ -268,7 +268,6 @@
       color: var(--text-primary);
     }
     
-    /* أزرار الإدارة - تظهر فقط بكلمة السر */
     .admin-controls {
       display: none;
       gap: 10px;
@@ -790,7 +789,6 @@
       transition: all 0.3s ease;
     }
     
-    /* وضع التصغير للقطة الشاشة */
     .players-list.compact-mode {
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 6px;
@@ -1341,6 +1339,126 @@
       overflow-y: auto;
       box-shadow: 0 30px 80px rgba(0,0,0,0.6);
       position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    /* أنماط التصغير لنافذة التوقعات */
+    .modal-content.compact-mode {
+      padding: 12px !important;
+      max-width: 380px !important;
+    }
+    
+    .modal-content.compact-mode .modal-title {
+      font-size: 0.9rem !important;
+      margin-bottom: 8px !important;
+    }
+    
+    .modal-content.compact-mode .modal-teams {
+      padding: 6px 10px !important;
+      gap: 6px !important;
+      margin-bottom: 8px !important;
+    }
+    
+    .modal-content.compact-mode .modal-teams .m-team {
+      font-size: 0.7rem !important;
+    }
+    
+    .modal-content.compact-mode .modal-teams .m-team .flag {
+      font-size: 1rem !important;
+    }
+    
+    .modal-content.compact-mode .modal-teams .m-vs {
+      font-size: 0.5rem !important;
+    }
+    
+    .modal-content.compact-mode #mpResult {
+      font-size: 0.65rem !important;
+      margin: 2px 0 4px !important;
+    }
+    
+    .modal-content.compact-mode .predictions-stats .stat-item {
+      font-size: 0.6rem !important;
+      padding: 3px 8px !important;
+    }
+    
+    .modal-content.compact-mode .prediction-card {
+      padding: 6px 10px !important;
+      margin-bottom: 4px !important;
+    }
+    
+    .modal-content.compact-mode .prediction-card .user .avatar-p {
+      width: 20px !important;
+      height: 20px !important;
+      font-size: 0.5rem !important;
+    }
+    
+    .modal-content.compact-mode .prediction-card .user .name-p {
+      font-size: 0.65rem !important;
+    }
+    
+    .modal-content.compact-mode .prediction-card .prediction-text {
+      font-size: 0.6rem !important;
+    }
+    
+    .modal-content.compact-mode .prediction-card .status-badge {
+      font-size: 0.45rem !important;
+      padding: 1px 6px !important;
+    }
+    
+    .modal-content.compact-mode .prediction-card .user {
+      gap: 4px !important;
+      margin-bottom: 2px !important;
+    }
+    
+    .modal-content.compact-mode .prediction-card div[style*="font-size:0.6rem"] {
+      font-size: 0.45rem !important;
+    }
+    
+    .modal-content.compact-mode .modal-close {
+      width: 24px !important;
+      height: 24px !important;
+      font-size: 0.9rem !important;
+      top: 6px !important;
+      left: 8px !important;
+    }
+    
+    .modal-content.compact-mode #matchPredictionsList {
+      max-height: 250px !important;
+    }
+    
+    /* زر التصغير داخل النافذة */
+    .modal-compact-btn {
+      position: absolute;
+      top: 10px;
+      right: 50px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 40px;
+      font-size: 0.6rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: none;
+    }
+    
+    .modal-compact-btn.visible {
+      display: block;
+    }
+    
+    .modal-compact-btn:hover {
+      background: rgba(240, 180, 41, 0.12);
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+    
+    .modal-content.compact-mode .modal-compact-btn {
+      top: 6px;
+      right: 36px;
+      padding: 2px 8px;
+      font-size: 0.5rem;
     }
     
     .modal-close {
@@ -1574,12 +1692,17 @@
       .standings-table th, .standings-table td { padding: 4px 2px; }
       .predictions-grid { grid-template-columns: 1fr; }
       .modal-content { padding: 20px; }
+      .modal-content.compact-mode { padding: 8px !important; max-width: 320px !important; }
+      .modal-content.compact-mode .modal-teams .m-team { font-size: 0.6rem !important; }
+      .modal-content.compact-mode .prediction-card .user .name-p { font-size: 0.55rem !important; }
       .modal-teams { flex-wrap: wrap; gap: 6px; }
       .modal-teams .m-team { font-size: 0.85rem; }
       .modal-options label { padding: 10px 14px; }
       .password-box { padding: 24px; }
       .predictions-stats { gap: 10px; }
       .predictions-stats .stat-item { font-size: 0.7rem; padding: 4px 10px; }
+      .modal-compact-btn { top: 8px; right: 40px; padding: 3px 8px; font-size: 0.5rem; }
+      .modal-content.compact-mode .modal-compact-btn { top: 4px; right: 28px; padding: 2px 6px; font-size: 0.45rem; }
     }
     
     @media (min-width: 768px) {
@@ -1671,7 +1794,6 @@
     </div>
   </div>
   
-  <!-- أزرار الإدارة - تظهر فقط بكلمة السر -->
   <div class="admin-controls" id="adminControls">
     <div class="admin-info">
       🛠️ <span>لوحة الإدارة</span>
@@ -1766,8 +1888,9 @@
 
 <!-- نافذة عرض توقعات المباراة السابقة -->
 <div class="modal-overlay" id="matchPredictionsModal">
-  <div class="modal-content">
+  <div class="modal-content" id="matchPredictionsContent">
     <button class="modal-close" id="matchPredictionsCloseBtn">✕</button>
+    <button class="modal-compact-btn" id="modalCompactBtn" onclick="toggleModalCompact()">📐 تصغير</button>
     <div class="modal-title">📋 توقعات المباراة</div>
     <div class="modal-teams" id="matchPredictionsTeams">
       <div class="m-team"><span class="flag" id="mpFlag1">🏁</span> <span id="mpTeam1">الفريق الأول</span></div>
@@ -1859,11 +1982,13 @@
   const SECRET_CODE = "1406";
   let isAuthorized = false;
   let isCompactMode = false;
+  let isModalCompact = false;
   
   function showPasswordOverlay() {
     document.getElementById('passwordOverlay').classList.add('active');
     document.getElementById('passwordInput').value = '';
     document.getElementById('passwordError').textContent = '';
+    document.getElementById('modalCompactBtn').classList.remove('visible');
     setTimeout(() => {
       document.getElementById('passwordInput').focus();
     }, 300);
@@ -1885,6 +2010,9 @@
       hidePasswordOverlay();
       document.getElementById('shareAllContainer').classList.add('visible');
       document.getElementById('adminControls').classList.add('visible');
+      if (document.getElementById('matchPredictionsModal').classList.contains('active')) {
+        document.getElementById('modalCompactBtn').classList.add('visible');
+      }
       updateShareAllCount();
       showCopyToast('✅ تم تفعيل لوحة الإدارة');
     } else {
@@ -1895,7 +2023,7 @@
   }
   
   // ============================================================
-  //  خاصية التصغير للقطة الشاشة
+  //  خاصية تصغير لوحة المتصدرين
   // ============================================================
   function toggleCompactMode() {
     const container = document.getElementById('leaderboardContainer');
@@ -1906,14 +2034,12 @@
       isCompactMode = !isCompactMode;
       playersList.classList.toggle('compact-mode');
       
-      // أيضاً نطبق التصغير على البطاقة البطل إذا كانت موجودة
       if (championCard) {
         championCard.style.transform = isCompactMode ? 'scale(0.85)' : 'scale(1)';
         championCard.style.transformOrigin = 'center center';
         championCard.style.margin = isCompactMode ? '-10px 0' : '0';
       }
       
-      // تغيير نص الزر
       const btn = document.getElementById('toggleCompactBtn');
       if (isCompactMode) {
         btn.innerHTML = '📐 وضع التصوير (مفعل)';
@@ -1947,6 +2073,25 @@
       btn.innerHTML = '📐 تصغير للتصوير';
       btn.style.background = 'linear-gradient(135deg, var(--gold), #d49a1a)';
       showCopyToast('🔄 تم إعادة الحجم الطبيعي');
+    }
+  }
+  
+  // ============================================================
+  //  خاصية تصغير نافذة التوقعات
+  // ============================================================
+  function toggleModalCompact() {
+    const modalContent = document.getElementById('matchPredictionsContent');
+    const btn = document.getElementById('modalCompactBtn');
+    
+    isModalCompact = !isModalCompact;
+    modalContent.classList.toggle('compact-mode');
+    
+    if (isModalCompact) {
+      btn.textContent = '📐 تكبير';
+      showCopyToast('📐 تم تصغير نافذة التوقعات');
+    } else {
+      btn.textContent = '📐 تصغير';
+      showCopyToast('📐 تم تكبير نافذة التوقعات');
     }
   }
   
@@ -2352,6 +2497,20 @@
     document.getElementById('mpFlag1').textContent = getFlag(team1);
     document.getElementById('mpFlag2').textContent = getFlag(team2);
     document.getElementById('mpResult').textContent = `النتيجة: ${homeScore} - ${awayScore}`;
+    
+    // إظهار زر التصغير للمستخدم المصرح له
+    if (isAuthorized) {
+      document.getElementById('modalCompactBtn').classList.add('visible');
+    } else {
+      document.getElementById('modalCompactBtn').classList.remove('visible');
+    }
+    
+    // إعادة تعيين حالة التصغير
+    if (isModalCompact) {
+      isModalCompact = false;
+      document.getElementById('matchPredictionsContent').classList.remove('compact-mode');
+      document.getElementById('modalCompactBtn').textContent = '📐 تصغير';
+    }
     
     const listContainer = document.getElementById('matchPredictionsList');
     const correctSpan = document.getElementById('mpCorrectCount');
@@ -3555,6 +3714,7 @@
   window.openPreviousMatchPredictions = openPreviousMatchPredictions;
   window.toggleCompactMode = toggleCompactMode;
   window.resetCompactMode = resetCompactMode;
+  window.toggleModalCompact = toggleModalCompact;
   
   init();
 </script>
