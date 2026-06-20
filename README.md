@@ -268,6 +268,74 @@
       color: var(--text-primary);
     }
     
+    /* أزرار الإدارة - تظهر فقط بكلمة السر */
+    .admin-controls {
+      display: none;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      padding: 14px 18px;
+      background: rgba(240, 180, 41, 0.05);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-md);
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .admin-controls.visible {
+      display: flex;
+    }
+    
+    .admin-controls .admin-info {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .admin-controls .admin-info .badge-admin {
+      background: rgba(240, 180, 41, 0.15);
+      color: var(--gold-light);
+      padding: 2px 12px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.7rem;
+    }
+    
+    .admin-btn {
+      padding: 8px 20px;
+      border-radius: 60px;
+      border: none;
+      background: linear-gradient(135deg, var(--gold), #d49a1a);
+      color: #0a1628;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .admin-btn:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(240, 180, 41, 0.15);
+    }
+    
+    .admin-btn:active { transform: scale(0.97); }
+    
+    .admin-btn.danger {
+      background: linear-gradient(135deg, var(--danger), #c0392b);
+      color: white;
+    }
+    
+    .admin-btn.danger:hover {
+      box-shadow: 0 0 20px rgba(231, 76, 60, 0.2);
+    }
+    
     .share-all-container {
       display: none;
       gap: 10px;
@@ -719,6 +787,92 @@
       gap: 12px;
       position: relative;
       z-index: 1;
+      transition: all 0.3s ease;
+    }
+    
+    /* وضع التصغير للقطة الشاشة */
+    .players-list.compact-mode {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 6px;
+    }
+    
+    .players-list.compact-mode .player-card {
+      padding: 8px 10px;
+      gap: 8px;
+      border-radius: var(--radius-sm);
+    }
+    
+    .players-list.compact-mode .player-card .rank {
+      font-size: 0.8rem;
+      min-width: 20px;
+    }
+    
+    .players-list.compact-mode .player-card .avatar-sm {
+      width: 28px;
+      height: 28px;
+      font-size: 0.6rem;
+    }
+    
+    .players-list.compact-mode .player-card .info-sm .name-sm {
+      font-size: 0.7rem;
+    }
+    
+    .players-list.compact-mode .player-card .info-sm .sub-sm {
+      font-size: 0.5rem;
+      gap: 6px;
+    }
+    
+    .players-list.compact-mode .player-card .points-sm {
+      font-size: 0.65rem;
+      padding: 1px 8px;
+      min-width: 28px;
+    }
+    
+    .players-list.compact-mode .player-card .progress-mini {
+      width: 30px;
+      height: 3px;
+    }
+    
+    .players-list.compact-mode .player-card .info-sm .name-sm .mini-badge {
+      font-size: 0.35rem;
+      padding: 0px 5px;
+    }
+    
+    .players-list.compact-mode .champion-card {
+      padding: 12px;
+      gap: 12px;
+    }
+    
+    .players-list.compact-mode .champion-card .rank-badge {
+      font-size: 1.8rem;
+      min-width: 40px;
+    }
+    
+    .players-list.compact-mode .champion-card .avatar {
+      width: 44px;
+      height: 44px;
+      font-size: 1.2rem;
+    }
+    
+    .players-list.compact-mode .champion-card .info .name {
+      font-size: 0.9rem;
+    }
+    
+    .players-list.compact-mode .champion-card .info .stats-row .item {
+      font-size: 0.6rem;
+    }
+    
+    .players-list.compact-mode .champion-card .progress-wrapper .progress-label {
+      font-size: 0.55rem;
+    }
+    
+    .players-list.compact-mode .champion-card .progress-bar {
+      height: 4px;
+    }
+    
+    .players-list.compact-mode .champion-card .info .name .badge {
+      font-size: 0.45rem;
+      padding: 1px 8px;
     }
     
     .player-card {
@@ -738,6 +892,10 @@
       background: rgba(255,255,255,0.06);
       border-color: var(--border-gold);
       transform: translateX(-4px);
+    }
+    
+    .players-list.compact-mode .player-card:hover {
+      transform: translateX(-2px) scale(1.02);
     }
     
     .player-card .rank {
@@ -853,6 +1011,11 @@
       border-radius: 50%;
       background: var(--success);
       animation: pulseDot 1.5s infinite;
+    }
+    
+    .players-list.compact-mode .player-card .pulse-dot {
+      width: 5px;
+      height: 5px;
     }
     
     @keyframes pulseDot {
@@ -1101,7 +1264,6 @@
     .prediction-card .user .name-p { font-weight: 700; }
     .prediction-card .prediction-text { font-size: 0.85rem; color: var(--text-secondary); }
     
-    /* تلوين التوقعات */
     .prediction-card.correct {
       border-color: var(--success) !important;
       background: rgba(46, 204, 113, 0.08) !important;
@@ -1383,6 +1545,8 @@
       .controls-bar select, .controls-bar input { font-size: 0.7rem; padding: 6px 10px; }
       .share-all-container { flex-direction: column; text-align: center; padding: 12px; }
       .share-all-btn { width: 100%; justify-content: center; }
+      .admin-controls { flex-direction: column; text-align: center; padding: 12px; }
+      .admin-btn { width: 100%; justify-content: center; }
       .tabs-container { flex-direction: column; align-items: stretch; }
       .tabs { justify-content: center; }
       .day-filter-tabs { justify-content: center; }
@@ -1395,6 +1559,7 @@
       .champion-card .info .name { font-size: 1.1rem; justify-content: center; }
       .champion-card .info .stats-row { justify-content: center; gap: 12px; }
       .players-list { grid-template-columns: 1fr; gap: 8px; }
+      .players-list.compact-mode { grid-template-columns: repeat(2, 1fr); gap: 4px; }
       .player-card { padding: 12px 14px; }
       .player-card .info-sm .name-sm { font-size: 0.8rem; }
       .player-card .points-sm { font-size: 0.75rem; padding: 2px 10px; }
@@ -1419,7 +1584,8 @@
     
     @media (min-width: 768px) {
       .matches-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
-      .players-list { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+      .players-list { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+      .players-list.compact-mode { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
     }
     
     @media (min-width: 1024px) {
@@ -1502,6 +1668,22 @@
     <div class="control-group">
       <label>🔍 بحث</label>
       <input type="text" id="matchSearchInput" placeholder="ابحث عن فريق...">
+    </div>
+  </div>
+  
+  <!-- أزرار الإدارة - تظهر فقط بكلمة السر -->
+  <div class="admin-controls" id="adminControls">
+    <div class="admin-info">
+      🛠️ <span>لوحة الإدارة</span>
+      <span class="badge-admin">👑 مدير</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="admin-btn" id="toggleCompactBtn" onclick="toggleCompactMode()">
+        📐 تصغير للتصوير
+      </button>
+      <button class="admin-btn danger" onclick="resetCompactMode()">
+        🔄 إعادة الحجم الطبيعي
+      </button>
     </div>
   </div>
   
@@ -1676,6 +1858,7 @@
   // ============================================================
   const SECRET_CODE = "1406";
   let isAuthorized = false;
+  let isCompactMode = false;
   
   function showPasswordOverlay() {
     document.getElementById('passwordOverlay').classList.add('active');
@@ -1701,12 +1884,69 @@
       errorEl.textContent = '';
       hidePasswordOverlay();
       document.getElementById('shareAllContainer').classList.add('visible');
+      document.getElementById('adminControls').classList.add('visible');
       updateShareAllCount();
-      showCopyToast('✅ تم تفعيل أداة نسخ الروابط');
+      showCopyToast('✅ تم تفعيل لوحة الإدارة');
     } else {
       errorEl.textContent = '❌ رمز غير صحيح';
       document.getElementById('passwordInput').value = '';
       document.getElementById('passwordInput').focus();
+    }
+  }
+  
+  // ============================================================
+  //  خاصية التصغير للقطة الشاشة
+  // ============================================================
+  function toggleCompactMode() {
+    const container = document.getElementById('leaderboardContainer');
+    const playersList = container.querySelector('.players-list');
+    const championCard = container.querySelector('.champion-card');
+    
+    if (playersList) {
+      isCompactMode = !isCompactMode;
+      playersList.classList.toggle('compact-mode');
+      
+      // أيضاً نطبق التصغير على البطاقة البطل إذا كانت موجودة
+      if (championCard) {
+        championCard.style.transform = isCompactMode ? 'scale(0.85)' : 'scale(1)';
+        championCard.style.transformOrigin = 'center center';
+        championCard.style.margin = isCompactMode ? '-10px 0' : '0';
+      }
+      
+      // تغيير نص الزر
+      const btn = document.getElementById('toggleCompactBtn');
+      if (isCompactMode) {
+        btn.innerHTML = '📐 وضع التصوير (مفعل)';
+        btn.style.background = 'linear-gradient(135deg, var(--success), #27ae60)';
+        showCopyToast('📐 تم تفعيل وضع التصغير للقطة الشاشة');
+      } else {
+        btn.innerHTML = '📐 تصغير للتصوير';
+        btn.style.background = 'linear-gradient(135deg, var(--gold), #d49a1a)';
+        showCopyToast('📐 تم إلغاء وضع التصغير');
+      }
+    } else {
+      showCopyToast('⚠️ انتظر حتى تحميل البيانات');
+    }
+  }
+  
+  function resetCompactMode() {
+    const container = document.getElementById('leaderboardContainer');
+    const playersList = container.querySelector('.players-list');
+    const championCard = container.querySelector('.champion-card');
+    
+    if (playersList) {
+      isCompactMode = false;
+      playersList.classList.remove('compact-mode');
+      
+      if (championCard) {
+        championCard.style.transform = 'scale(1)';
+        championCard.style.margin = '0';
+      }
+      
+      const btn = document.getElementById('toggleCompactBtn');
+      btn.innerHTML = '📐 تصغير للتصوير';
+      btn.style.background = 'linear-gradient(135deg, var(--gold), #d49a1a)';
+      showCopyToast('🔄 تم إعادة الحجم الطبيعي');
     }
   }
   
@@ -2123,10 +2363,8 @@
     wrongSpan.textContent = '...';
     totalSpan.textContent = '...';
     
-    // جلب جميع التوقعات
     const predictions = await getAllPredictions();
     
-    // فلترة توقعات هذه المباراة
     const matchPredictions = predictions.filter(p => p.match_id === matchId);
     totalSpan.textContent = matchPredictions.length;
     
@@ -2137,7 +2375,6 @@
       return;
     }
     
-    // تحديد النتيجة الصحيحة
     let correctResult = '';
     if (homeScore > awayScore) correctResult = team1;
     else if (awayScore > homeScore) correctResult = team2;
@@ -2146,7 +2383,6 @@
     let correctCount = 0;
     let wrongCount = 0;
     
-    // عرض التوقعات مع التلوين
     const predictionsHtml = matchPredictions.map(p => {
       const isCorrect = p.prediction === correctResult;
       if (isCorrect) correctCount++;
@@ -2396,7 +2632,6 @@
     const isToday = isMatchToday(m.timeISO);
     const dayLabel = isToday ? '📌 اليوم' : (isMatchTodayOrTomorrow(m.timeISO) ? '📌 غداً' : '');
     
-    // إضافة حدث النقر للمباريات السابقة
     const onclickAttr = (!isUpcoming && matchResult) ? `onclick="openMatchPredictions('${matchId}', '${m.team1}', '${m.team2}', ${homeScore}, ${awayScore})"` : '';
     
     return `
@@ -2536,11 +2771,12 @@
     e.preventDefault();
     if (isAuthorized) {
       document.getElementById('shareAllContainer').classList.toggle('visible');
+      document.getElementById('adminControls').classList.toggle('visible');
       if (document.getElementById('shareAllContainer').classList.contains('visible')) {
         updateShareAllCount();
-        showCopyToast('🔓 تم إظهار أداة نسخ الروابط');
+        showCopyToast('🔓 تم إظهار لوحة الإدارة');
       } else {
-        showCopyToast('🔒 تم إخفاء أداة نسخ الروابط');
+        showCopyToast('🔒 تم إخفاء لوحة الإدارة');
       }
     } else {
       showPasswordOverlay();
@@ -2667,7 +2903,7 @@
       const allPlayers = [...topThree.slice(1), ...rest];
       const medals = ['🥈', '🥉', ...Array(rest.length).fill('')];
       
-      html += `<div class="players-list">`;
+      html += `<div class="players-list" id="leaderboardPlayersList">`;
       
       allPlayers.forEach((player, idx) => {
         const rank = idx + 2;
@@ -2712,6 +2948,20 @@
     }
     
     container.innerHTML = html;
+    
+    // إعادة تطبيق وضع التصغير إذا كان مفعلاً
+    if (isCompactMode) {
+      const playersList = container.querySelector('.players-list');
+      const championCard = container.querySelector('.champion-card');
+      if (playersList) {
+        playersList.classList.add('compact-mode');
+      }
+      if (championCard) {
+        championCard.style.transform = 'scale(0.85)';
+        championCard.style.transformOrigin = 'center center';
+        championCard.style.margin = '-10px 0';
+      }
+    }
   }
   
   function openPredictionModal(matchId, team1, team2, timeISO) {
@@ -2979,9 +3229,7 @@
     `).join('');
   }
   
-  // دالة مساعدة لعرض توقعات مباراة سابقة من البحث
   async function openPreviousMatchPredictions(team1, team2, homeScore, awayScore) {
-    // البحث عن match_id من بيانات المباريات
     const match = matchesData.find(m => 
       (m.team1 === team1 && m.team2 === team2) || 
       (m.team1 === team2 && m.team2 === team1)
@@ -2991,7 +3239,6 @@
       const matchId = `${match.timeISO}_${match.team1}_${match.team2}`;
       await openMatchPredictions(matchId, team1, team2, homeScore, awayScore);
     } else {
-      // إذا لم يتم العثور على المباراة في البيانات
       showCopyToast('⚠️ لا توجد توقعات لهذه المباراة');
     }
   }
@@ -3306,6 +3553,8 @@
   window.shareAllTodayTomorrow = shareAllTodayTomorrow;
   window.openMatchPredictions = openMatchPredictions;
   window.openPreviousMatchPredictions = openPreviousMatchPredictions;
+  window.toggleCompactMode = toggleCompactMode;
+  window.resetCompactMode = resetCompactMode;
   
   init();
 </script>
