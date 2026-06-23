@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>🏆 كأس العالم 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
     <style>
-        /* ===== الأنماط العامة (كما هي سابقاً) ===== */
+        /* ===== الأنماط العامة ===== */
         * {
             margin: 0;
             padding: 0;
@@ -412,8 +414,98 @@
         .admin-btn.secondary:hover {
             background: rgba(255, 255, 255, 0.12);
         }
+        .admin-btn.success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+        }
+        .admin-btn.success:hover {
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
+        }
 
-        /* قسم التوقعات المكررة في الإدارة */
+        /* ===== قسم الأرشيف ===== */
+        .archive-section {
+            width: 100%;
+            margin-top: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            border: 1px solid rgba(46, 204, 113, 0.15);
+            display: none;
+        }
+        .archive-section.visible {
+            display: block;
+        }
+        .archive-section .archive-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .archive-section .archive-title .count-badge {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--success);
+            padding: 0 10px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+        }
+        .archive-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .archive-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--border-gold);
+        }
+        .archive-item .match-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .archive-item .match-info .flag {
+            font-size: 1rem;
+        }
+        .archive-item .score {
+            font-weight: 800;
+            color: var(--gold-light);
+            font-size: 0.85rem;
+        }
+        .archive-item .stats {
+            display: flex;
+            gap: 12px;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+        .archive-item .stats .correct {
+            color: var(--success);
+        }
+        .archive-item .stats .wrong {
+            color: var(--danger);
+        }
+        .archive-item .accuracy {
+            font-weight: 700;
+            color: var(--gold-light);
+            font-size: 0.75rem;
+            padding: 2px 10px;
+            border-radius: 40px;
+            background: rgba(240, 180, 41, 0.08);
+        }
+
+        /* ===== قسم التوقعات المكررة ===== */
         .duplicates-section {
             width: 100%;
             margin-top: 8px;
@@ -421,6 +513,10 @@
             border-radius: var(--radius-md);
             padding: 12px 16px;
             border: 1px solid rgba(231, 76, 60, 0.15);
+            display: none;
+        }
+        .duplicates-section.visible {
+            display: block;
         }
         .duplicates-section .dup-title {
             font-size: 0.85rem;
@@ -616,6 +712,131 @@
             color: var(--text-primary);
         }
 
+        /* ===== نافذة إدخال الاسم (الخطوة الأولى) ===== */
+        .name-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(16px);
+            z-index: 99998;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInModal 0.3s ease;
+        }
+        .name-modal-overlay.active {
+            display: flex;
+        }
+        .name-modal-content {
+            background: linear-gradient(145deg, rgba(12, 28, 50, 0.98), rgba(6, 16, 30, 0.99));
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            max-width: 420px;
+            width: 95%;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+        }
+        .name-modal-content .name-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .name-modal-content .name-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--gold-light);
+            margin-bottom: 6px;
+        }
+        .name-modal-content .name-sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .name-modal-content input {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+            font-family: inherit;
+            text-align: center;
+        }
+        .name-modal-content input:focus {
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .name-modal-content .name-btn {
+            margin-top: 16px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 60px;
+            background: linear-gradient(135deg, var(--gold), #d49a1a);
+            color: #0a1628;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        .name-modal-content .name-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(240, 180, 41, 0.2);
+        }
+        .name-modal-content .name-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .name-modal-content .name-error {
+            margin-top: 12px;
+            color: var(--danger);
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-height: 24px;
+        }
+        .name-modal-content .name-close {
+            margin-top: 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+        .name-modal-content .name-close:hover {
+            color: var(--text-primary);
+        }
+        .name-modal-content .user-status {
+            padding: 10px 16px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 12px 0;
+        }
+        .name-modal-content .user-status.existing {
+            background: rgba(46, 204, 113, 0.12);
+            color: var(--success);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+        .name-modal-content .user-status.new {
+            background: rgba(240, 180, 41, 0.12);
+            color: var(--gold-light);
+            border: 1px solid rgba(240, 180, 41, 0.2);
+        }
+        .name-modal-content .user-status .highlight {
+            font-weight: 800;
+        }
+
         /* ===== التبويبات ===== */
         .tabs-container {
             display: flex;
@@ -797,6 +1018,35 @@
             background: rgba(240, 180, 41, 0.2);
             border-color: var(--gold);
         }
+        .lb-period-tabs {
+            display: flex;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px;
+            border-radius: 40px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+        .lb-period-tabs .period-btn {
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        .lb-period-tabs .period-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .lb-period-tabs .period-btn.active {
+            background: rgba(240, 180, 41, 0.15);
+            color: var(--gold-light);
+        }
 
         .champion-card {
             background: linear-gradient(135deg, rgba(240, 180, 41, 0.12), rgba(240, 180, 41, 0.03));
@@ -892,6 +1142,17 @@
         }
         .champion-card .info .stats-row .item .highlight {
             color: var(--gold-light);
+        }
+        .champion-card .info .stats-row .item .arrow-up {
+            color: var(--success);
+            font-weight: 900;
+        }
+        .champion-card .info .stats-row .item .arrow-down {
+            color: var(--danger);
+            font-weight: 900;
+        }
+        .champion-card .info .stats-row .item .arrow-unchanged {
+            color: var(--text-secondary);
         }
         .champion-card .progress-wrapper {
             width: 100%;
@@ -1085,6 +1346,17 @@
         .player-card .info-sm .sub-sm .highlight {
             color: var(--gold-light);
             font-weight: 600;
+        }
+        .player-card .info-sm .sub-sm .arrow-up {
+            color: var(--success);
+            font-weight: 900;
+        }
+        .player-card .info-sm .sub-sm .arrow-down {
+            color: var(--danger);
+            font-weight: 900;
+        }
+        .player-card .info-sm .sub-sm .arrow-unchanged {
+            color: var(--text-secondary);
         }
         .player-card .points-sm {
             background: linear-gradient(135deg, var(--gold), #d49a1a);
@@ -2224,6 +2496,8 @@
             .admin-btn {
                 width: 100%;
                 justify-content: center;
+                font-size: 0.7rem;
+                padding: 6px 12px;
             }
             .tabs-container {
                 flex-direction: column;
@@ -2246,6 +2520,9 @@
                 font-size: 0.65rem;
                 gap: 8px;
                 flex-wrap: wrap;
+            }
+            .lb-period-tabs {
+                justify-content: center;
             }
             .champion-card {
                 padding: 18px;
@@ -2433,6 +2710,18 @@
                 font-size: 0.7rem !important;
                 padding: 6px 8px !important;
             }
+            .name-modal-content {
+                padding: 20px;
+            }
+            .archive-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+            .archive-item .stats {
+                gap: 8px;
+                flex-wrap: wrap;
+            }
         }
         @media (min-width: 768px) {
             .matches-grid {
@@ -2464,7 +2753,6 @@
         .player-card-clickable:hover .click-hint {
             opacity: 0.8;
         }
-        /* تنسيق عناصر التوقعات في نافذة اللاعب */
         .player-prediction-item {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -2527,6 +2815,77 @@
             font-family: monospace;
             white-space: nowrap;
         }
+
+        /* نافذة التحليلات */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        .analytics-grid .chart-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .analytics-grid .chart-box .chart-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .analytics-grid .chart-box canvas {
+            max-height: 200px;
+            max-width: 100%;
+        }
+        .analytics-grid .chart-box.full-width {
+            grid-column: 1 / -1;
+        }
+        @media (max-width: 640px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            .analytics-grid .chart-box.full-width {
+                grid-column: 1;
+            }
+        }
+
+        /* نافذة الأرشيف */
+        .archive-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .archive-list .archive-item {
+            cursor: default;
+        }
+        .archive-list .archive-item .match-info .flag {
+            font-size: 1.2rem;
+        }
+        .archive-list .archive-item .score {
+            font-size: 0.9rem;
+        }
+        .archive-summary {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 8px 0 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 12px;
+        }
+        .archive-summary .item {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .archive-summary .item strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+        .archive-summary .item .highlight {
+            color: var(--gold-light);
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -2559,9 +2918,9 @@
             <div class="news-ticker" id="newsTicker">
                 <span>🏆 كأس العالم 2026 — تابع المباريات وتوقع النتائج</span>
                 <span class="sep">|</span>
-                <span>🗳️ طريقة التوقع: اختر المباراة → اختر الفائز أو التعادل → أدخل اسمك → احفظ التوقع</span>
+                <span>🗳️ طريقة التوقع: اختر المباراة → أدخل اسمك → اختر الفائز أو التعادل</span>
                 <span class="sep">|</span>
-                <span>⏰ يمكنك التوقع حتى 5 دقائق قبل بداية المباراة</span>
+                <span>⏰ يمكنك التوقع حتى 5 دقائق قبل بداية المباراة (بتوقيت السعودية)</span>
                 <span class="sep">|</span>
                 <span>🏅 كل توقع صحيح = نقطة واحدة · تصدر لوحة المتصدرين!</span>
                 <span class="sep">|</span>
@@ -2580,6 +2939,10 @@
                     <span class="stat">📊 <span class="num" id="lbTotalPredictions">0</span> توقع</span>
                     <button class="share-btn" onclick="shareResults()">📤 مشاركة</button>
                 </div>
+            </div>
+            <div class="lb-period-tabs">
+                <button class="period-btn active" data-period="all" onclick="setLeaderboardPeriod('all')">📊 ترتيب عام</button>
+                <button class="period-btn" data-period="24h" onclick="setLeaderboardPeriod('24h')">🕒 آخر 24 ساعة</button>
             </div>
             <div id="leaderboardContainer"><div class="empty-state"><span class="icon">⏳</span> جاري تحميل الترتيب...</div></div>
         </div>
@@ -2604,13 +2967,20 @@
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
                 <button class="admin-btn" id="toggleCompactBtn" onclick="toggleCompactMode()">📐 تصغير للتصوير</button>
                 <button class="admin-btn danger" onclick="resetCompactMode()">🔄 إعادة الحجم الطبيعي</button>
-                <button class="admin-btn secondary" onclick="loadDuplicates()">🔍 عرض التوقعات المكررة</button>
-                <button class="admin-btn secondary" onclick="runTests()">🧪 تشغيل الاختبارات</button>
+                <button class="admin-btn secondary" onclick="loadDuplicates()">🔍 التوقعات المكررة</button>
+                <button class="admin-btn success" onclick="openAnalytics()">📊 تحليلات</button>
+                <button class="admin-btn" onclick="toggleArchive()">📦 الأرشيف</button>
+                <button class="admin-btn secondary" onclick="runTests()">🧪 اختبارات</button>
             </div>
             <!-- قسم التوقعات المكررة -->
-            <div class="duplicates-section" id="duplicatesSection" style="display:none;">
+            <div class="duplicates-section" id="duplicatesSection">
                 <div class="dup-title">⚠️ التوقعات المكررة <span class="count-badge" id="dupCountBadge">0</span></div>
                 <div id="duplicatesContainer"><div class="duplicates-empty">⏳ جاري التحميل...</div></div>
+            </div>
+            <!-- قسم الأرشيف -->
+            <div class="archive-section" id="archiveSection">
+                <div class="archive-title">📦 أرشيف المباريات المنتهية <span class="count-badge" id="archiveCount">0</span></div>
+                <div id="archiveContainer"><div class="duplicates-empty">⏳ جاري التحميل...</div></div>
             </div>
         </div>
 
@@ -2697,6 +3067,20 @@
         </div>
     </div>
 
+    <!-- نافذة إدخال الاسم (الخطوة الأولى) -->
+    <div class="name-modal-overlay" id="nameModal">
+        <div class="name-modal-content">
+            <span class="name-icon">👤</span>
+            <div class="name-title">أدخل اسمك</div>
+            <div class="name-sub">سيتم استخدام هذا الاسم لتسجيل توقعاتك ومتابعة نتائجك</div>
+            <input type="text" id="nameInput" placeholder="اكتب اسمك هنا..." maxlength="30" autofocus>
+            <div id="nameStatus" class="user-status" style="display:none;"></div>
+            <button class="name-btn" id="nameSubmitBtn">متابعة →</button>
+            <div class="name-error" id="nameError"></div>
+            <button class="name-close" id="nameCloseBtn">إلغاء</button>
+        </div>
+    </div>
+
     <!-- نافذة عرض توقعات المباراة السابقة + تفاصيل الأهداف -->
     <div class="modal-overlay" id="matchPredictionsModal">
         <div class="modal-content" id="matchPredictionsContent">
@@ -2726,29 +3110,29 @@
         </div>
     </div>
 
-    <!-- نافذة التوقع -->
+    <!-- نافذة التوقع (الخطوة الثانية - تظهر بعد التحقق من الاسم) -->
     <div class="modal-overlay" id="predictionModal">
         <div class="modal-content">
             <button class="modal-close" id="modalCloseBtn">✕</button>
             <div class="modal-title" id="modalTitle">📝 توقع نتيجة المباراة</div>
+            <div style="text-align:center;font-size:0.8rem;color:var(--text-secondary);margin-bottom:8px;" id="modalUserGreeting">👤 مرحباً <span id="greetingName"></span></div>
             <div class="modal-teams" id="modalTeams">
                 <div class="m-team"><span class="flag" id="modalFlag1">🏁</span> <span id="modalTeam1">الفريق الأول</span></div>
                 <div class="m-vs">🆚</div>
                 <div class="m-team"><span class="flag" id="modalFlag2">🏁</span> <span id="modalTeam2">الفريق الثاني</span></div>
             </div>
-            <div style="text-align:center;font-size:0.75rem;color:var(--text-secondary);margin-bottom:14px;" id="modalDateTime">📅 التاريخ والوقت</div>
+            <div style="text-align:center;font-size:0.75rem;color:var(--text-secondary);margin-bottom:14px;" id="modalDateTime">📅 التاريخ والوقت (بتوقيت السعودية)</div>
             <div class="modal-options" id="modalOptions">
                 <label><input type="radio" name="prediction" value="HOME"><span class="opt-label">🏆 <span id="optTeam1">الفريق الأول</span></span><span class="opt-sub">فوز</span></label>
                 <label><input type="radio" name="prediction" value="AWAY"><span class="opt-label">🏆 <span id="optTeam2">الفريق الثاني</span></span><span class="opt-sub">فوز</span></label>
                 <label><input type="radio" name="prediction" value="DRAW"><span class="opt-label">🤝 تعادل</span><span class="opt-sub">النتيجة متساوية</span></label>
             </div>
-            <div class="modal-input"><input type="text" id="modalUserName" placeholder="👤 أدخل اسمك" maxlength="30"></div>
             <button class="modal-submit" id="modalSubmitBtn">💾 حفظ التوقع</button>
             <div class="modal-message" id="modalMessage"></div>
         </div>
     </div>
 
-    <!-- نافذة توقعات اللاعب (معدلة لعرض جميع التوقعات) -->
+    <!-- نافذة توقعات اللاعب -->
     <div class="modal-overlay" id="playerPredictionsModal">
         <div class="modal-content">
             <button class="modal-close" id="playerModalCloseBtn">✕</button>
@@ -2799,6 +3183,33 @@
         </div>
     </div>
 
+    <!-- نافذة التحليلات المتقدمة -->
+    <div class="modal-overlay" id="analyticsModal">
+        <div class="modal-content" style="max-width:800px;">
+            <button class="modal-close" id="analyticsCloseBtn">✕</button>
+            <div class="modal-title">📊 تحليلات متقدمة</div>
+            <div id="analyticsContent">
+                <div class="analytics-grid">
+                    <div class="chart-box full-width">
+                        <div class="chart-title">📊 توزيع التوقعات لكل مباراة</div>
+                        <canvas id="chartDistribution"></canvas>
+                    </div>
+                    <div class="chart-box full-width">
+                        <div class="chart-title">📈 تطور نقاط أفضل 5 لاعبين</div>
+                        <canvas id="chartPoints"></canvas>
+                    </div>
+                    <div class="chart-box full-width">
+                        <div class="chart-title">🔥 أكثر المباريات توقعاً</div>
+                        <canvas id="chartPopular"></canvas>
+                    </div>
+                </div>
+                <div style="text-align:center;margin-top:12px;">
+                    <button class="tab-btn" onclick="document.getElementById('analyticsModal').classList.remove('active');document.body.style.overflow='';" style="background:rgba(240,180,41,0.08);border-color:rgba(240,180,41,0.2);color:var(--gold-light);">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="copy-toast" id="copyToast">✅ تم نسخ الرابط!</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
@@ -2814,6 +3225,7 @@
             predictions: [],
             loaded: false
         };
+        let userPredictionsMap = {};
 
         // ============================================================
         //  Supabase
@@ -2940,6 +3352,61 @@
         }
 
         // ============================================================
+        //  SAUDI TIME helpers
+        // ============================================================
+        function toSaudiTime(isoString) {
+            const d = new Date(isoString);
+            d.setHours(d.getHours() + 3);
+            return d;
+        }
+
+        function getSaudiNow() {
+            const now = new Date();
+            now.setHours(now.getHours() + 3);
+            return now;
+        }
+
+        function formatSaudiDate(isoString) {
+            const d = toSaudiTime(isoString);
+            const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+            ];
+            return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function formatSaudiTime(isoString) {
+            const d = toSaudiTime(isoString);
+            return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        }
+
+        function formatSaudiDateTime(isoString) {
+            return `${formatSaudiDate(isoString)} - ${formatSaudiTime(isoString)}`;
+        }
+
+        function isTodaySaudi(isoString) {
+            const d = toSaudiTime(isoString);
+            const now = getSaudiNow();
+            return d.getFullYear() === now.getFullYear() &&
+                d.getMonth() === now.getMonth() &&
+                d.getDate() === now.getDate();
+        }
+
+        function isTomorrowSaudi(isoString) {
+            const d = toSaudiTime(isoString);
+            const now = getSaudiNow();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return d.getFullYear() === tomorrow.getFullYear() &&
+                d.getMonth() === tomorrow.getMonth() &&
+                d.getDate() === tomorrow.getDate();
+        }
+
+        function getSaudiDay(isoString) {
+            const d = toSaudiTime(isoString);
+            return ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][d.getDay()];
+        }
+
+        // ============================================================
         //  INIT
         // ============================================================
         async function init() {
@@ -2952,7 +3419,7 @@
             state.loaded = true;
 
             updateScorers();
-            renderLeaderboard();
+            renderLeaderboard('all');
             renderUpcoming();
             calculateStandings();
             renderTeamStats();
@@ -2987,6 +3454,10 @@
         let isOpenfootballLoaded = false;
         let isLoadingPrevious = false;
         let isEditing = false;
+        let currentUserName = '';
+        let isNameVerified = false;
+        let chartInstances = {};
+        let currentLeaderboardPeriod = 'all';
 
         const stadiums = {
             "1": "ملعب آزتيكا (المكسيك)",
@@ -3012,11 +3483,11 @@
         }
 
         // ============================================================
-        //  دوال مساعدة للوقت
+        //  دوال مساعدة للوقت (بتوقيت السعودية)
         // ============================================================
-        function now() { return Date.now(); }
+        function now() { return getSaudiNow().getTime(); }
 
-        function matchTime(t) { return new Date(t).getTime(); }
+        function matchTime(timeISO) { return toSaudiTime(timeISO).getTime(); }
         const MATCH_DURATION = 105 * 60 * 1000;
 
         function isMatchLive(timeISO) { const cur = now(); const start = matchTime(timeISO); return cur >= start && cur <= start + MATCH_DURATION; }
@@ -3050,35 +3521,28 @@
 
         function upcomingMatches(arr) { return arr.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now()); }
 
-        function isMatchTodayOrTomorrow(timeISO) { const matchDate = new Date(timeISO);
-            matchDate.setHours(0, 0, 0, 0); const today = new Date();
-            today.setHours(0, 0, 0, 0); const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1); return matchDate.getTime() === today.getTime() || matchDate.getTime() ===
-                tomorrow.getTime(); }
+        function isMatchTodayOrTomorrow(timeISO) {
+            return isTodaySaudi(timeISO) || isTomorrowSaudi(timeISO);
+        }
 
-        function isMatchToday(timeISO) { const matchDate = new Date(timeISO);
-            matchDate.setHours(0, 0, 0, 0); const today = new Date();
-            today.setHours(0, 0, 0, 0); return matchDate.getTime() === today.getTime(); }
+        function isMatchToday(timeISO) { return isTodaySaudi(timeISO); }
 
-        function getDay(t) { return ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][new Date(t).getDay()]; }
+        function getDay(t) { return getSaudiDay(t); }
 
-        function getDateFmt(t) { const d = new Date(t); const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-                'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-            ]; return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`; }
+        function getDateFmt(t) { return formatSaudiDate(t); }
 
-        function getTimeFromISO(t) { const d = new Date(t); return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+        function getTimeFromISO(t) { return formatSaudiTime(t); }
 
-        function getDateTimeDisplay(t) { return `${getDateFmt(t)} - ${getTimeFromISO(t)}`; }
+        function getDateTimeDisplay(t) { return formatSaudiDateTime(t); }
 
-        // دالة لتنسيق التاريخ لعرضها في التوقعات
         function formatDate(isoString) {
             if (!isoString) return 'تاريخ غير معروف';
-            const d = new Date(isoString);
+            const d = toSaudiTime(isoString);
             return `${d.getDate()} ${['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][d.getMonth()]} ${d.getFullYear()}، ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
         }
 
         // ============================================================
-        //  الترجمة والأعلام
+        //  الترجمة والأعلام (نفس الكود السابق)
         // ============================================================
         const nameMapping = new Map([
             ["مکزیک", "المكسيك"],
@@ -3654,7 +4118,7 @@
                     if (error) throw error;
                     saveLocalPrediction(userName, matchId, prediction);
                     addSubmittedMatch(matchId);
-                    localStorage.removeItem("wc_cache_v2_predictions");
+                    localStorage.removeItem("predictions");
                     await getAllPredictions();
                     return { success: true, updated: true };
                 } catch (e) { return { success: false, message: e.message }; }
@@ -3678,14 +4142,13 @@
                     if (error) throw error;
                     saveLocalPrediction(userName, matchId, prediction);
                     addSubmittedMatch(matchId);
-                    localStorage.removeItem("wc_cache_v2_predictions");
+                    localStorage.removeItem("predictions");
                     await getAllPredictions();
                     return { success: true, updated: false };
                 } catch (e) { return { success: false, message: e.message }; }
             }
         }
 
-        // الحصول على توقع المستخدم لمباراة معينة من Supabase
         async function getUserPrediction(userName, matchId) {
             if (!supabaseClient || !userName || !matchId) return null;
             try {
@@ -3761,6 +4224,9 @@
             const submitted = isMatchSubmitted(matchId);
             const canPredictNow = isUpcoming && !isLive && !isFinished && canPredict(m.timeISO);
 
+            // التحقق مما إذا كانت المباراة في توقعات المستخدم
+            const userHasPrediction = userPredictionsMap && userPredictionsMap[matchId] === true;
+
             let scoreDisplay = '🆚',
                 scoreClass = 'upcoming',
                 matchClass = '';
@@ -3792,7 +4258,31 @@
             let editDisabled = true;
             let editBtnExtra = '';
 
-            if (submitted) {
+            // إذا كان المستخدم قد توقع هذه المباراة
+            if (userHasPrediction) {
+                predictDisabled = true;
+                predictBtnHtml = '✅ تم التوقع';
+                predictBtnClass += ' submitted';
+                predictBtnExtra = 'disabled';
+
+                if (canPredictNow) {
+                    editDisabled = false;
+                    editBtnExtra = `onclick="openEditPredictionModal('${matchId}','${m.team1}','${m.team2}','${m.timeISO}')"`;
+                } else {
+                    editDisabled = true;
+                    editBtnExtra = 'disabled';
+                    if (isFinished) {
+                        editBtnHtml = '⏳ انتهت';
+                    } else if (isLive) {
+                        editBtnHtml = '⛔ جارية';
+                    } else if (!canPredict(m.timeISO) && !isFinished && !isLive) {
+                        editBtnHtml = '⏳ انتهت المهلة';
+                    } else {
+                        editBtnHtml = '⏳ غير متاح';
+                    }
+                }
+            } else if (submitted) {
+                // توقع سابق (ربما مستخدم آخر) لا نعرضه
                 predictDisabled = true;
                 predictBtnHtml = 'تم التوقع ✅';
                 predictBtnClass += ' submitted';
@@ -3835,8 +4325,7 @@
                     predictBtnExtra = 'disabled';
                 }
             } else {
-                predictBtnExtra = 'onclick="openPredictionModal(\'' + matchId + '\', \'' + m.team1 + '\', \'' + m.team2 +
-                    '\', \'' + m.timeISO + '\')"';
+                predictBtnExtra = `onclick="openNameModal('${matchId}','${m.team1}','${m.team2}','${m.timeISO}')"`;
             }
 
             const groupName = Object.keys(finalGroups).find(g => finalGroups[g].includes(m.team1)) || '';
@@ -3857,7 +4346,7 @@
                 `onclick="openMatchPredictions('${matchId}', '${m.team1}', '${m.team2}', ${homeScore}, ${awayScore})"` :
                 '';
 
-            const showEdit = submitted && canPredictNow;
+            const showEdit = (userHasPrediction || submitted) && canPredictNow;
 
             return `
             <div class="match-card ${matchClass}" ${onclickAttr}>
@@ -3898,7 +4387,200 @@
         }
 
         // ============================================================
-        //  دوال النوافذ المنبثقة - جميع التوقعات مع ترقيم وترتيب زمني
+        //  نافذة إدخال الاسم (الخطوة الأولى)
+        // ============================================================
+        let nameModalMatchId = '',
+            nameModalTeam1 = '',
+            nameModalTeam2 = '',
+            nameModalTimeISO = '';
+
+        function openNameModal(matchId, team1, team2, timeISO) {
+            if (isMatchFinished(timeISO)) { showCopyToast('⛔ هذه المباراة انتهت، لا يمكن التوقع.'); return; }
+            if (!canPredict(timeISO)) { showCopyToast(
+                    '⛔ لا يمكن التوقع الآن، المباراة على وشك البدء أو بدأت بالفعل (يُسمح حتى 5 دقائق قبل البداية).'); return; }
+
+            nameModalMatchId = matchId;
+            nameModalTeam1 = team1;
+            nameModalTeam2 = team2;
+            nameModalTimeISO = timeISO;
+            isNameVerified = false;
+
+            document.getElementById('nameInput').value = localStorage.getItem('lastUserName') || '';
+            document.getElementById('nameStatus').style.display = 'none';
+            document.getElementById('nameError').textContent = '';
+            document.getElementById('nameSubmitBtn').disabled = false;
+            document.getElementById('nameSubmitBtn').textContent = 'متابعة →';
+
+            document.getElementById('nameModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('nameInput').focus(), 300);
+        }
+
+        function closeNameModal() {
+            document.getElementById('nameModal').classList.remove('active');
+            document.body.style.overflow = '';
+            isNameVerified = false;
+        }
+
+        document.getElementById('nameCloseBtn').addEventListener('click', closeNameModal);
+        document.getElementById('nameModal').addEventListener('click', function(e) { if (e.target === this) closeNameModal(); });
+
+        document.getElementById('nameSubmitBtn').addEventListener('click', async function() {
+            const name = document.getElementById('nameInput').value.trim();
+            const errorEl = document.getElementById('nameError');
+            const statusEl = document.getElementById('nameStatus');
+
+            if (!name) { errorEl.textContent = '⚠️ الرجاء إدخال اسمك';
+                return; }
+
+            if (!supabaseClient) {
+                errorEl.textContent = '❌ خطأ في الاتصال بقاعدة البيانات';
+                return;
+            }
+
+            this.disabled = true;
+            this.textContent = '⏳ جاري التحقق...';
+            errorEl.textContent = '';
+            statusEl.style.display = 'block';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from("predictions")
+                    .select("user_name")
+                    .eq("user_name", name)
+                    .limit(1);
+
+                if (error) throw error;
+
+                const isExisting = data && data.length > 0;
+
+                if (isExisting) {
+                    statusEl.className = 'user-status existing';
+                    statusEl.textContent = `👤 مرحباً بعودتك "${name}"! سيتم إضافة التوقع إلى حسابك.`;
+                    localStorage.setItem('lastUserName', name);
+                    currentUserName = name;
+                    isNameVerified = true;
+
+                    // جلب جميع توقعات المستخدم
+                    await loadUserPredictions(name);
+
+                    const existingPred = await getUserPrediction(name, nameModalMatchId);
+                    if (existingPred) {
+                        errorEl.textContent = `⚠️ لقد توقعت هذه المباراة مسبقاً: ${existingPred.prediction === 'DRAW' ? 'تعادل' : existingPred.prediction}`;
+                        this.disabled = false;
+                        this.textContent = 'متابعة →';
+                        renderUpcoming(); // تحديث لعرض "تم التوقع"
+                        return;
+                    }
+
+                    this.textContent = '✅ متابعة للتوقع';
+                    setTimeout(() => {
+                        closeNameModal();
+                        openPredictionModal(nameModalMatchId, nameModalTeam1, nameModalTeam2, nameModalTimeISO,
+                        name);
+                    }, 600);
+                } else {
+                    statusEl.className = 'user-status new';
+                    statusEl.textContent = `👤 مرحباً "${name}"! أنت لاعب جديد. سيتم تسجيل توقعاتك.`;
+                    localStorage.setItem('lastUserName', name);
+                    currentUserName = name;
+                    isNameVerified = true;
+                    userPredictionsMap = {};
+
+                    this.textContent = '✅ متابعة للتوقع';
+                    setTimeout(() => {
+                        closeNameModal();
+                        openPredictionModal(nameModalMatchId, nameModalTeam1, nameModalTeam2, nameModalTimeISO,
+                        name);
+                    }, 600);
+                }
+            } catch (e) {
+                console.error("❌ التحقق من الاسم:", e);
+                errorEl.textContent = '❌ حدث خطأ أثناء التحقق من الاسم';
+                this.disabled = false;
+                this.textContent = 'متابعة →';
+                statusEl.style.display = 'none';
+            }
+        });
+
+        document.getElementById('nameInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('nameSubmitBtn').click();
+            }
+            if (e.key === 'Escape') {
+                closeNameModal();
+            }
+        });
+
+        // دالة لجلب توقعات المستخدم وتعبئة userPredictionsMap
+        async function loadUserPredictions(userName) {
+            if (!supabaseClient || !userName) return;
+            try {
+                const { data, error } = await supabaseClient
+                    .from("predictions")
+                    .select("match_id")
+                    .eq("user_name", userName);
+                if (error) throw error;
+                userPredictionsMap = {};
+                if (data && data.length) {
+                    data.forEach(p => {
+                        userPredictionsMap[p.match_id] = true;
+                    });
+                }
+                renderUpcoming(); // تحديث المباريات لإظهار علامة "تم التوقع"
+            } catch (e) {
+                console.error("❌ جلب توقعات المستخدم:", e);
+                userPredictionsMap = {};
+            }
+        }
+
+        // ============================================================
+        //  نافذة التوقع (الخطوة الثانية)
+        // ============================================================
+        function openPredictionModal(matchId, team1, team2, timeISO, userName) {
+            if (isMatchFinished(timeISO)) { showCopyToast('⛔ هذه المباراة انتهت، لا يمكن التوقع.'); return; }
+            if (!canPredict(timeISO)) { showCopyToast(
+                    '⛔ لا يمكن التوقع الآن، المباراة على وشك البدء أو بدأت بالفعل (يُسمح حتى 5 دقائق قبل البداية).'); return; }
+
+            isEditing = false;
+            currentMatchId = matchId;
+            currentTeam1 = team1;
+            currentTeam2 = team2;
+            currentTimeISO = timeISO;
+            currentUserName = userName || localStorage.getItem('lastUserName') || '';
+
+            document.getElementById('modalTitle').textContent = '📝 توقع نتيجة المباراة';
+            document.getElementById('greetingName').textContent = currentUserName;
+            document.getElementById('modalUserGreeting').style.display = 'block';
+            document.getElementById('modalTeam1').textContent = team1;
+            document.getElementById('modalTeam2').textContent = team2;
+            document.getElementById('optTeam1').textContent = team1;
+            document.getElementById('optTeam2').textContent = team2;
+            document.getElementById('modalFlag1').textContent = getFlag(team1);
+            document.getElementById('modalFlag2').textContent = getFlag(team2);
+            document.getElementById('modalDateTime').textContent = `📅 ${getDateTimeDisplay(timeISO)} (بتوقيت السعودية)`;
+
+            const msgEl = document.getElementById('modalMessage');
+            msgEl.textContent = '';
+            msgEl.className = 'modal-message';
+
+            if (isMatchSubmitted(matchId)) {
+                msgEl.textContent = `⚠️ توقعت مسبقاً هذه المباراة`;
+                msgEl.className = 'modal-message warning';
+                document.getElementById('modalSubmitBtn').disabled = true;
+            } else {
+                document.getElementById('modalSubmitBtn').disabled = false;
+            }
+
+            document.getElementById('modalSubmitBtn').textContent = '💾 حفظ التوقع';
+            document.querySelectorAll('input[name="prediction"]').forEach(el => el.checked = false);
+
+            document.getElementById('predictionModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // ============================================================
+        //  دوال النوافذ المنبثقة الأخرى
         // ============================================================
         async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore) {
             if (!state.loaded) {
@@ -3974,7 +4656,6 @@
                 await getAllPredictions();
                 predictions = state.predictions;
             }
-            // جلب جميع توقعات المباراة وترتيبها من الأقدم إلى الأحدث
             const matchPredictions = predictions
                 .filter(p => p.match_id === matchId)
                 .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
@@ -3994,7 +4675,6 @@
                 correctResult = result.homeScore > result.awayScore ? team1 : (result.awayScore > result.homeScore ? team2 :
                     "DRAW");
             } else {
-                // إذا لم تكن النتيجة معروفة، نعرض التوقعات مع حالة "لم تحدد"
                 let rows = '';
                 matchPredictions.forEach((p, idx) => {
                     let predictionText = p.prediction === 'DRAW' ? 'تعادل' : `فوز ${p.prediction}`;
@@ -4323,7 +5003,7 @@
                 'لم تلعب بعد';
             const dateStr = match.date || match.time || match.local_date || 'تاريخ غير معروف';
             const stadium = match.ground || (match.stadium_id ? getStadiumName(match.stadium_id) : 'غير معروف');
-            const predictions = await getPredictionsForMatch(matchId);
+            const predictions = await getPredictionsForMatchFull(matchId);
             const predCount = predictions.length;
             detailDiv.innerHTML = `
             <div class="modal-teams">
@@ -4474,7 +5154,7 @@
                 calculateStandings();
                 renderTeamStats();
                 renderBracket();
-                renderLeaderboard();
+                renderLeaderboard(currentLeaderboardPeriod);
                 updateScorers();
                 updateNewsTicker();
             } catch (e) {
@@ -4646,7 +5326,6 @@
             listContainer.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> جاري التحميل...</div>`;
             countSpan.textContent = '...';
 
-            // جلب جميع التوقعات من Supabase بدون حد، مرتبة من الأقدم إلى الأحدث
             const predictions = await getPredictionsForUserFull(userName);
             countSpan.textContent = predictions.length;
 
@@ -4658,7 +5337,6 @@
                 return;
             }
 
-            // ترتيب من الأقدم إلى الأحدث (أول توقع في الأعلى)
             predictions.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
             let html = '';
@@ -4695,16 +5373,14 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // دالة لجلب جميع توقعات المستخدم بدون حد
         async function getPredictionsForUserFull(userName) {
             if (!supabaseClient || !userName) return [];
             try {
-                // جلب جميع التوقعات لهذا المستخدم (بدون limit)
                 const { data, error } = await supabaseClient
                     .from("predictions")
                     .select("*")
                     .eq("user_name", userName)
-                    .order("created_at", { ascending: true }); // ترتيب تصاعدي من الأقدم
+                    .order("created_at", { ascending: true });
                 if (error) throw error;
                 return data || [];
             } catch (e) {
@@ -4713,7 +5389,6 @@
             }
         }
 
-        // جلب توقعات المباراة (جميعها) بدون حد
         async function getPredictionsForMatchFull(matchId) {
             if (!supabaseClient || !matchId) return [];
             try {
@@ -4731,19 +5406,650 @@
         }
 
         // ============================================================
-        //  دوال التوقعات المكررة في لوحة الإدارة
+        //  لوحة المتصدرين (مع دعم الترتيب العام وآخر 24 ساعة)
+        // ============================================================
+        function setLeaderboardPeriod(period) {
+            currentLeaderboardPeriod = period;
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.period === period);
+            });
+            renderLeaderboard(period);
+        }
+
+        async function renderLeaderboard(period) {
+            const container = document.getElementById("leaderboardContainer");
+            if (!state.loaded) {
+                container.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> جاري التحميل...</div>`;
+                return;
+            }
+            const predictions = state.predictions;
+            const games = state.previousGamesData;
+            if (!predictions.length || !games.length) {
+                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد بيانات</div>`;
+                return;
+            }
+
+            // تحديد المباريات بناءً على الفترة
+            let filteredGames = games;
+            if (period === '24h') {
+                const nowTime = now();
+                const last24h = nowTime - 24 * 60 * 60 * 1000;
+                filteredGames = games.filter(g => {
+                    const dateStr = g.formattedDate || '';
+                    const timeStr = g.timeMatch || '';
+                    if (!dateStr) return false;
+                    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر',
+                        'نوفمبر', 'ديسمبر'
+                    ];
+                    const parts = dateStr.split(' ');
+                    if (parts.length < 3) return false;
+                    const day = parseInt(parts[0]);
+                    const month = months.indexOf(parts[1]);
+                    const year = parseInt(parts[2]);
+                    if (isNaN(day) || month === -1 || isNaN(year)) return false;
+                    const d = new Date(year, month, day);
+                    if (timeStr) {
+                        const timeParts = timeStr.split(':');
+                        if (timeParts.length === 2) {
+                            d.setHours(parseInt(timeParts[0]), parseInt(timeParts[1]));
+                        }
+                    }
+                    let gameTime = d.getTime();
+                    gameTime += 3 * 60 * 60 * 1000;
+                    return gameTime >= last24h && gameTime <= nowTime;
+                });
+            }
+
+            const scores = {};
+            for (let p of predictions) {
+                if (!scores[p.user_name]) {
+                    scores[p.user_name] = { name: p.user_name, points: 0, correct: 0, total: 0 };
+                }
+                scores[p.user_name].total++;
+                const parts = (p.match_id || "").split("_");
+                if (parts.length < 3) continue;
+                const team1 = parts[1],
+                    team2 = parts[2];
+                const match = filteredGames.find(g =>
+                    (g.homeAr === team1 && g.awayAr === team2) ||
+                    (g.homeAr === team2 && g.awayAr === team1)
+                );
+                if (!match) continue;
+                const result = match.homeScore > match.awayScore ? match.homeAr :
+                    match.awayScore > match.homeScore ? match.awayAr :
+                    "DRAW";
+                if (p.prediction === result) {
+                    scores[p.user_name].points++;
+                    scores[p.user_name].correct++;
+                }
+            }
+            const board = Object.values(scores).sort((a, b) => b.points - a.points || (b.correct - a.correct));
+            if (!board.length) {
+                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات صحيحة</div>`;
+                return;
+            }
+            document.getElementById('lbTotalPlayers').textContent = board.length;
+            document.getElementById('lbTotalPredictions').textContent = predictions.length;
+
+            // حفظ الترتيب السابق للمقارنة (أسهم الصعود والهبوط)
+            const prevRankKey = `prevRank_${period}`;
+            let prevRank = {};
+            try {
+                const raw = localStorage.getItem(prevRankKey);
+                if (raw) prevRank = JSON.parse(raw);
+            } catch (e) {}
+
+            // تحديث الترتيب الحالي
+            const currentRank = {};
+            board.forEach((p, idx) => {
+                currentRank[p.name] = idx + 1;
+            });
+            localStorage.setItem(prevRankKey, JSON.stringify(currentRank));
+
+            const topThree = board.slice(0, 3);
+            const rest = board.slice(3, 10);
+
+            let html = '';
+            if (topThree.length) {
+                const champ = topThree[0];
+                const accuracy = champ.total > 0 ? Math.round((champ.correct / champ.total) * 100) : 0;
+                const isCurrentUser = champ.name === localStorage.getItem('lastUserName') || '';
+                const prevPos = prevRank[champ.name] || 0;
+                const currentPos = 1;
+                let arrow = '';
+                if (prevPos && prevPos !== currentPos) {
+                    if (currentPos < prevPos) arrow = ' <span class="arrow-up">▲</span>';
+                    else if (currentPos > prevPos) arrow = ' <span class="arrow-down">▼</span>';
+                } else if (prevPos) {
+                    arrow = ' <span class="arrow-unchanged">—</span>';
+                }
+                html += `
+              <div class="champion-card" style="${isCurrentUser ? 'border-color:#f0b429;box-shadow:0 0 40px rgba(240,180,41,0.12);' : ''}" onclick="openPlayerPredictions('${champ.name}')">
+                <div class="rank-badge">🥇</div>
+                <div class="avatar">${champ.name.charAt(0).toUpperCase()}</div>
+                <div class="info">
+                  <div class="name">${champ.name} ${isCurrentUser ? '👤' : ''}</div>
+                  <div class="stats-row">
+                    <span class="item">🏆 <strong>${champ.points}</strong> نقطة</span>
+                    <span class="item">✅ <strong class="highlight">${champ.correct}</strong> / ${champ.total}</span>
+                    <span class="item">📊 <strong>${accuracy}%</strong> نجاح</span>
+                    <span class="item">${arrow}</span>
+                  </div>
+                  <div class="progress-wrapper">
+                    <div class="progress-label"><span>نسبة النجاح</span><span>${accuracy}%</span></div>
+                    <div class="progress-bar"><div class="fill" style="width:${Math.min(accuracy,100)}%;"></div></div>
+                  </div>
+                </div>
+              </div>
+            `;
+            }
+            if (rest.length || topThree.length > 1) {
+                const allPlayers = [...topThree.slice(1), ...rest];
+                const medals = ['🥈', '🥉', ...Array(rest.length).fill('')];
+                html += `<div class="players-list">`;
+                allPlayers.forEach((player, idx) => {
+                    const rank = idx + 2;
+                    const accuracy = player.total > 0 ? Math.round((player.correct / player.total) * 100) : 0;
+                    const isCurrentUser = player.name === localStorage.getItem('lastUserName') || '';
+                    const medal = medals[idx] || `#${rank}`;
+                    let rankClass = '';
+                    if (rank === 2) rankClass = 'silver';
+                    else if (rank === 3) rankClass = 'bronze';
+                    let borderClass = '';
+                    if (rank === 2) borderClass = 'silver-border';
+                    else if (rank === 3) borderClass = 'bronze-border';
+
+                    const prevPos = prevRank[player.name] || 0;
+                    const currentPos = rank;
+                    let arrow = '';
+                    if (prevPos && prevPos !== currentPos) {
+                        if (currentPos < prevPos) arrow = ' ▲';
+                        else if (currentPos > prevPos) arrow = ' ▼';
+                    } else if (prevPos) {
+                        arrow = ' —';
+                    }
+                    const arrowClass = arrow.includes('▲') ? 'arrow-up' : (arrow.includes('▼') ? 'arrow-down' :
+                        'arrow-unchanged');
+
+                    html += `
+                <div class="player-card" style="${isCurrentUser ? 'border-color:rgba(240,180,41,0.3);' : ''}" onclick="openPlayerPredictions('${player.name}')">
+                  <div class="rank ${rankClass}">${medal}</div>
+                  <div class="avatar-sm ${borderClass}">${player.name.charAt(0).toUpperCase()}</div>
+                  <div class="info-sm">
+                    <div class="name-sm">${player.name} ${isCurrentUser ? '👤' : ''}</div>
+                    <div class="sub-sm">
+                      <span>✅ <span class="highlight">${player.correct}</span>/${player.total}</span>
+                      <span>📊 ${accuracy}%</span>
+                      <span class="${arrowClass}">${arrow.trim()}</span>
+                    </div>
+                    <div class="progress-mini"><div class="fill-mini" style="width:${Math.min(accuracy,100)}%;"></div></div>
+                  </div>
+                  <div class="points-sm">${player.points}</div>
+                  ${isCurrentUser ? `<div class="current-user-indicator active"></div><div class="pulse-dot"></div>` : ''}
+                </div>
+              `;
+                });
+                html += `</div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        //  دوال التحليلات المتقدمة
+        // ============================================================
+        let chartInstancesLocal = {};
+
+        function openAnalytics() {
+            const modal = document.getElementById('analyticsModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(() => {
+                generateAnalyticsCharts();
+            }, 300);
+        }
+
+        function generateAnalyticsCharts() {
+            const predictions = state.predictions || [];
+            const games = state.previousGamesData || [];
+
+            if (!predictions.length || !games.length) {
+                document.getElementById('analyticsContent').innerHTML = `
+              <div class="empty-state"><span class="icon">📊</span> لا توجد بيانات كافية للتحليل</div>
+              <div style="text-align:center;margin-top:12px;">
+                <button class="tab-btn" onclick="document.getElementById('analyticsModal').classList.remove('active');document.body.style.overflow='';" style="background:rgba(240,180,41,0.08);border-color:rgba(240,180,41,0.2);color:var(--gold-light);">إغلاق</button>
+              </div>
+            `;
+                return;
+            }
+
+            const matchPredCount = {};
+            for (let p of predictions) {
+                const parts = p.match_id.split('_');
+                if (parts.length < 3) continue;
+                const key = `${parts[1]} 🆚 ${parts[2]}`;
+                if (!matchPredCount[key]) matchPredCount[key] = { home: 0, away: 0, draw: 0 };
+                if (p.prediction === parts[1]) matchPredCount[key].home++;
+                else if (p.prediction === parts[2]) matchPredCount[key].away++;
+                else if (p.prediction === 'DRAW') matchPredCount[key].draw++;
+            }
+
+            const sortedMatches = Object.entries(matchPredCount)
+                .sort((a, b) => (b[1].home + b[1].away + b[1].draw) - (a[1].home + a[1].away + a[1].draw))
+                .slice(0, 8);
+
+            const labels = sortedMatches.map(m => m[0].length > 25 ? m[0].substring(0, 22) + '...' : m[0]);
+            const homeData = sortedMatches.map(m => m[1].home);
+            const awayData = sortedMatches.map(m => m[1].away);
+            const drawData = sortedMatches.map(m => m[1].draw);
+
+            const userPoints = {};
+            for (let p of predictions) {
+                const parts = p.match_id.split('_');
+                if (parts.length < 3) continue;
+                const team1 = parts[1],
+                    team2 = parts[2];
+                const match = games.find(g =>
+                    (g.homeAr === team1 && g.awayAr === team2) ||
+                    (g.homeAr === team2 && g.awayAr === team1)
+                );
+                if (!match) continue;
+                const result = match.homeScore > match.awayScore ? match.homeAr :
+                    match.awayScore > match.homeScore ? match.awayAr : "DRAW";
+                const isCorrect = p.prediction === result;
+                if (!userPoints[p.user_name]) userPoints[p.user_name] = [];
+                userPoints[p.user_name].push({ matchId: p.match_id, correct: isCorrect, time: p.created_at });
+            }
+
+            const cumulativePoints = {};
+            for (let [user, preds] of Object.entries(userPoints)) {
+                let total = 0;
+                cumulativePoints[user] = preds.map(p => {
+                    if (p.correct) total++;
+                    return total;
+                });
+            }
+
+            const topUsers = Object.entries(cumulativePoints)
+                .sort((a, b) => b[1][b[1].length - 1] - a[1][a[1].length - 1])
+                .slice(0, 5);
+
+            const pointLabels = topUsers.length > 0 ? topUsers[0][1].map((_, i) => `توقع ${i+1}`) : [];
+
+            const popularMatches = Object.entries(matchPredCount)
+                .sort((a, b) => (b[1].home + b[1].away + b[1].draw) - (a[1].home + a[1].away + a[1].draw))
+                .slice(0, 8);
+
+            const popLabels = popularMatches.map(m => m[0].length > 25 ? m[0].substring(0, 22) + '...' : m[0]);
+            const popData = popularMatches.map(m => m[1].home + m[1].away + m[1].draw);
+
+            if (chartInstancesLocal.dist) chartInstancesLocal.dist.destroy();
+            if (chartInstancesLocal.points) chartInstancesLocal.points.destroy();
+            if (chartInstancesLocal.pop) chartInstancesLocal.pop.destroy();
+
+            const ctx1 = document.getElementById('chartDistribution').getContext('2d');
+            chartInstancesLocal.dist = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'فوز الفريق الأول',
+                        data: homeData,
+                        backgroundColor: 'rgba(240, 180, 41, 0.7)',
+                        borderColor: 'rgba(240, 180, 41, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'فوز الفريق الثاني',
+                        data: awayData,
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'تعادل',
+                        data: drawData,
+                        backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#8899bb', font: { family: 'Cairo' } }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#8899bb', font: { family: 'Cairo', size: 9 } },
+                            grid: { color: 'rgba(255,255,255,0.04)' }
+                        },
+                        y: {
+                            ticks: { color: '#8899bb' },
+                            grid: { color: 'rgba(255,255,255,0.04)' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            const ctx2 = document.getElementById('chartPoints').getContext('2d');
+            const colors = ['#f0b429', '#5dade2', '#2ecc71', '#e74c3c', '#9b59b6'];
+            const datasets = topUsers.map((user, idx) => ({
+                label: user[0],
+                data: user[1],
+                borderColor: colors[idx % colors.length],
+                backgroundColor: colors[idx % colors.length] + '33',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 2
+            }));
+
+            chartInstancesLocal.points = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: pointLabels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#8899bb', font: { family: 'Cairo', size: 10 } }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#8899bb', font: { family: 'Cairo', size: 8 } },
+                            grid: { color: 'rgba(255,255,255,0.04)' }
+                        },
+                        y: {
+                            ticks: { color: '#8899bb' },
+                            grid: { color: 'rgba(255,255,255,0.04)' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            const ctx3 = document.getElementById('chartPopular').getContext('2d');
+            chartInstancesLocal.pop = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: popLabels,
+                    datasets: [{
+                        label: 'عدد التوقعات',
+                        data: popData,
+                        backgroundColor: 'rgba(240, 180, 41, 0.6)',
+                        borderColor: 'rgba(240, 180, 41, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#8899bb', font: { family: 'Cairo' } }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#8899bb', font: { family: 'Cairo', size: 9 } },
+                            grid: { color: 'rgba(255,255,255,0.04)' }
+                        },
+                        y: {
+                            ticks: { color: '#8899bb' },
+                            grid: { color: 'rgba(255,255,255,0.04)' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('analyticsContent').innerHTML = `
+            <div class="analytics-grid">
+              <div class="chart-box full-width">
+                <div class="chart-title">📊 توزيع التوقعات لكل مباراة</div>
+                <canvas id="chartDistribution"></canvas>
+              </div>
+              <div class="chart-box full-width">
+                <div class="chart-title">📈 تطور نقاط أفضل 5 لاعبين</div>
+                <canvas id="chartPoints"></canvas>
+              </div>
+              <div class="chart-box full-width">
+                <div class="chart-title">🔥 أكثر المباريات توقعاً</div>
+                <canvas id="chartPopular"></canvas>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:12px;">
+              <button class="tab-btn" onclick="document.getElementById('analyticsModal').classList.remove('active');document.body.style.overflow='';" style="background:rgba(240,180,41,0.08);border-color:rgba(240,180,41,0.2);color:var(--gold-light);">إغلاق</button>
+            </div>
+          `;
+
+            setTimeout(() => {
+                const ctx1b = document.getElementById('chartDistribution').getContext('2d');
+                const ctx2b = document.getElementById('chartPoints').getContext('2d');
+                const ctx3b = document.getElementById('chartPopular').getContext('2d');
+
+                if (chartInstancesLocal.dist) chartInstancesLocal.dist.destroy();
+                if (chartInstancesLocal.points) chartInstancesLocal.points.destroy();
+                if (chartInstancesLocal.pop) chartInstancesLocal.pop.destroy();
+
+                chartInstancesLocal.dist = new Chart(ctx1b, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'فوز الفريق الأول',
+                            data: homeData,
+                            backgroundColor: 'rgba(240, 180, 41, 0.7)',
+                            borderColor: 'rgba(240, 180, 41, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'فوز الفريق الثاني',
+                            data: awayData,
+                            backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'تعادل',
+                            data: drawData,
+                            backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                            borderColor: 'rgba(46, 204, 113, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#8899bb', font: { family: 'Cairo' } }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#8899bb', font: { family: 'Cairo', size: 9 } },
+                                grid: { color: 'rgba(255,255,255,0.04)' }
+                            },
+                            y: {
+                                ticks: { color: '#8899bb' },
+                                grid: { color: 'rgba(255,255,255,0.04)' },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                chartInstancesLocal.points = new Chart(ctx2b, {
+                    type: 'line',
+                    data: {
+                        labels: pointLabels,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#8899bb', font: { family: 'Cairo', size: 10 } }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#8899bb', font: { family: 'Cairo', size: 8 } },
+                                grid: { color: 'rgba(255,255,255,0.04)' }
+                            },
+                            y: {
+                                ticks: { color: '#8899bb' },
+                                grid: { color: 'rgba(255,255,255,0.04)' },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                chartInstancesLocal.pop = new Chart(ctx3b, {
+                    type: 'bar',
+                    data: {
+                        labels: popLabels,
+                        datasets: [{
+                            label: 'عدد التوقعات',
+                            data: popData,
+                            backgroundColor: 'rgba(240, 180, 41, 0.6)',
+                            borderColor: 'rgba(240, 180, 41, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#8899bb', font: { family: 'Cairo' } }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#8899bb', font: { family: 'Cairo', size: 9 } },
+                                grid: { color: 'rgba(255,255,255,0.04)' }
+                            },
+                            y: {
+                                ticks: { color: '#8899bb' },
+                                grid: { color: 'rgba(255,255,255,0.04)' },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }, 100);
+        }
+
+        document.getElementById('analyticsCloseBtn').addEventListener('click', function() {
+            document.getElementById('analyticsModal').classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        document.getElementById('analyticsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                document.getElementById('analyticsModal').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // ============================================================
+        //  أرشيف التوقعات
+        // ============================================================
+        function toggleArchive() {
+            const section = document.getElementById('archiveSection');
+            const container = document.getElementById('archiveContainer');
+            const countSpan = document.getElementById('archiveCount');
+
+            if (section.classList.contains('visible')) {
+                section.classList.remove('visible');
+                return;
+            }
+
+            section.classList.add('visible');
+            container.innerHTML = `<div class="duplicates-empty">⏳ جاري تحميل الأرشيف...</div>`;
+
+            const games = state.previousGamesData || [];
+            if (games.length === 0) {
+                container.innerHTML = `<div class="duplicates-empty">📭 لا توجد مباريات منتهية</div>`;
+                countSpan.textContent = '0';
+                return;
+            }
+
+            const predictions = state.predictions || [];
+            const archiveData = games.map(game => {
+                const matchPredictions = predictions.filter(p => {
+                    const parts = p.match_id.split('_');
+                    if (parts.length < 3) return false;
+                    return (parts[1] === game.homeAr && parts[2] === game.awayAr) ||
+                        (parts[1] === game.awayAr && parts[2] === game.homeAr);
+                });
+
+                let correct = 0,
+                    wrong = 0;
+                const result = game.homeScore > game.awayScore ? game.homeAr :
+                    game.awayScore > game.homeScore ? game.awayAr : "DRAW";
+
+                for (let p of matchPredictions) {
+                    if (p.prediction === result) correct++;
+                    else wrong++;
+                }
+
+                return {
+                    ...game,
+                    correct,
+                    wrong,
+                    total: matchPredictions.length,
+                    accuracy: matchPredictions.length > 0 ? Math.round((correct / matchPredictions.length) * 100) : 0
+                };
+            });
+
+            archiveData.sort((a, b) => (b.correct + b.wrong) - (a.correct + a.wrong));
+            countSpan.textContent = archiveData.length;
+
+            let html = `<div class="archive-summary">
+            <span class="item">📊 إجمالي المباريات: <strong>${archiveData.length}</strong></span>
+            <span class="item">✅ إجمالي التوقعات الصحيحة: <strong class="highlight">${archiveData.reduce((sum, m) => sum + m.correct, 0)}</strong></span>
+            <span class="item">📈 متوسط الدقة: <strong class="highlight">${Math.round(archiveData.reduce((sum, m) => sum + m.accuracy, 0) / archiveData.length)}%</strong></span>
+          </div>
+          <div class="archive-list">`;
+
+            archiveData.forEach(m => {
+                html += `
+              <div class="archive-item" onclick="openPreviousMatchPredictions('${m.homeAr}', '${m.awayAr}', ${m.homeScore}, ${m.awayScore})">
+                <div class="match-info">
+                  <span class="flag">${getFlag(m.homeAr)}</span> ${m.homeAr}
+                  <span class="score">${m.homeScore} - ${m.awayScore}</span>
+                  <span class="flag">${getFlag(m.awayAr)}</span> ${m.awayAr}
+                </div>
+                <div class="stats">
+                  <span class="correct">✅ ${m.correct}</span>
+                  <span class="wrong">❌ ${m.wrong}</span>
+                  <span class="accuracy">${m.accuracy}%</span>
+                  <span style="color:var(--text-secondary);font-size:0.6rem;">${m.total} توقع</span>
+                </div>
+              </div>
+            `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        //  دوال التوقعات المكررة
         // ============================================================
         async function loadDuplicates() {
             const section = document.getElementById('duplicatesSection');
             const container = document.getElementById('duplicatesContainer');
             const badge = document.getElementById('dupCountBadge');
 
-            if (section.style.display === 'block') {
-                section.style.display = 'none';
+            if (section.classList.contains('visible')) {
+                section.classList.remove('visible');
                 return;
             }
 
-            section.style.display = 'block';
+            section.classList.add('visible');
             container.innerHTML = `<div class="duplicates-empty">⏳ جاري البحث عن التكرارات...</div>`;
 
             if (!supabaseClient) {
@@ -4822,7 +6128,7 @@
         }
 
         // ============================================================
-        //  دوال الاختبارات (الفكرة 19)
+        //  دوال الاختبارات
         // ============================================================
         function runTests() {
             const modal = document.getElementById('testResultsModal');
@@ -4836,7 +6142,6 @@
                 let pass = 0,
                     fail = 0;
 
-                // اختبار 1: canPredict
                 try {
                     const future = new Date(Date.now() + 10 * 60 * 1000).toISOString();
                     const near = new Date(Date.now() + 2 * 60 * 1000).toISOString();
@@ -4850,7 +6155,6 @@
                 } catch (e) { fail++;
                     results.push('❌ canPredict - استثناء: ' + e.message); }
 
-                // اختبار 2: translateToArabic
                 try {
                     const t1 = translateToArabic('Argentina') === 'الأرجنتين';
                     const t2 = translateToArabic('Germany') === 'ألمانيا';
@@ -4860,9 +6164,7 @@
                 } catch (e) { fail++;
                     results.push('❌ translateToArabic - استثناء: ' + e.message); }
 
-                // اختبار 3: findMatchResult (محاكاة)
                 try {
-                    // محاكاة بيانات مؤقتة
                     const fakeGames = [{ homeAr: 'البرازيل', awayAr: 'الأرجنتين', homeScore: 2, awayScore: 1 }];
                     const original = state.previousGamesData;
                     state.previousGamesData = fakeGames;
@@ -4874,7 +6176,6 @@
                 } catch (e) { fail++;
                     results.push('❌ findMatchResult - استثناء: ' + e.message); }
 
-                // اختبار 4: getSubmittedMatches (localStorage)
                 try {
                     const key = 'submitted_matches';
                     const old = localStorage.getItem(key);
@@ -4887,7 +6188,6 @@
                 } catch (e) { fail++;
                     results.push('❌ getSubmittedMatches - استثناء: ' + e.message); }
 
-                // اختبار 5: getFlag
                 try {
                     const f1 = getFlag('البرازيل') === '🇧🇷';
                     const f2 = getFlag('فرنسا') === '🇫🇷';
@@ -4920,18 +6220,19 @@
         });
 
         // ============================================================
-        //  دوال شريط الأخبار - عرض توقعات اليوم البارزة
+        //  دوال شريط الأخبار
         // ============================================================
         function updateNewsTicker() {
             const tickerEl = document.getElementById('todayHighlights');
             if (!tickerEl) return;
 
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            const today = getSaudiNow();
             const todayMatches = matchesData.filter(m => {
-                const d = new Date(m.timeISO);
-                d.setHours(0, 0, 0, 0);
-                return d.getTime() === today.getTime() && (matchTime(m.timeISO) + MATCH_DURATION) > now();
+                const d = toSaudiTime(m.timeISO);
+                return d.getDate() === today.getDate() &&
+                    d.getMonth() === today.getMonth() &&
+                    d.getFullYear() === today.getFullYear() &&
+                    (matchTime(m.timeISO) + MATCH_DURATION) > now();
             });
 
             if (todayMatches.length === 0) {
@@ -4977,21 +6278,21 @@
         // ============================================================
         function shareAllTodayTomorrow() {
             if (!isAuthorized) { showPasswordOverlay(); return; }
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            const today = getSaudiNow();
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
             const activeMatches = matchesData.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now());
             const todayTomorrowMatches = activeMatches.filter(m => {
-                const d = new Date(m.timeISO);
-                d.setHours(0, 0, 0, 0);
-                return d.getTime() === today.getTime() || d.getTime() === tomorrow.getTime();
+                const d = toSaudiTime(m.timeISO);
+                return (d.getDate() === today.getDate() && d.getMonth() === today.getMonth()) ||
+                    (d.getDate() === tomorrow.getDate() && d.getMonth() === tomorrow.getMonth());
             });
             if (!todayTomorrowMatches.length) { showCopyToast('⚠️ لا توجد مباريات اليوم أو غداً'); return; }
             todayTomorrowMatches.sort((a, b) => matchTime(a.timeISO) - matchTime(b.timeISO));
             const baseUrl = window.location.origin + window.location.pathname;
             let shareText = '🏆 كأس العالم 2026 - روابط توقع مباريات اليوم والغد\n\n';
-            shareText += `📅 اليوم: ${getDateFmt(new Date().toISOString())}\n📅 غداً: ${getDateFmt(tomorrow.toISOString())}\n━\n\n`;
+            shareText +=
+                `📅 اليوم: ${formatSaudiDate(new Date().toISOString())}\n📅 غداً: ${formatSaudiDate(tomorrow.toISOString())}\n━\n\n`;
             todayTomorrowMatches.forEach((m, index) => {
                 const dayLabel = isMatchToday(m.timeISO) ? '📌 اليوم' : '📌 غداً';
                 const timeStr = getTimeFromISO(m.timeISO);
@@ -5018,15 +6319,14 @@
 
         function updateShareAllCount() {
             if (!isAuthorized) { document.getElementById('shareAllCount').textContent = '🔒'; return; }
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            const today = getSaudiNow();
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
             const activeMatches = matchesData.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now());
             const count = activeMatches.filter(m => {
-                const d = new Date(m.timeISO);
-                d.setHours(0, 0, 0, 0);
-                return d.getTime() === today.getTime() || d.getTime() === tomorrow.getTime();
+                const d = toSaudiTime(m.timeISO);
+                return (d.getDate() === today.getDate() && d.getMonth() === today.getMonth()) ||
+                    (d.getDate() === tomorrow.getDate() && d.getMonth() === tomorrow.getMonth());
             }).length;
             document.getElementById('shareAllCount').textContent = count;
         }
@@ -5213,7 +6513,7 @@
                 if (activeTab === 'stats') renderTeamStats();
                 if (activeTab === 'bracket') renderBracket();
                 if (activeTab === 'predictions') await renderAllPredictions();
-                renderLeaderboard();
+                renderLeaderboard(currentLeaderboardPeriod);
                 updateShareAllCount();
                 updateNewsTicker();
             }, 30000);
@@ -5226,7 +6526,7 @@
                 const match = matchesData.find(m => m.id === parseInt(matchId));
                 if (match && !isMatchFinished(match.timeISO)) {
                     setTimeout(() => {
-                        openPredictionModal(`${match.timeISO}_${match.team1}_${match.team2}`, match.team1,
+                        openNameModal(`${match.timeISO}_${match.team1}_${match.team2}`, match.team1,
                             match.team2, match.timeISO);
                     }, 800);
                 }
@@ -5277,6 +6577,11 @@
         window.loadDuplicates = loadDuplicates;
         window.openEditPredictionModal = openEditPredictionModal;
         window.runTests = runTests;
+        window.openAnalytics = openAnalytics;
+        window.toggleArchive = toggleArchive;
+        window.openNameModal = openNameModal;
+        window.closeNameModal = closeNameModal;
+        window.setLeaderboardPeriod = setLeaderboardPeriod;
 
         // ============================================================
         //  دالة فتح نافذة تعديل التوقع
@@ -5304,17 +6609,18 @@
             currentTeam1 = team1;
             currentTeam2 = team2;
             currentTimeISO = timeISO;
+            currentUserName = savedUserName;
 
             document.getElementById('modalTitle').textContent = '✏️ تعديل توقع المباراة';
+            document.getElementById('greetingName').textContent = savedUserName;
+            document.getElementById('modalUserGreeting').style.display = 'block';
             document.getElementById('modalTeam1').textContent = team1;
             document.getElementById('modalTeam2').textContent = team2;
             document.getElementById('optTeam1').textContent = team1;
             document.getElementById('optTeam2').textContent = team2;
             document.getElementById('modalFlag1').textContent = getFlag(team1);
             document.getElementById('modalFlag2').textContent = getFlag(team2);
-            document.getElementById('modalDateTime').textContent = `📅 ${getDateTimeDisplay(timeISO)}`;
-            document.getElementById('modalUserName').value = savedUserName;
-            document.getElementById('modalUserName').disabled = true;
+            document.getElementById('modalDateTime').textContent = `📅 ${getDateTimeDisplay(timeISO)} (بتوقيت السعودية)`;
 
             const currentPrediction = existing.prediction;
             document.querySelectorAll('input[name="prediction"]').forEach(el => {
@@ -5352,21 +6658,19 @@
                     active.sort((a, b) => matchTime(a.timeISO) - matchTime(b.timeISO));
                 }
                 if (groupFilter === 'all') {
-                    if (currentDayFilter === 'today') { const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        active = active.filter(m => { const d = new Date(m.timeISO);
-                            d.setHours(0, 0, 0, 0); return d.getTime() === today.getTime(); }); } else if (
-                        currentDayFilter === 'tomorrow') { const tomorrow = new Date();
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        tomorrow.setHours(0, 0, 0, 0);
-                        active = active.filter(m => { const d = new Date(m.timeISO);
-                            d.setHours(0, 0, 0, 0); return d.getTime() === tomorrow.getTime(); }); } else if (
-                        currentDayFilter === 'week') { const today = new Date();
-                        today.setHours(0, 0, 0, 0);
+                    if (currentDayFilter === 'today') {
+                        active = active.filter(m => isTodaySaudi(m.timeISO));
+                    } else if (currentDayFilter === 'tomorrow') {
+                        active = active.filter(m => isTomorrowSaudi(m.timeISO));
+                    } else if (currentDayFilter === 'week') {
+                        const today = getSaudiNow();
                         const weekLater = new Date(today);
                         weekLater.setDate(weekLater.getDate() + 7);
-                        active = active.filter(m => { const d = new Date(m.timeISO);
-                            d.setHours(0, 0, 0, 0); return d >= today && d <= weekLater; }); }
+                        active = active.filter(m => {
+                            const d = toSaudiTime(m.timeISO);
+                            return d >= today && d <= weekLater;
+                        });
+                    }
                 }
                 const container = document.getElementById('matchesContainer');
                 document.getElementById('upcomingCount').textContent = active.length;
@@ -5382,57 +6686,10 @@
                     `<div class="empty-state"><span class="icon">⚠️</span> حدث خطأ</div>`; }
         }
 
-        function openPredictionModal(matchId, team1, team2, timeISO) {
-            if (isMatchFinished(timeISO)) { showCopyToast('⛔ هذه المباراة انتهت، لا يمكن التوقع.'); return; }
-            if (!canPredict(timeISO)) { showCopyToast(
-                    '⛔ لا يمكن التوقع الآن، المباراة على وشك البدء أو بدأت بالفعل (يُسمح حتى 5 دقائق قبل البداية).'); return; }
-
-            isEditing = false;
-            currentMatchId = matchId;
-            currentTeam1 = team1;
-            currentTeam2 = team2;
-            currentTimeISO = timeISO;
-
-            document.getElementById('modalTitle').textContent = '📝 توقع نتيجة المباراة';
-            document.getElementById('modalTeam1').textContent = team1;
-            document.getElementById('modalTeam2').textContent = team2;
-            document.getElementById('optTeam1').textContent = team1;
-            document.getElementById('optTeam2').textContent = team2;
-            document.getElementById('modalFlag1').textContent = getFlag(team1);
-            document.getElementById('modalFlag2').textContent = getFlag(team2);
-            document.getElementById('modalDateTime').textContent = `📅 ${getDateTimeDisplay(timeISO)}`;
-            document.getElementById('modalUserName').value = localStorage.getItem('lastUserName') || '';
-            document.getElementById('modalUserName').disabled = false;
-
-            const savedUserName = localStorage.getItem('lastUserName') || '';
-            const msgEl = document.getElementById('modalMessage');
-            if (savedUserName) {
-                msgEl.textContent = `👤 مرحباً "${savedUserName}"`;
-                msgEl.className = 'modal-message warning';
-            } else {
-                msgEl.textContent = '';
-                msgEl.className = 'modal-message';
-            }
-
-            if (isMatchSubmitted(matchId)) {
-                msgEl.textContent = `⚠️ توقعت مسبقاً هذه المباراة`;
-                msgEl.className = 'modal-message warning';
-                document.getElementById('modalSubmitBtn').disabled = true;
-            } else {
-                document.getElementById('modalSubmitBtn').disabled = false;
-            }
-
-            document.getElementById('modalSubmitBtn').textContent = '💾 حفظ التوقع';
-            document.querySelectorAll('input[name="prediction"]').forEach(el => el.checked = false);
-            document.getElementById('predictionModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
         function closePredictionModal() {
             document.getElementById('predictionModal').classList.remove('active');
             document.body.style.overflow = '';
             isEditing = false;
-            document.getElementById('modalUserName').disabled = false;
         }
 
         function closeViewPredictionsModal() { document.getElementById('viewPredictionsModal').classList.remove('active');
@@ -5464,13 +6721,12 @@
                 closeMatchPredictionsModal(); } });
 
         document.getElementById('modalSubmitBtn').addEventListener('click', async function() {
-            const userName = document.getElementById('modalUserName').value.trim();
+            const userName = currentUserName || localStorage.getItem('lastUserName') || '';
             const selected = document.querySelector('input[name="prediction"]:checked');
             const msgEl = document.getElementById('modalMessage');
 
             if (!userName) { msgEl.textContent = '⚠️ الرجاء إدخال اسمك';
                 msgEl.className = 'modal-message warning'; return; }
-            localStorage.setItem('lastUserName', userName);
 
             if (!selected) { msgEl.textContent = '⚠️ الرجاء اختيار توقع';
                 msgEl.className = 'modal-message warning'; return; }
@@ -5502,8 +6758,11 @@
                 msgEl.textContent = result.updated ? '✅ تم تحديث التوقع بنجاح! 🎉' : '✅ تم حفظ التوقع بنجاح! 🎉';
                 msgEl.className = 'modal-message success';
                 this.disabled = false;
+                if (userName) {
+                    await loadUserPredictions(userName);
+                }
                 await renderAllPredictions();
-                renderLeaderboard();
+                renderLeaderboard(currentLeaderboardPeriod);
                 renderUpcoming();
                 updateNewsTicker();
                 setTimeout(closePredictionModal, 1200);
@@ -5555,123 +6814,12 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // ============================================================
-        //  دوال قديمة للتوافق
-        // ============================================================
         async function getPredictionsForMatch(matchId) {
             return getPredictionsForMatchFull(matchId);
         }
 
         async function getPredictionsForUser(userName) {
             return getPredictionsForUserFull(userName);
-        }
-
-        // ============================================================
-        //  لوحة المتصدرين
-        // ============================================================
-        async function renderLeaderboard() {
-            const container = document.getElementById("leaderboardContainer");
-            if (!state.loaded) {
-                container.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> جاري التحميل...</div>`;
-                return;
-            }
-            const predictions = state.predictions;
-            const games = state.previousGamesData;
-            if (!predictions.length || !games.length) {
-                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد بيانات</div>`;
-                return;
-            }
-            const scores = {};
-            for (let p of predictions) {
-                if (!scores[p.user_name]) {
-                    scores[p.user_name] = { name: p.user_name, points: 0, correct: 0, total: 0 };
-                }
-                scores[p.user_name].total++;
-                const parts = (p.match_id || "").split("_");
-                if (parts.length < 3) continue;
-                const team1 = parts[1],
-                    team2 = parts[2];
-                const match = games.find(g =>
-                    (g.homeAr === team1 && g.awayAr === team2) ||
-                    (g.homeAr === team2 && g.awayAr === team1)
-                );
-                if (!match) continue;
-                const result = match.homeScore > match.awayScore ? match.homeAr :
-                    match.awayScore > match.homeScore ? match.awayAr :
-                    "DRAW";
-                if (p.prediction === result) {
-                    scores[p.user_name].points++;
-                    scores[p.user_name].correct++;
-                }
-            }
-            const board = Object.values(scores).sort((a, b) => b.points - a.points);
-            if (!board.length) {
-                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات صحيحة بعد</div>`;
-                return;
-            }
-            document.getElementById('lbTotalPlayers').textContent = board.length;
-            document.getElementById('lbTotalPredictions').textContent = predictions.length;
-            const topThree = board.slice(0, 3);
-            const rest = board.slice(3, 10);
-            let html = '';
-            if (topThree.length) {
-                const champ = topThree[0];
-                const accuracy = champ.total > 0 ? Math.round((champ.correct / champ.total) * 100) : 0;
-                const isCurrentUser = champ.name === localStorage.getItem('lastUserName') || '';
-                html += `
-              <div class="champion-card" style="${isCurrentUser ? 'border-color:#f0b429;box-shadow:0 0 40px rgba(240,180,41,0.12);' : ''}" onclick="openPlayerPredictions('${champ.name}')">
-                <div class="rank-badge">🥇</div>
-                <div class="avatar">${champ.name.charAt(0).toUpperCase()}</div>
-                <div class="info">
-                  <div class="name">${champ.name} ${isCurrentUser ? '👤' : ''}</div>
-                  <div class="stats-row">
-                    <span class="item">🏆 <strong>${champ.points}</strong> نقطة</span>
-                    <span class="item">✅ <strong class="highlight">${champ.correct}</strong> / ${champ.total}</span>
-                    <span class="item">📊 <strong>${accuracy}%</strong> نجاح</span>
-                  </div>
-                  <div class="progress-wrapper">
-                    <div class="progress-label"><span>نسبة النجاح</span><span>${accuracy}%</span></div>
-                    <div class="progress-bar"><div class="fill" style="width:${Math.min(accuracy,100)}%;"></div></div>
-                  </div>
-                </div>
-              </div>
-            `;
-            }
-            if (rest.length || topThree.length > 1) {
-                const allPlayers = [...topThree.slice(1), ...rest];
-                const medals = ['🥈', '🥉', ...Array(rest.length).fill('')];
-                html += `<div class="players-list">`;
-                allPlayers.forEach((player, idx) => {
-                    const rank = idx + 2;
-                    const accuracy = player.total > 0 ? Math.round((player.correct / player.total) * 100) : 0;
-                    const isCurrentUser = player.name === localStorage.getItem('lastUserName') || '';
-                    const medal = medals[idx] || `#${rank}`;
-                    let rankClass = '';
-                    if (rank === 2) rankClass = 'silver';
-                    else if (rank === 3) rankClass = 'bronze';
-                    let borderClass = '';
-                    if (rank === 2) borderClass = 'silver-border';
-                    else if (rank === 3) borderClass = 'bronze-border';
-                    html += `
-                <div class="player-card" style="${isCurrentUser ? 'border-color:rgba(240,180,41,0.3);' : ''}" onclick="openPlayerPredictions('${player.name}')">
-                  <div class="rank ${rankClass}">${medal}</div>
-                  <div class="avatar-sm ${borderClass}">${player.name.charAt(0).toUpperCase()}</div>
-                  <div class="info-sm">
-                    <div class="name-sm">${player.name} ${isCurrentUser ? '👤' : ''}</div>
-                    <div class="sub-sm">
-                      <span>✅ <span class="highlight">${player.correct}</span>/${player.total}</span>
-                      <span>📊 ${accuracy}%</span>
-                    </div>
-                    <div class="progress-mini"><div class="fill-mini" style="width:${Math.min(accuracy,100)}%;"></div></div>
-                  </div>
-                  <div class="points-sm">${player.points}</div>
-                  ${isCurrentUser ? `<div class="current-user-indicator active"></div><div class="pulse-dot"></div>` : ''}
-                </div>
-              `;
-                });
-                html += `</div>`;
-            }
-            container.innerHTML = html;
         }
 
         // ============================================================
