@@ -3352,18 +3352,16 @@
         }
 
         // ============================================================
-        //  SAUDI TIME helpers
+        //  SAUDI TIME helpers - now using local timezone (user's device)
         // ============================================================
         function toSaudiTime(isoString) {
-            const d = new Date(isoString);
-            d.setHours(d.getHours() + 3);
-            return d;
+            // Return a Date object from ISO string, respecting the timezone offset in the string
+            return new Date(isoString);
         }
 
         function getSaudiNow() {
-            const now = new Date();
-            now.setHours(now.getHours() + 3);
-            return now;
+            // Return current local time (user's device)
+            return new Date();
         }
 
         function formatSaudiDate(isoString) {
@@ -3483,11 +3481,11 @@
         }
 
         // ============================================================
-        //  دوال مساعدة للوقت (بتوقيت السعودية)
+        //  دوال مساعدة للوقت (بتوقيت جهاز المستخدم)
         // ============================================================
-        function now() { return getSaudiNow().getTime(); }
+        function now() { return Date.now(); }
 
-        function matchTime(timeISO) { return toSaudiTime(timeISO).getTime(); }
+        function matchTime(timeISO) { return new Date(timeISO).getTime(); }
         const MATCH_DURATION = 105 * 60 * 1000;
 
         function isMatchLive(timeISO) { const cur = now(); const start = matchTime(timeISO); return cur >= start && cur <= start + MATCH_DURATION; }
