@@ -10,7 +10,9 @@ import { matchesData, getFlag } from './data.js';
 let supabaseClient = null;
 try {
     supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-} catch (e) { console.error("Supabase init error", e); }
+} catch (e) {
+    console.error("Supabase init error", e);
+}
 
 // جلب جميع التوقعات
 export async function getAllPredictions() {
@@ -19,7 +21,10 @@ export async function getAllPredictions() {
         state.predictions = cached;
         return;
     }
-    if (!supabaseClient) { state.predictions = []; return; }
+    if (!supabaseClient) {
+        state.predictions = [];
+        return;
+    }
     try {
         const { data } = await supabaseClient
             .from("predictions")
@@ -92,7 +97,8 @@ export async function savePrediction(userName, matchId, prediction) {
     const match = matchesData.find(m => `${m.timeISO}_${m.team1}_${m.team2}` === matchId);
     if (match) {
         if (!canPredict(match.timeISO)) {
-            return { success: false, message: "⛔ لا يمكن التوقع الآن، المباراة على وشك البدء أو بدأت بالفعل (يُسمح حتى 5 دقائق قبل البداية)." };
+            return { success: false,
+                message: "⛔ لا يمكن التوقع الآن، المباراة على وشك البدء أو بدأت بالفعل (يُسمح حتى 5 دقائق قبل البداية)." };
         }
     } else {
         return { success: false, message: "⛔ مباراة غير معروفة" };
@@ -122,7 +128,8 @@ export async function savePrediction(userName, matchId, prediction) {
         }
 
         try {
-            const { error } = await supabaseClient.from("predictions").insert([{ user_name: userName, match_id: matchId, prediction }]);
+            const { error } = await supabaseClient.from("predictions").insert([{ user_name: userName,
+                match_id: matchId, prediction }]);
             if (error) throw error;
             saveLocalPrediction(userName, matchId, prediction);
             addSubmittedMatch(matchId);
@@ -160,10 +167,12 @@ export async function loadUserPredictions(userName) {
 export function getPredictionStatus(prediction) {
     const parts = prediction.match_id.split('_');
     if (parts.length < 3) return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
-    const team1 = parts[1], team2 = parts[2];
+    const team1 = parts[1],
+        team2 = parts[2];
     const result = findMatchResult(team1, team2);
     if (!result) return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
-    let correctResult = result.homeScore > result.awayScore ? result.homeAr : (result.awayScore > result.homeScore ? result.awayAr : "DRAW");
+    let correctResult = result.homeScore > result.awayScore ? result.homeAr : (result.awayScore > result.homeScore ?
+        result.awayAr : "DRAW");
     const isCorrect = prediction.prediction === correctResult;
     if (isCorrect) return { status: 'correct', text: '✅ توقع صحيح', color: 'var(--success)' };
     else return { status: 'wrong', text: '❌ توقع خاطئ', color: 'var(--danger)' };
@@ -174,12 +183,27 @@ export function openNameModal(matchId, team1, team2, timeISO) {
     // يتم تنفيذها في ui.js، لكننا نمررها كدالة للتصدير
     console.log("openNameModal called", matchId, team1, team2, timeISO);
 }
+
 export function openPredictionModal(matchId, team1, team2, timeISO, userName) {
     console.log("openPredictionModal called", matchId, team1, team2, timeISO, userName);
 }
+
 export function openEditPredictionModal(matchId, team1, team2, timeISO) {
     console.log("openEditPredictionModal called", matchId, team1, team2, timeISO);
 }
+
+export function openMatchPredictions(matchId, team1, team2, homeScore, awayScore) {
+    console.log("openMatchPredictions called", matchId, team1, team2, homeScore, awayScore);
+}
+
+export function openPlayerPredictions(userName) {
+    console.log("openPlayerPredictions called", userName);
+}
+
+export function openViewPredictionsModal(matchId, team1, team2) {
+    console.log("openViewPredictionsModal called", matchId, team1, team2);
+}
+
 export function closeNameModal() {
     console.log("closeNameModal called");
 }
