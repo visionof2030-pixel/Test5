@@ -134,6 +134,18 @@ function renderMatchCard(m, isUpcoming) {
 
     const showEdit = (userHasPrediction || submitted) && canPredictNow;
 
+    // ===== إضافة زر البث المباشر =====
+    let streamHtml = '';
+    if (m.streamUrl) {
+        streamHtml = `
+            <div style="margin-top:10px;text-align:center;">
+                <a href="${m.streamUrl}" target="_blank" style="display:inline-block;padding:8px 20px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;border-radius:40px;font-weight:700;font-size:0.8rem;text-decoration:none;transition:var(--transition);">
+                    📺 بث مباشر
+                </a>
+            </div>
+        `;
+    }
+
     return `
             <div class="match-card ${matchClass}" ${onclickAttr}>
               <div class="match-teams">
@@ -152,6 +164,7 @@ function renderMatchCard(m, isUpcoming) {
                 ${dayLabel ? `<span class="tag" style="color:var(--gold-light);">${dayLabel}</span>` : ''}
                 ${ground ? `<span class="tag stadium-tag">🏟️ ${ground}</span>` : ''}
               </div>
+              ${streamHtml}
               ${isUpcoming ? `
                 <div class="predict-btn-wrap">
                   <div class="btn-group">
