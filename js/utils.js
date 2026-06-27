@@ -2,10 +2,9 @@
 //  الدوال المساعدة: الوقت، الترجمة، التنسيق، المنطق
 // ============================================================
 
-import { nameMapping, groupLetters, stadiums, matchesData, finalGroups, getFlag as getFlagData } from './data.js';
+import { nameMapping, groupLetters, stadiums, matchesData, finalGroups } from './data.js';
 import { MATCH_DURATION, CACHE_KEY, CACHE_TIME } from './config.js';
 
-// دالة تطبيع الأسماء
 export function normalizeName(str) {
     if (!str) return "";
     str = str.normalize("NFD").replace(/[\u064B-\u065F]/g, "");
@@ -13,7 +12,6 @@ export function normalizeName(str) {
     return str.trim().replace(/\s+/g, ' ');
 }
 
-// الترجمة إلى العربية
 export function translateToArabic(raw) {
     if (!raw) return "";
     let trimmed = raw.trim();
@@ -35,7 +33,6 @@ export function translateToArabic(raw) {
     return trimmed;
 }
 
-// ترجمة أسماء الفرق في المخطط
 export function translateBracketTeamName(name) {
     if (!name) return name;
     let match = name.match(/^Winner\s+Group\s+([A-L])$/i);
@@ -65,26 +62,30 @@ export function translateBracketTeamName(name) {
     return translateToArabic(name);
 }
 
-// دوال الوقت (بتوقيت جهاز المستخدم)
 export function toSaudiTime(isoString) { return new Date(isoString); }
 export function getSaudiNow() { return new Date(); }
+
 export function formatSaudiDate(isoString) {
     const d = toSaudiTime(isoString);
     const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
     return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 }
+
 export function formatSaudiTime(isoString) {
     const d = toSaudiTime(isoString);
     return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
+
 export function formatSaudiDateTime(isoString) {
     return `${formatSaudiDate(isoString)} - ${formatSaudiTime(isoString)}`;
 }
+
 export function isTodaySaudi(isoString) {
     const d = toSaudiTime(isoString);
     const now = getSaudiNow();
     return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
 }
+
 export function isTomorrowSaudi(isoString) {
     const d = toSaudiTime(isoString);
     const now = getSaudiNow();
@@ -92,21 +93,32 @@ export function isTomorrowSaudi(isoString) {
     tomorrow.setDate(tomorrow.getDate() + 1);
     return d.getFullYear() === tomorrow.getFullYear() && d.getMonth() === tomorrow.getMonth() && d.getDate() === tomorrow.getDate();
 }
+
 export function getSaudiDay(isoString) {
     const d = toSaudiTime(isoString);
     return ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][d.getDay()];
 }
 
-// دوال المباريات
 export function matchTime(timeISO) { return new Date(timeISO).getTime(); }
-export function isMatchLive(timeISO) { const cur = now(); const start = matchTime(timeISO); return cur >= start && cur <= start + MATCH_DURATION; }
-export function isMatchFinished(timeISO) { return now() > matchTime(timeISO) + MATCH_DURATION; }
+export function now() { return Date.now(); }
+
+export function isMatchLive(timeISO) {
+    const cur = now();
+    const start = matchTime(timeISO);
+    return cur >= start && cur <= start + MATCH_DURATION;
+}
+
+export function isMatchFinished(timeISO) {
+    return now() > matchTime(timeISO) + MATCH_DURATION;
+}
+
 export function canPredict(timeISO) {
     const start = matchTime(timeISO);
     const nowTime = now();
     const fiveMinutes = 5 * 60 * 1000;
     return (start - nowTime) > fiveMinutes;
 }
+
 export function getMatchStatus(m) {
     const start = matchTime(m.timeISO);
     const end = start + MATCH_DURATION;
@@ -124,23 +136,31 @@ export function getMatchStatus(m) {
     }
     return { live: false, finished: true, text: "✅ انتهت" };
 }
-export function upcomingMatches(arr) { return arr.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now()); }
-export function isMatchTodayOrTomorrow(timeISO) { return isTodaySaudi(timeISO) || isTomorrowSaudi(timeISO); }
+
+export function upcomingMatches(arr) {
+    return arr.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now());
+}
+
+export function isMatchTodayOrTomorrow(timeISO) {
+    return isTodaySaudi(timeISO) || isTomorrowSaudi(timeISO);
+}
+
 export function isMatchToday(timeISO) { return isTodaySaudi(timeISO); }
 export function getDay(t) { return getSaudiDay(t); }
 export function getDateFmt(t) { return formatSaudiDate(t); }
 export function getTimeFromISO(t) { return formatSaudiTime(t); }
 export function getDateTimeDisplay(t) { return formatSaudiDateTime(t); }
+
 export function formatDate(isoString) {
     if (!isoString) return 'تاريخ غير معروف';
     const d = toSaudiTime(isoString);
     return `${d.getDate()} ${['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][d.getMonth()]} ${d.getFullYear()}، ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-// الحصول على اسم الملعب
-export function getStadiumName(id) { return stadiums[id] || `ملعب رقم ${id}`; }
+export function getStadiumName(id) {
+    return stadiums[id] || `ملعب رقم ${id}`;
+}
 
-// الحصول على الملعب من بيانات Openfootball
 export function getGroundForMatch(team1, team2, timeISO) {
     if (!window._openfootballMatches) return null;
     const t1 = translateToArabic(team1);
@@ -162,7 +182,6 @@ export function getGroundForMatch(team1, team2, timeISO) {
     return null;
 }
 
-// البحث عن نتيجة مباراة من البيانات المحملة
 export function findMatchResult(team1, team2) {
     const games = window._previousGamesData || [];
     let match = games.find(m => (m.homeAr === team1 && m.awayAr === team2) || (m.homeAr === team2 && m.awayAr === team1));
@@ -170,7 +189,6 @@ export function findMatchResult(team1, team2) {
     return null;
 }
 
-// تحليل قائمة الأهداف
 export function parseScorersWithMinutes(scorerString) {
     if (!scorerString || scorerString === "null") return [];
     let cleaned = scorerString.trim();
@@ -192,7 +210,6 @@ export function parseScorersWithMinutes(scorerString) {
     return result;
 }
 
-// دالة لتحويل التاريخ إلى طابع زمني (للفرز)
 export function getSortTimestamp(game) {
     let ts = 0;
     const dateStr = game.local_date || '';
@@ -215,7 +232,6 @@ export function getSortTimestamp(game) {
     return ts;
 }
 
-// دالة للحصول على القيمة من التخزين المحلي
 export function getCache(key) {
     try {
         const raw = localStorage.getItem(key);
@@ -225,11 +241,11 @@ export function getCache(key) {
         return parsed.value;
     } catch { return null; }
 }
+
 export function setCache(key, value) {
     localStorage.setItem(key, JSON.stringify({ value, time: Date.now() }));
 }
 
-// دوال التخزين المحلي للمباريات المسجلة
 export function getSubmittedMatches() {
     try {
         const raw = localStorage.getItem('submitted_matches');
@@ -238,6 +254,7 @@ export function getSubmittedMatches() {
         return Array.isArray(parsed) ? parsed : [];
     } catch { return []; }
 }
+
 export function addSubmittedMatch(matchId) {
     const current = getSubmittedMatches();
     if (!current.includes(matchId)) {
@@ -245,19 +262,31 @@ export function addSubmittedMatch(matchId) {
         localStorage.setItem('submitted_matches', JSON.stringify(current));
     }
 }
+
 export function removeSubmittedMatch(matchId) {
     const current = getSubmittedMatches();
     const filtered = current.filter(id => id !== matchId);
     localStorage.setItem('submitted_matches', JSON.stringify(filtered));
 }
+
 export function isMatchSubmitted(matchId) {
     return getSubmittedMatches().includes(matchId);
 }
 
-// دوال التخزين المحلي للتوقعات المحلية (احتياطي)
-export function getLocalPredictions() { try { const data = localStorage.getItem('predictions'); return data ? JSON.parse(data) : {}; } catch (e) { return {}; } }
-export function saveLocalPrediction(userName, matchId, prediction) { try { const predictions = getLocalPredictions(); predictions[`${userName}_${matchId}`] = { userName, matchId, prediction, timestamp: new Date().toISOString() }; localStorage.setItem('predictions', JSON.stringify(predictions)); return true; } catch (e) { return false; } }
-export function getUserPredictionFromLocal(userName, matchId) { if (!userName) return null; return getLocalPredictions()[`${userName}_${matchId}`] || null; }
+export function getLocalPredictions() {
+    try { const data = localStorage.getItem('predictions'); return data ? JSON.parse(data) : {}; } catch (e) { return {}; }
+}
 
-// دوال للتوقيت العام (now)
-export function now() { return Date.now(); }
+export function saveLocalPrediction(userName, matchId, prediction) {
+    try {
+        const predictions = getLocalPredictions();
+        predictions[`${userName}_${matchId}`] = { userName, matchId, prediction, timestamp: new Date().toISOString() };
+        localStorage.setItem('predictions', JSON.stringify(predictions));
+        return true;
+    } catch (e) { return false; }
+}
+
+export function getUserPredictionFromLocal(userName, matchId) {
+    if (!userName) return null;
+    return getLocalPredictions()[`${userName}_${matchId}`] || null;
+}
