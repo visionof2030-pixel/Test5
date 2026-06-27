@@ -354,4 +354,4 @@ export function bindEvents() {
 }
 
 // بدء التطبيق
-init().then(() => bindEvents());
+init().then(() => bindEvents()); 
