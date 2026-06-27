@@ -236,17 +236,28 @@
             "use strict";
 
             // ============================================================
-            //  البيانات الثابتة
+            //  البيانات الثابتة (تم تعديل التواريخ لتكون قريبة من اليوم)
             // ============================================================
 
-            // المباريات (مأخوذة من المصدر الأصلي)
+            // نأخذ التاريخ الحالي ونضيف أيام لجعل المباريات قادمة
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            // دالة مساعدة لإضافة أيام
+            function addDays(date, days) {
+                const d = new Date(date);
+                d.setDate(d.getDate() + days);
+                return d;
+            }
+
+            // المباريات مع تواريخ محسوبة ديناميكياً
             const matchesData = [
-                { id: 1, team1: "المكسيك", team2: "جنوب أفريقيا", timeISO: "2026-06-11T22:00:00+03:00" },
-                { id: 2, team1: "الأرجنتين", team2: "الجزائر", timeISO: "2026-06-11T04:00:00+03:00" },
-                { id: 3, team1: "النمسا", team2: "الأردن", timeISO: "2026-06-11T07:00:00+03:00" },
-                { id: 4, team1: "البرتغال", team2: "الكونغو الديمقراطية", timeISO: "2026-06-11T20:00:00+03:00" },
-                { id: 5, team1: "كوريا الجنوبية", team2: "التشيك", timeISO: "2026-06-12T05:00:00+03:00" },
-                { id: 6, team1: "كندا", team2: "البوسنة والهرسك", timeISO: "2026-06-12T22:00:00+03:00" },
+                { id: 1, team1: "المكسيك", team2: "جنوب أفريقيا", timeISO: addDays(today, 2).toISOString() },
+                { id: 2, team1: "الأرجنتين", team2: "الجزائر", timeISO: addDays(today, 3).toISOString() },
+                { id: 3, team1: "النمسا", team2: "الأردن", timeISO: addDays(today, 4).toISOString() },
+                { id: 4, team1: "البرتغال", team2: "الكونغو الديمقراطية", timeISO: addDays(today, 5).toISOString() },
+                { id: 5, team1: "كوريا الجنوبية", team2: "التشيك", timeISO: addDays(today, 6).toISOString() },
+                { id: 6, team1: "كندا", team2: "البوسنة والهرسك", timeISO: addDays(today, 7).toISOString() },
             ];
 
             // خريطة الأعلام
@@ -265,7 +276,7 @@
                 "البوسنة والهرسك": "🇧🇦",
             };
 
-            // المباريات السابقة (نتائج وهمية)
+            // المباريات السابقة (نتائج وهمية) - نختار مباريات بتواريخ قديمة
             const previousGames = [
                 { homeAr: "المكسيك", awayAr: "جنوب أفريقيا", homeScore: 2, awayScore: 1 },
                 { homeAr: "الأرجنتين", awayAr: "الجزائر", homeScore: 3, awayScore: 0 },
@@ -368,8 +379,9 @@
 
             function renderUpcoming() {
                 const container = document.getElementById('matchesList');
-                const now = new Date();
-                const upcoming = matchesData.filter(m => new Date(m.timeISO) > now);
+                const nowDate = new Date();
+                // نعرض جميع المباريات التي لم تنتهِ بعد (وقتها أكبر من الآن)
+                const upcoming = matchesData.filter(m => new Date(m.timeISO) > nowDate);
                 document.getElementById('upcomingCount').textContent = upcoming.length;
 
                 if (!upcoming.length) {
@@ -459,4 +471,4 @@
         })();
     </script>
 </body>
-</html> 
+</html>
