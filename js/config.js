@@ -2,21 +2,13 @@
 //  الإعدادات العامة والثوابت
 // ============================================================
 
-// Supabase
 export const SUPABASE_URL = "https://szjxwhsmefqpfcebtvei.supabase.co";
 export const SUPABASE_KEY = "sb_publishable_0um28lgPMHcjDOThT0UgDA_K-Y7Wmx3";
-
-// كلمة السر للإدارة
 export const SECRET_CODE = "1406";
-
-// مفتاح التخزين المحلي
 export const CACHE_KEY = "wc_cache_v2";
-export const CACHE_TIME = 5 * 60 * 1000; // 5 دقائق
-
-// مدة المباراة بالمللي ثانية
+export const CACHE_TIME = 5 * 60 * 1000;
 export const MATCH_DURATION = 105 * 60 * 1000;
 
-// متغيرات الحالة العامة
 export let state = {
     previousGamesData: [],
     allGames: [],
@@ -35,7 +27,6 @@ export let currentUserName = '';
 export let isEditing = false;
 export let chartInstancesLocal = {};
 
-// دوال للوصول إلى المتغيرات
 export function setState(newState) { Object.assign(state, newState); }
 export function setUserPredictionsMap(map) { userPredictionsMap = map; }
 export function setIsAuthorized(val) { isAuthorized = val; }
