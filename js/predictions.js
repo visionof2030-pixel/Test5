@@ -177,33 +177,3 @@ export function getPredictionStatus(prediction) {
     if (isCorrect) return { status: 'correct', text: '✅ توقع صحيح', color: 'var(--success)' };
     else return { status: 'wrong', text: '❌ توقع خاطئ', color: 'var(--danger)' };
 }
-
-// دوال النوافذ المتعلقة بالتوقعات (سيتم استدعاؤها من ui.js)
-export function openNameModal(matchId, team1, team2, timeISO) {
-    // يتم تنفيذها في ui.js، لكننا نمررها كدالة للتصدير
-    console.log("openNameModal called", matchId, team1, team2, timeISO);
-}
-
-export function openPredictionModal(matchId, team1, team2, timeISO, userName) {
-    console.log("openPredictionModal called", matchId, team1, team2, timeISO, userName);
-}
-
-export function openEditPredictionModal(matchId, team1, team2, timeISO) {
-    console.log("openEditPredictionModal called", matchId, team1, team2, timeISO);
-}
-
-export function openMatchPredictions(matchId, team1, team2, homeScore, awayScore) {
-    console.log("openMatchPredictions called", matchId, team1, team2, homeScore, awayScore);
-}
-
-export function openPlayerPredictions(userName) {
-    console.log("openPlayerPredictions called", userName);
-}
-
-export function openViewPredictionsModal(matchId, team1, team2) {
-    console.log("openViewPredictionsModal called", matchId, team1, team2);
-}
-
-export function closeNameModal() {
-    console.log("closeNameModal called");
-}
