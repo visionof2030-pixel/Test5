@@ -272,4 +272,4 @@ export function renderCompare() {
         name2.innerHTML = '👤 لاعب 2';
         div2.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> اختر لاعباً</div>`;
     }
-}
+} 
