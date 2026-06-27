@@ -262,6 +262,7 @@
         </div>
     </div>
 
+    <!-- ===== نافذة استعراض التوقعات (مع نسبة الفوز) ===== -->
     <div class="modal-overlay" id="viewPredictionsModal">
         <div class="modal-content">
             <button class="modal-close" id="viewModalCloseBtn">✕</button>
@@ -274,6 +275,7 @@
             <div style="text-align:center;font-size:0.8rem;color:var(--text-secondary);margin:8px 0 14px;">
                 عدد التوقعات: <span id="viewPredictionsCount" style="color:var(--gold-light);font-weight:800;">0</span>
             </div>
+            <!-- نسبة الفوز -->
             <div class="win-probability" id="winProbabilityContainer">
                 <div class="prob-title">📊 نسبة التوقعات (حسب نتائج المستخدمين)</div>
                 <div class="prob-bar" id="probBar">
@@ -309,6 +311,7 @@
         </div>
     </div>
 
+    <!-- ===== نافذة التحليلات المتقدمة ===== -->
     <div class="modal-overlay" id="analyticsModal">
         <div class="modal-content" style="max-width:900px;">
             <button class="modal-close" id="analyticsCloseBtn">✕</button>
@@ -378,6 +381,7 @@
 
     <div class="copy-toast" id="copyToast">✅ تم نسخ الرابط!</div>
 
+    <!-- ===== استيراد ملفات الجافا سكريبت ===== -->
     <script src="js/config.js" type="module"></script>
     <script src="js/data.js" type="module"></script>
     <script src="js/utils.js" type="module"></script>
