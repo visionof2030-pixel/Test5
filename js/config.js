@@ -36,4 +36,4 @@ export function setCurrentDayFilter(val) { currentDayFilter = val; }
 export function setCurrentLeaderboardPeriod(val) { currentLeaderboardPeriod = val; }
 export function setCurrentUserName(val) { currentUserName = val; }
 export function setIsEditing(val) { isEditing = val; }
-export function setChartInstancesLocal(val) { chartInstancesLocal = val; }
+export function setChartInstancesLocal(val) { chartInstancesLocal = val; } 
