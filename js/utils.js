@@ -62,8 +62,13 @@ export function translateBracketTeamName(name) {
     return translateToArabic(name);
 }
 
-export function toSaudiTime(isoString) { return new Date(isoString); }
-export function getSaudiNow() { return new Date(); }
+export function toSaudiTime(isoString) {
+    return new Date(isoString);
+}
+
+export function getSaudiNow() {
+    return new Date();
+}
 
 export function formatSaudiDate(isoString) {
     const d = toSaudiTime(isoString);
@@ -99,8 +104,13 @@ export function getSaudiDay(isoString) {
     return ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][d.getDay()];
 }
 
-export function matchTime(timeISO) { return new Date(timeISO).getTime(); }
-export function now() { return Date.now(); }
+export function matchTime(timeISO) {
+    return new Date(timeISO).getTime();
+}
+
+export function now() {
+    return Date.now();
+}
 
 export function isMatchLive(timeISO) {
     const cur = now();
@@ -145,11 +155,25 @@ export function isMatchTodayOrTomorrow(timeISO) {
     return isTodaySaudi(timeISO) || isTomorrowSaudi(timeISO);
 }
 
-export function isMatchToday(timeISO) { return isTodaySaudi(timeISO); }
-export function getDay(t) { return getSaudiDay(t); }
-export function getDateFmt(t) { return formatSaudiDate(t); }
-export function getTimeFromISO(t) { return formatSaudiTime(t); }
-export function getDateTimeDisplay(t) { return formatSaudiDateTime(t); }
+export function isMatchToday(timeISO) {
+    return isTodaySaudi(timeISO);
+}
+
+export function getDay(t) {
+    return getSaudiDay(t);
+}
+
+export function getDateFmt(t) {
+    return formatSaudiDate(t);
+}
+
+export function getTimeFromISO(t) {
+    return formatSaudiTime(t);
+}
+
+export function getDateTimeDisplay(t) {
+    return formatSaudiDateTime(t);
+}
 
 export function formatDate(isoString) {
     if (!isoString) return 'تاريخ غير معروف';
