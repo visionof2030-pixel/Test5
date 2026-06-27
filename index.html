@@ -2,31 +2,44 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>🏆 كأس العالم 2026</title>
     <style>
-        /* ===== الأنماط مختصرة لكن كافية ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             background: #0a1628;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
             color: #f0f4ff;
             padding: 12px;
             min-height: 100vh;
         }
-        .container { max-width: 600px; margin: auto; }
+        .container {
+            max-width: 500px;
+            margin: auto;
+        }
         .header {
             background: #0a1628;
             border-bottom: 3px solid #f0b429;
-            padding: 12px;
+            padding: 16px 12px;
             text-align: center;
-            border-radius: 20px 20px 0 0;
+            border-radius: 16px 16px 0 0;
             margin-bottom: 16px;
         }
-        .header h1 { font-size: 1.5rem; color: #f0b429; }
-        .header p { font-size: 0.8rem; color: #8899bb; }
+        .header h1 {
+            font-size: 1.5rem;
+            color: #f0b429;
+        }
+        .header p {
+            font-size: 0.8rem;
+            color: #8899bb;
+            margin-top: 4px;
+        }
         .card {
-            background: rgba(18, 30, 50, 0.85);
+            background: rgba(18, 30, 50, 0.9);
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 16px;
@@ -39,6 +52,7 @@
             margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
         .player-row {
             display: flex;
@@ -47,12 +61,20 @@
             padding: 8px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .player-row .rank { font-weight: 700; color: #8899bb; width: 30px; }
-        .player-row .name { flex: 1; font-weight: 600; }
+        .player-row .rank {
+            font-weight: 700;
+            color: #8899bb;
+            width: 36px;
+            font-size: 1.1rem;
+        }
+        .player-row .name {
+            flex: 1;
+            font-weight: 600;
+        }
         .player-row .points {
             background: #f0b429;
             color: #0a1628;
-            padding: 2px 12px;
+            padding: 2px 14px;
             border-radius: 40px;
             font-weight: 800;
             font-size: 0.8rem;
@@ -70,7 +92,10 @@
             align-items: center;
             gap: 8px;
         }
-        .match-teams .team { font-weight: 700; font-size: 0.9rem; }
+        .match-teams .team {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
         .match-teams .score {
             background: #f0b429;
             padding: 2px 14px;
@@ -90,20 +115,25 @@
             background: rgba(240,180,41,0.15);
             border: 1px solid rgba(240,180,41,0.2);
             color: #f0b429;
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 40px;
             font-size: 0.7rem;
             font-weight: 600;
             cursor: pointer;
             display: inline-block;
             margin-top: 6px;
+            border: none;
         }
         .btn-primary {
             background: #f0b429;
             color: #0a1628;
-            border: none;
         }
-        .empty { text-align: center; color: #8899bb; padding: 20px; }
+        .empty {
+            text-align: center;
+            color: #8899bb;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
         .footer {
             text-align: center;
             font-size: 0.6rem;
@@ -119,238 +149,314 @@
         .tab {
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.06);
-            padding: 8px 14px;
+            padding: 8px 16px;
             border-radius: 40px;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: #8899bb;
             cursor: pointer;
+            flex: 1;
+            text-align: center;
+            min-width: 60px;
         }
         .tab.active {
             background: rgba(240,180,41,0.15);
             border-color: #f0b429;
             color: #f0b429;
         }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .badge {
+            background: rgba(240,180,41,0.15);
+            color: #f0b429;
+            padding: 0 10px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- الهيدر -->
+        <!-- ===== الهيدر ===== -->
         <div class="header">
             <h1>🏆 كأس العالم 2026</h1>
             <p>⚡ غرفة معلمي سعيد بن العاص</p>
         </div>
 
-        <!-- لوحة المتصدرين -->
-        <div class="card" id="leaderboardCard">
-            <div class="card-title">🏅 لوحة المتصدرين <span id="playerCount">0</span></div>
+        <!-- ===== لوحة المتصدرين ===== -->
+        <div class="card">
+            <div class="card-title">
+                🏅 لوحة المتصدرين
+                <span class="badge" id="playerCount">0</span>
+            </div>
             <div id="leaderboardList"></div>
         </div>
 
-        <!-- التبويبات -->
+        <!-- ===== التبويبات ===== -->
         <div class="tabs">
             <div class="tab active" data-tab="upcoming">⚡ القادمة</div>
             <div class="tab" data-tab="previous">📋 السابقة</div>
         </div>
 
-        <!-- المباريات القادمة -->
+        <!-- ===== المباريات القادمة ===== -->
         <div id="upcomingTab" class="tab-content active">
             <div class="card">
-                <div class="card-title">⚡ المباريات القادمة <span id="upcomingCount">0</span></div>
+                <div class="card-title">
+                    ⚡ المباريات القادمة
+                    <span class="badge" id="upcomingCount">0</span>
+                </div>
                 <div id="matchesList"></div>
             </div>
         </div>
 
-        <!-- المباريات السابقة -->
+        <!-- ===== المباريات السابقة ===== -->
         <div id="previousTab" class="tab-content">
             <div class="card">
-                <div class="card-title">📋 المباريات السابقة <span id="prevCount">0</span></div>
+                <div class="card-title">
+                    📋 المباريات السابقة
+                    <span class="badge" id="prevCount">0</span>
+                </div>
                 <div id="prevList"></div>
             </div>
         </div>
 
+        <!-- ===== الفوتر ===== -->
         <div class="footer">🏆 كأس العالم 2026 · غرفة معلمي سعيد بن العاص</div>
     </div>
 
+    <!-- ========================================================== -->
+    <!--  جافا سكريبت (مدمج بالكامل)                               -->
+    <!-- ========================================================== -->
     <script>
-        // ============================================================
-        //  بيانات ثابتة (بدون أي استيرادات خارجية)
-        // ============================================================
+        (function() {
+            "use strict";
 
-        // قائمة المباريات (مأخوذة من الملف الأصلي)
-        const matchesData = [
-            { id: 1, team1: "المكسيك", team2: "جنوب أفريقيا", timeISO: "2026-06-11T22:00:00+03:00" },
-            { id: 2, team1: "الأرجنتين", team2: "الجزائر", timeISO: "2026-06-11T04:00:00+03:00" },
-            { id: 3, team1: "النمسا", team2: "الأردن", timeISO: "2026-06-11T07:00:00+03:00" },
-            { id: 4, team1: "البرتغال", team2: "الكونغو الديمقراطية", timeISO: "2026-06-11T20:00:00+03:00" },
-            { id: 5, team1: "كوريا الجنوبية", team2: "التشيك", timeISO: "2026-06-12T05:00:00+03:00" },
-            { id: 6, team1: "كندا", team2: "البوسنة والهرسك", timeISO: "2026-06-12T22:00:00+03:00" },
-        ];
+            // ============================================================
+            //  البيانات الثابتة
+            // ============================================================
 
-        // خريطة الأعلام (مختصرة)
-        const flagMap = {
-            "المكسيك": "🇲🇽",
-            "جنوب أفريقيا": "🇿🇦",
-            "الأرجنتين": "🇦🇷",
-            "الجزائر": "🇩🇿",
-            "النمسا": "🇦🇹",
-            "الأردن": "🇯🇴",
-            "البرتغال": "🇵🇹",
-            "الكونغو الديمقراطية": "🇨🇩",
-            "كوريا الجنوبية": "🇰🇷",
-            "التشيك": "🇨🇿",
-            "كندا": "🇨🇦",
-            "البوسنة والهرسك": "🇧🇦",
-        };
-        function getFlag(name) { return flagMap[name] || "🏁"; }
+            // المباريات (مأخوذة من المصدر الأصلي)
+            const matchesData = [
+                { id: 1, team1: "المكسيك", team2: "جنوب أفريقيا", timeISO: "2026-06-11T22:00:00+03:00" },
+                { id: 2, team1: "الأرجنتين", team2: "الجزائر", timeISO: "2026-06-11T04:00:00+03:00" },
+                { id: 3, team1: "النمسا", team2: "الأردن", timeISO: "2026-06-11T07:00:00+03:00" },
+                { id: 4, team1: "البرتغال", team2: "الكونغو الديمقراطية", timeISO: "2026-06-11T20:00:00+03:00" },
+                { id: 5, team1: "كوريا الجنوبية", team2: "التشيك", timeISO: "2026-06-12T05:00:00+03:00" },
+                { id: 6, team1: "كندا", team2: "البوسنة والهرسك", timeISO: "2026-06-12T22:00:00+03:00" },
+            ];
 
-        // بيانات وهمية للمباريات السابقة
-        const previousGames = [
-            { homeAr: "المكسيك", awayAr: "جنوب أفريقيا", homeScore: 2, awayScore: 1 },
-            { homeAr: "الأرجنتين", awayAr: "الجزائر", homeScore: 3, awayScore: 0 },
-            { homeAr: "النمسا", awayAr: "الأردن", homeScore: 1, awayScore: 1 },
-        ];
+            // خريطة الأعلام
+            const flagMap = {
+                "المكسيك": "🇲🇽",
+                "جنوب أفريقيا": "🇿🇦",
+                "الأرجنتين": "🇦🇷",
+                "الجزائر": "🇩🇿",
+                "النمسا": "🇦🇹",
+                "الأردن": "🇯🇴",
+                "البرتغال": "🇵🇹",
+                "الكونغو الديمقراطية": "🇨🇩",
+                "كوريا الجنوبية": "🇰🇷",
+                "التشيك": "🇨🇿",
+                "كندا": "🇨🇦",
+                "البوسنة والهرسك": "🇧🇦",
+            };
 
-        // بيانات وهمية للتوقعات (للحصول على نقاط)
-        const predictions = [
-            { user_name: "أحمد", match_id: "1", prediction: "المكسيك" },
-            { user_name: "محمد", match_id: "1", prediction: "تعادل" },
-            { user_name: "سارة", match_id: "1", prediction: "جنوب أفريقيا" },
-            { user_name: "أحمد", match_id: "2", prediction: "الأرجنتين" },
-            { user_name: "سارة", match_id: "2", prediction: "تعادل" },
-            { user_name: "خالد", match_id: "3", prediction: "النمسا" },
-            { user_name: "محمد", match_id: "3", prediction: "الأردن" },
-        ];
+            // المباريات السابقة (نتائج وهمية)
+            const previousGames = [
+                { homeAr: "المكسيك", awayAr: "جنوب أفريقيا", homeScore: 2, awayScore: 1 },
+                { homeAr: "الأرجنتين", awayAr: "الجزائر", homeScore: 3, awayScore: 0 },
+                { homeAr: "النمسا", awayAr: "الأردن", homeScore: 1, awayScore: 1 },
+            ];
 
-        // ============================================================
-        //  حساب النقاط
-        // ============================================================
-        function calculatePoints() {
-            const scores = {};
-            for (let p of predictions) {
-                if (!scores[p.user_name]) scores[p.user_name] = { name: p.user_name, points: 0, correct: 0, total: 0 };
-                scores[p.user_name].total++;
-                // نبحث عن نتيجة المباراة
-                const match = previousGames.find(g => {
-                    const id1 = matchesData.find(m => m.team1 === g.homeAr && m.team2 === g.awayAr)?.id;
-                    const id2 = matchesData.find(m => m.team1 === g.awayAr && m.team2 === g.homeAr)?.id;
-                    return id1 == p.match_id || id2 == p.match_id;
-                });
-                if (match) {
-                    let result = match.homeScore > match.awayScore ? match.homeAr :
-                                 match.awayScore > match.homeScore ? match.awayAr : "تعادل";
-                    if (p.prediction === result) {
-                        scores[p.user_name].points++;
-                        scores[p.user_name].correct++;
-                    }
+            // التوقعات الوهمية
+            const predictions = [
+                { user_name: "أحمد", match_id: "1", prediction: "المكسيك" },
+                { user_name: "محمد", match_id: "1", prediction: "تعادل" },
+                { user_name: "سارة", match_id: "1", prediction: "جنوب أفريقيا" },
+                { user_name: "أحمد", match_id: "2", prediction: "الأرجنتين" },
+                { user_name: "سارة", match_id: "2", prediction: "تعادل" },
+                { user_name: "خالد", match_id: "3", prediction: "النمسا" },
+                { user_name: "محمد", match_id: "3", prediction: "الأردن" },
+            ];
+
+            // ============================================================
+            //  دوال مساعدة
+            // ============================================================
+
+            function getFlag(name) {
+                return flagMap[name] || "🏁";
+            }
+
+            function formatDate(isoString) {
+                try {
+                    const d = new Date(isoString);
+                    return d.toLocaleDateString('ar-SA', { day: 'numeric', month: 'short', year: 'numeric' });
+                } catch {
+                    return 'تاريخ غير معروف';
                 }
             }
-            return Object.values(scores).sort((a, b) => b.points - a.points);
-        }
 
-        // ============================================================
-        //  عرض لوحة المتصدرين
-        // ============================================================
-        function renderLeaderboard() {
-            const list = document.getElementById('leaderboardList');
-            const players = calculatePoints();
-            document.getElementById('playerCount').textContent = players.length;
-            if (!players.length) {
-                list.innerHTML = '<div class="empty">لا توجد توقعات بعد</div>';
-                return;
+            function formatTime(isoString) {
+                try {
+                    const d = new Date(isoString);
+                    return d.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+                } catch {
+                    return '00:00';
+                }
             }
-            list.innerHTML = players.map((p, i) => `
-                <div class="player-row">
-                    <span class="rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`}</span>
-                    <span class="name">${p.name}</span>
-                    <span class="points">${p.points} نقاط</span>
-                </div>
-            `).join('');
-        }
 
-        // ============================================================
-        //  عرض المباريات القادمة
-        // ============================================================
-        function renderUpcoming() {
-            const container = document.getElementById('matchesList');
-            const now = new Date();
-            const upcoming = matchesData.filter(m => new Date(m.timeISO) > now);
-            document.getElementById('upcomingCount').textContent = upcoming.length;
-            if (!upcoming.length) {
-                container.innerHTML = '<div class="empty">لا توجد مباريات قادمة</div>';
-                return;
+            // ============================================================
+            //  حساب النقاط
+            // ============================================================
+
+            function calculatePoints() {
+                const scores = {};
+                for (let p of predictions) {
+                    if (!scores[p.user_name]) {
+                        scores[p.user_name] = { name: p.user_name, points: 0, correct: 0, total: 0 };
+                    }
+                    scores[p.user_name].total++;
+
+                    // البحث عن نتيجة المباراة
+                    const match = previousGames.find(g => {
+                        const id1 = matchesData.find(m => m.team1 === g.homeAr && m.team2 === g.awayAr)?.id;
+                        const id2 = matchesData.find(m => m.team1 === g.awayAr && m.team2 === g.homeAr)?.id;
+                        return id1 == p.match_id || id2 == p.match_id;
+                    });
+
+                    if (match) {
+                        let result = match.homeScore > match.awayScore ? match.homeAr :
+                                     match.awayScore > match.homeScore ? match.awayAr : "تعادل";
+                        if (p.prediction === result) {
+                            scores[p.user_name].points++;
+                            scores[p.user_name].correct++;
+                        }
+                    }
+                }
+                return Object.values(scores).sort((a, b) => b.points - a.points);
             }
-            container.innerHTML = upcoming.map(m => `
-                <div class="match-card">
-                    <div class="match-teams">
-                        <span class="team">${getFlag(m.team1)} ${m.team1}</span>
-                        <span class="score">🆚</span>
-                        <span class="team">${getFlag(m.team2)} ${m.team2}</span>
-                    </div>
-                    <div class="match-meta">
-                        <span>📅 ${new Date(m.timeISO).toLocaleDateString('ar-SA')}</span>
-                        <span>🕒 ${new Date(m.timeISO).toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'})}</span>
-                    </div>
-                    <button class="btn btn-primary" onclick="alert('سيتم فتح نافذة التوقع قريباً')">📝 توقع الآن</button>
-                </div>
-            `).join('');
-        }
 
-        // ============================================================
-        //  عرض المباريات السابقة
-        // ============================================================
-        function renderPrevious() {
-            const container = document.getElementById('prevList');
-            document.getElementById('prevCount').textContent = previousGames.length;
-            if (!previousGames.length) {
-                container.innerHTML = '<div class="empty">لا توجد مباريات سابقة</div>';
-                return;
+            // ============================================================
+            //  دوال العرض
+            // ============================================================
+
+            function renderLeaderboard() {
+                const list = document.getElementById('leaderboardList');
+                const players = calculatePoints();
+                document.getElementById('playerCount').textContent = players.length;
+
+                if (!players.length) {
+                    list.innerHTML = '<div class="empty">📭 لا توجد توقعات بعد</div>';
+                    return;
+                }
+
+                list.innerHTML = players.map((p, i) => {
+                    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+                    return `
+                        <div class="player-row">
+                            <span class="rank">${medal}</span>
+                            <span class="name">${p.name}</span>
+                            <span class="points">${p.points} نقاط</span>
+                        </div>
+                    `;
+                }).join('');
             }
-            container.innerHTML = previousGames.map(g => `
-                <div class="match-card">
-                    <div class="match-teams">
-                        <span class="team">${getFlag(g.homeAr)} ${g.homeAr}</span>
-                        <span class="score">${g.homeScore} - ${g.awayScore}</span>
-                        <span class="team">${getFlag(g.awayAr)} ${g.awayAr}</span>
-                    </div>
-                    <div class="match-meta">
-                        <span>✅ انتهت</span>
-                        <button class="btn" onclick="alert('عرض توقعات هذه المباراة')">📋 عرض التوقعات</button>
-                    </div>
-                </div>
-            `).join('');
-        }
 
-        // ============================================================
-        //  التبويبات
-        // ============================================================
-        function initTabs() {
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    this.classList.add('active');
-                    const target = document.getElementById(this.dataset.tab + 'Tab');
-                    if (target) target.classList.add('active');
+            function renderUpcoming() {
+                const container = document.getElementById('matchesList');
+                const now = new Date();
+                const upcoming = matchesData.filter(m => new Date(m.timeISO) > now);
+                document.getElementById('upcomingCount').textContent = upcoming.length;
+
+                if (!upcoming.length) {
+                    container.innerHTML = '<div class="empty">📭 لا توجد مباريات قادمة</div>';
+                    return;
+                }
+
+                container.innerHTML = upcoming.map(m => `
+                    <div class="match-card">
+                        <div class="match-teams">
+                            <span class="team">${getFlag(m.team1)} ${m.team1}</span>
+                            <span class="score">🆚</span>
+                            <span class="team">${getFlag(m.team2)} ${m.team2}</span>
+                        </div>
+                        <div class="match-meta">
+                            <span>📅 ${formatDate(m.timeISO)}</span>
+                            <span>🕒 ${formatTime(m.timeISO)}</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="alert('📝 سيتم فتح نافذة التوقع قريباً')">
+                            📝 توقع الآن
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            function renderPrevious() {
+                const container = document.getElementById('prevList');
+                document.getElementById('prevCount').textContent = previousGames.length;
+
+                if (!previousGames.length) {
+                    container.innerHTML = '<div class="empty">📭 لا توجد مباريات سابقة</div>';
+                    return;
+                }
+
+                container.innerHTML = previousGames.map(g => `
+                    <div class="match-card">
+                        <div class="match-teams">
+                            <span class="team">${getFlag(g.homeAr)} ${g.homeAr}</span>
+                            <span class="score">${g.homeScore} - ${g.awayScore}</span>
+                            <span class="team">${getFlag(g.awayAr)} ${g.awayAr}</span>
+                        </div>
+                        <div class="match-meta">
+                            <span>✅ انتهت</span>
+                            <button class="btn" onclick="alert('📋 عرض توقعات هذه المباراة')">
+                                📋 عرض التوقعات
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // ============================================================
+            //  التبويبات
+            // ============================================================
+
+            function initTabs() {
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        this.classList.add('active');
+                        const target = document.getElementById(this.dataset.tab + 'Tab');
+                        if (target) target.classList.add('active');
+                    });
                 });
-            });
-        }
+            }
 
-        // ============================================================
-        //  تشغيل التطبيق
-        // ============================================================
-        function init() {
-            renderLeaderboard();
-            renderUpcoming();
-            renderPrevious();
-            initTabs();
-            console.log("✅ تم تحميل الصفحة بنجاح");
-        }
+            // ============================================================
+            //  تشغيل التطبيق
+            // ============================================================
 
-        // استدعاء التهيئة عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', init);
+            function init() {
+                renderLeaderboard();
+                renderUpcoming();
+                renderPrevious();
+                initTabs();
+                console.log("✅ تم تحميل الصفحة بنجاح");
+            }
+
+            // استدعاء التهيئة عند تحميل الصفحة
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+        })();
     </script>
 </body>
 </html>
