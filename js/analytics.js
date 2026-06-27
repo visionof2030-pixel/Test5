@@ -594,4 +594,4 @@ export function generateAnalyticsCharts() {
             updatePlayerAnalytics();
         }
     }, 100);
-}
+} 
