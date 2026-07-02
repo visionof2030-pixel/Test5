@@ -775,4 +775,4 @@ function saveLocalPrediction(userName, matchId, prediction) {
 function getUserPredictionFromLocal(userName, matchId) {
     if (!userName) return null;
     return getLocalPredictions()[`${userName}_${matchId}`] || null;
-}
+} 
