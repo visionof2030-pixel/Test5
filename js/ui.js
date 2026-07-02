@@ -185,6 +185,9 @@ function renderMatchCard(m, isUpcoming) {
           `;
 }
 
+// ================================================================
+//  عرض المباريات القادمة والجارية مع مسار البطولة
+// ================================================================
 function renderUpcoming() {
     try {
         const groupFilter = document.getElementById('groupFilter')?.value || 'all';
@@ -212,17 +215,123 @@ function renderUpcoming() {
                 });
             }
         }
+
         const container = document.getElementById('matchesContainer');
         document.getElementById('upcomingCount').textContent = active.length;
+
         if (!active.length) {
-            container.innerHTML =
-                `<div class="empty-state"><span class="icon">📭</span> لا توجد مباريات تطابق الفلاتر</div>`;
+            container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد مباريات تطابق الفلاتر</div>`;
             return;
         }
-        container.innerHTML = active.map(m => {
-            const isUpcoming = (matchTime(m.timeISO) + MATCH_DURATION) > now();
-            return renderMatchCard(m, isUpcoming);
-        }).join('');
+
+        // ---- تقسيم المباريات إلى مجموعات الأدوار ----
+        // نعتمد على حقل 'round' الموجود في بيانات المباريات (first, second, third)
+        // ونقوم بتصنيفها يدوياً حسب الأدوار المقترحة.
+        // إذا كان هناك حقل 'type' أو 'stage' في المستقبل يمكن الاستفادة منه.
+
+        // نقوم بتعريف ترتيب الأدوار المطلوبة
+        const roundOrder = [
+            { key: 'first', label: 'دور المجموعات (الجولة الأولى)' },
+            { key: 'second', label: 'دور المجموعات (الجولة الثانية)' },
+            { key: 'third', label: 'دور المجموعات (الجولة الثالثة)' },
+            { key: 'r32', label: 'دور ٣٢' },
+            { key: 'r16', label: 'دور ١٦' },
+            { key: 'qf', label: 'ربع النهائي' },
+            { key: 'sf', label: 'نصف النهائي' },
+            { key: 'third_place', label: 'مباراة المركز الثالث' },
+            { key: 'final', label: 'النهائي' }
+        ];
+
+        // دالة لاستخراج مفتاح الدور من المباراة بناءً على البيانات المتاحة
+        function getRoundKey(match) {
+            // إذا كان هناك حقل round صريح (first, second, third) نستخدمه مباشرة
+            if (match.round && ['first', 'second', 'third'].includes(match.round)) {
+                return match.round;
+            }
+            // إذا كان هناك حقل type (مأخوذ من API worldcup26.ir)
+            if (match.type) {
+                const typeMap = {
+                    'r32': 'r32',
+                    'r16': 'r16',
+                    'qf': 'qf',
+                    'sf': 'sf',
+                    'f': 'final',
+                    'final': 'final',
+                    'third': 'third_place'
+                };
+                if (typeMap[match.type]) return typeMap[match.type];
+            }
+            // محاولة استنتاج من معرف المباراة أو أي بيانات أخرى
+            // إذا كان يحتوي على "r32" أو "Round of 32" في أي حقل
+            const idStr = match.id ? String(match.id) : '';
+            if (idStr.includes('r32') || (match.round && match.round.includes('32'))) return 'r32';
+            if (idStr.includes('r16') || (match.round && match.round.includes('16'))) return 'r16';
+            if (idStr.includes('qf') || (match.round && match.round.includes('quarter'))) return 'qf';
+            if (idStr.includes('sf') || (match.round && match.round.includes('semi'))) return 'sf';
+            if (idStr.includes('final') || (match.round && match.round.includes('final'))) return 'final';
+            if (idStr.includes('third') || (match.round && match.round.includes('third'))) return 'third_place';
+            // افتراضياً نضعها في المجموعات (الجولة الأولى)
+            return 'first';
+        }
+
+        // تجميع المباريات حسب المفتاح
+        const grouped = {};
+        active.forEach(m => {
+            const key = getRoundKey(m);
+            if (!grouped[key]) grouped[key] = [];
+            grouped[key].push(m);
+        });
+
+        // ترتيب المباريات داخل كل مجموعة حسب الوقت
+        for (let key in grouped) {
+            grouped[key].sort((a, b) => matchTime(a.timeISO) - matchTime(b.timeISO));
+        }
+
+        // بناء HTML
+        let html = '';
+        let hasGroupMatches = false;
+        let hasKnockoutMatches = false;
+
+        // أولاً: عرض مباريات المجموعات (first, second, third)
+        const groupKeys = ['first', 'second', 'third'];
+        groupKeys.forEach(key => {
+            if (grouped[key] && grouped[key].length) {
+                hasGroupMatches = true;
+                const label = roundOrder.find(r => r.key === key)?.label || key;
+                html += `<div class="subsection-title">📋 ${label}</div>`;
+                html += `<div class="matches-grid">`;
+                grouped[key].forEach(m => {
+                    html += renderMatchCard(m, true);
+                });
+                html += `</div>`;
+            }
+        });
+
+        // ثانياً: عرض مباريات الأدوار النهائية (r32, r16, qf, sf, third_place, final)
+        const knockoutKeys = ['r32', 'r16', 'qf', 'sf', 'third_place', 'final'];
+        knockoutKeys.forEach(key => {
+            if (grouped[key] && grouped[key].length) {
+                hasKnockoutMatches = true;
+                const label = roundOrder.find(r => r.key === key)?.label || key;
+                html += `<div class="subsection-title">🏆 ${label}</div>`;
+                html += `<div class="matches-grid">`;
+                grouped[key].forEach(m => {
+                    html += renderMatchCard(m, true);
+                });
+                html += `</div>`;
+            }
+        });
+
+        // إذا لم يتم العثور على أي مباراة مصنفة، نعرض الكل كمجموعة افتراضية
+        if (!hasGroupMatches && !hasKnockoutMatches) {
+            html = `<div class="matches-grid">`;
+            active.forEach(m => {
+                html += renderMatchCard(m, true);
+            });
+            html += `</div>`;
+        }
+
+        container.innerHTML = html;
         updateShareAllCount();
     } catch (e) {
         console.error("renderUpcoming:", e);
@@ -328,7 +437,7 @@ function calculateStandings() {
             for (const [team, stat] of Object.entries(teamsStats)) {
                 tableRows.push({ team, ...stat, diff: stat.goalsFor - stat.goalsAgainst });
             }
-            tableRows.sort((a, b) => b.points - a.points || b.diff - a.diff || b.goalsFor - a.goalsFor);
+            tableRows.sort((a, b) => b.points - a.points || b.diff - b.diff || b.goalsFor - a.goalsFor);
             html +=
                 `<div class="group-card"><div class="group-title">المجموعة ${group}</div><table class="standings-table"><thead><tr><th>#</th><th>الفريق</th><th>ل</th><th>ف</th><th>ت</th><th>خ</th><th>له</th><th>عليه</th><th>±</th><th>ن</th></tr></thead><tbody>`;
             tableRows.forEach((row, idx) => {
