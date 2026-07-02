@@ -186,35 +186,93 @@ function renderMatchCard(m, isUpcoming) {
 }
 
 // ================================================================
-//  عرض المباريات القادمة والجارية مع مسار البطولة (محسّن)
+//  عرض المباريات القادمة والجارية مع مسار البطولة
 // ================================================================
 function renderUpcoming() {
     try {
         const groupFilter = document.getElementById('groupFilter')?.value || 'all';
-        let active = [];
-        if (groupFilter === 'all') {
-            active = upcomingMatches(matchesData);
+        let allMatches = [];
+
+        // 1. استخدام بيانات API (state.allGames) إن وجدت، وإلا نستخدم matchesData الثابتة
+        if (state.allGames && state.allGames.length > 0) {
+            // تحويل بيانات API إلى تنسيق matchesData
+            allMatches = state.allGames.map(game => {
+                const homeAr = translateToArabic(game.home_team_name_fa || game.home_team_name_en || '');
+                const awayAr = translateToArabic(game.away_team_name_fa || game.away_team_name_en || '');
+                // استخراج الوقت
+                let timeISO = game.local_date ? new Date(game.local_date).toISOString() : new Date().toISOString();
+                // إذا كان هناك وقت محدد
+                if (game.local_date) {
+                    const parts = game.local_date.split(' ');
+                    if (parts.length === 2) {
+                        const dateParts = parts[0].split('/');
+                        const timeParts = parts[1].split(':');
+                        if (dateParts.length === 3 && timeParts.length === 2) {
+                            const d = new Date(dateParts[2], dateParts[0]-1, dateParts[1], timeParts[0], timeParts[1]);
+                            timeISO = d.toISOString();
+                        }
+                    }
+                }
+                // تحديد نوع الجولة (round)
+                let round = 'first';
+                if (game.type) {
+                    const typeMap = {
+                        'group': 'first',
+                        'r32': 'r32',
+                        'r16': 'r16',
+                        'qf': 'qf',
+                        'sf': 'sf',
+                        'f': 'final',
+                        'final': 'final',
+                        'third': 'third_place'
+                    };
+                    round = typeMap[game.type] || 'first';
+                } else if (game.group && game.group.startsWith('R')) {
+                    round = game.group.toLowerCase();
+                }
+                return {
+                    id: game.id || game._id || Math.random(),
+                    team1: homeAr,
+                    team2: awayAr,
+                    timeISO: timeISO,
+                    round: round,
+                    roundLabel: getRoundLabel(round),
+                    streamUrl: game.streamUrl || null,
+                    type: game.type || 'group'
+                };
+            });
         } else {
+            // استخدام البيانات الثابتة
+            allMatches = [...matchesData];
+        }
+
+        // تطبيق الفلتر حسب المجموعة (إذا كان groupFilter != 'all')
+        let active = allMatches;
+        if (groupFilter !== 'all') {
             const teams = finalGroups[groupFilter] || [];
-            const allMatchesForGroup = matchesData.filter(m => teams.includes(m.team1) || teams.includes(m.team2));
-            active = allMatchesForGroup;
-            active.sort((a, b) => matchTime(a.timeISO) - matchTime(b.timeISO));
+            active = allMatches.filter(m => teams.includes(m.team1) || teams.includes(m.team2));
         }
-        if (groupFilter === 'all') {
-            if (currentDayFilter === 'today') {
-                active = active.filter(m => isTodaySaudi(m.timeISO));
-            } else if (currentDayFilter === 'tomorrow') {
-                active = active.filter(m => isTomorrowSaudi(m.timeISO));
-            } else if (currentDayFilter === 'week') {
-                const today = getSaudiNow();
-                const weekLater = new Date(today);
-                weekLater.setDate(weekLater.getDate() + 7);
-                active = active.filter(m => {
-                    const d = toSaudiTime(m.timeISO);
-                    return d >= today && d <= weekLater;
-                });
-            }
+
+        // فلترة المباريات القادمة (لم تنتهِ بعد)
+        active = active.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now());
+
+        // تطبيق فلتر اليوم/غداً/الأسبوع
+        if (currentDayFilter === 'today') {
+            active = active.filter(m => isTodaySaudi(m.timeISO));
+        } else if (currentDayFilter === 'tomorrow') {
+            active = active.filter(m => isTomorrowSaudi(m.timeISO));
+        } else if (currentDayFilter === 'week') {
+            const today = getSaudiNow();
+            const weekLater = new Date(today);
+            weekLater.setDate(weekLater.getDate() + 7);
+            active = active.filter(m => {
+                const d = toSaudiTime(m.timeISO);
+                return d >= today && d <= weekLater;
+            });
         }
+
+        // ترتيب المباريات حسب الوقت
+        active.sort((a, b) => matchTime(a.timeISO) - matchTime(b.timeISO));
 
         const container = document.getElementById('matchesContainer');
         document.getElementById('upcomingCount').textContent = active.length;
@@ -224,8 +282,7 @@ function renderUpcoming() {
             return;
         }
 
-        // ---- تصنيف المباريات حسب الأدوار ----
-        // نعرف ترتيب الأدوار المطلوبة
+        // ---- تصنيف المباريات حسب الأدوار (مسار البطولة) ----
         const roundOrder = [
             { key: 'first', label: 'دور المجموعات (الجولة الأولى)' },
             { key: 'second', label: 'دور المجموعات (الجولة الثانية)' },
@@ -238,15 +295,28 @@ function renderUpcoming() {
             { key: 'final', label: 'النهائي' }
         ];
 
-        // دالة لاستخراج مفتاح الدور من المباراة
+        // دالة للحصول على مفتاح الدور من المباراة
         function getRoundKey(match) {
-            // 1. إذا كان هناك حقل round صريح (first, second, third)
-            if (match.round && ['first', 'second', 'third'].includes(match.round)) {
-                return match.round;
+            if (match.round) {
+                // إذا كان round من النوع 'first', 'second', 'third' أو 'r32', 'r16', ... الخ
+                if (['first', 'second', 'third', 'r32', 'r16', 'qf', 'sf', 'third_place', 'final'].includes(match.round)) {
+                    return match.round;
+                }
+                // محاولة استنتاج من النص
+                const r = match.round.toLowerCase();
+                if (r.includes('first') || r.includes('group')) return 'first';
+                if (r.includes('second')) return 'second';
+                if (r.includes('third')) return 'third';
+                if (r.includes('32') || r.includes('r32')) return 'r32';
+                if (r.includes('16') || r.includes('r16')) return 'r16';
+                if (r.includes('quarter') || r.includes('qf')) return 'qf';
+                if (r.includes('semi') || r.includes('sf')) return 'sf';
+                if (r.includes('final')) return 'final';
+                if (r.includes('third place')) return 'third_place';
             }
-            // 2. إذا كان هناك حقل type (مأخوذ من API worldcup26.ir)
             if (match.type) {
                 const typeMap = {
+                    'group': 'first',
                     'r32': 'r32',
                     'r16': 'r16',
                     'qf': 'qf',
@@ -257,19 +327,11 @@ function renderUpcoming() {
                 };
                 if (typeMap[match.type]) return typeMap[match.type];
             }
-            // 3. محاولة استنتاج من معرف المباراة أو أي بيانات أخرى
-            const idStr = match.id ? String(match.id) : '';
-            if (idStr.includes('r32') || (match.round && match.round.includes('32'))) return 'r32';
-            if (idStr.includes('r16') || (match.round && match.round.includes('16'))) return 'r16';
-            if (idStr.includes('qf') || (match.round && match.round.includes('quarter'))) return 'qf';
-            if (idStr.includes('sf') || (match.round && match.round.includes('semi'))) return 'sf';
-            if (idStr.includes('final') || (match.round && match.round.includes('final'))) return 'final';
-            if (idStr.includes('third') || (match.round && match.round.includes('third'))) return 'third_place';
-            // افتراضياً نضعها في المجموعات (الجولة الأولى)
+            // افتراضي: first
             return 'first';
         }
 
-        // تجميع المباريات حسب المفتاح
+        // تجميع المباريات
         const grouped = {};
         active.forEach(m => {
             const key = getRoundKey(m);
@@ -287,7 +349,7 @@ function renderUpcoming() {
         let hasGroupMatches = false;
         let hasKnockoutMatches = false;
 
-        // أولاً: عرض مباريات المجموعات (first, second, third)
+        // مباريات المجموعات
         const groupKeys = ['first', 'second', 'third'];
         groupKeys.forEach(key => {
             if (grouped[key] && grouped[key].length) {
@@ -302,7 +364,7 @@ function renderUpcoming() {
             }
         });
 
-        // ثانياً: عرض مباريات الأدوار النهائية (r32, r16, qf, sf, third_place, final)
+        // مباريات الأدوار النهائية
         const knockoutKeys = ['r32', 'r16', 'qf', 'sf', 'third_place', 'final'];
         knockoutKeys.forEach(key => {
             if (grouped[key] && grouped[key].length) {
@@ -317,9 +379,8 @@ function renderUpcoming() {
             }
         });
 
-        // إذا لم يتم العثور على أي مباراة مصنفة (حالة نادرة)، نعرض الكل كقائمة واحدة
+        // إذا لم يتم تصنيف أي مباراة (حالة نادرة) نعرض الكل كقائمة واحدة
         if (!hasGroupMatches && !hasKnockoutMatches) {
-            console.warn('⚠️ لم يتم تصنيف أي مباراة، عرض الكل كقائمة واحدة');
             html = `<div class="matches-grid">`;
             active.forEach(m => {
                 html += renderMatchCard(m, true);
@@ -334,6 +395,22 @@ function renderUpcoming() {
         document.getElementById('matchesContainer').innerHTML =
             `<div class="empty-state"><span class="icon">⚠️</span> حدث خطأ: ${e.message}</div>`;
     }
+}
+
+// دالة مساعدة للحصول على تسمية الجولة
+function getRoundLabel(round) {
+    const map = {
+        'first': 'الجولة الأولى',
+        'second': 'الجولة الثانية',
+        'third': 'الجولة الثالثة',
+        'r32': 'دور ٣٢',
+        'r16': 'دور ١٦',
+        'qf': 'ربع النهائي',
+        'sf': 'نصف النهائي',
+        'third_place': 'مباراة المركز الثالث',
+        'final': 'النهائي'
+    };
+    return map[round] || round;
 }
 
 function renderPreviousGamesFiltered() {
@@ -2326,4 +2403,4 @@ if (document.readyState === 'loading') {
 } else {
     init().then(() => bindEvents());
 }
-// نهاية ui.js 
+// نهاية ui.js
