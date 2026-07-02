@@ -1046,4 +1046,4 @@ function generateAnalyticsCharts() {
             updatePlayerAnalytics();
         }
     }, 100);
-}
+} 
