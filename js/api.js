@@ -109,11 +109,10 @@ async function savePrediction(userName, matchId, prediction) {
                 .from("predictions")
                 .update({ prediction: prediction })
                 .eq("id", existing.id)
-                .select(); // نطلب إرجاع البيانات للتأكد من التحديث
+                .select();
 
             if (error) throw error;
 
-            // التحقق من عدد الصفوف المحدثة
             if (data && data.length === 0) {
                 return {
                     success: false,
@@ -121,7 +120,6 @@ async function savePrediction(userName, matchId, prediction) {
                 };
             }
 
-            // تحديث التخزين المحلي والكاش
             saveLocalPrediction(userName, matchId, prediction);
             addSubmittedMatch(matchId);
             localStorage.removeItem("predictions");
@@ -133,7 +131,6 @@ async function savePrediction(userName, matchId, prediction) {
             return { success: false, message: e.message };
         }
     } else {
-        // ❌ لا يوجد توقع سابق => نقوم بإدراج جديد (Insert)
         if (isMatchSubmitted(matchId)) {
             return { success: false, message: `⚠️ توقعت مسبقاً هذه المباراة`, duplicate: true };
         }
@@ -1046,4 +1043,4 @@ function generateAnalyticsCharts() {
             updatePlayerAnalytics();
         }
     }, 100);
-} 
+}
