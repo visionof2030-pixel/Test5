@@ -326,7 +326,6 @@ const stadiums = {
     "16": "ملعب واشنطن (أمريكا)"
 };
 
-// ===== تم إضافة حقل streamUrl للمباراة رقم 71 (الكونغو الديمقراطية ضد أوزبكستان) =====
 const rawMatches = [
     { id: 1, team1: "المكسيك", team2: "جنوب أفريقيا", time: "2026-06-11T22:00:00", round: "first" },
     { id: 2, team1: "الأرجنتين", team2: "الجزائر", time: "2026-06-11T04:00:00", round: "first" },
@@ -398,7 +397,6 @@ const rawMatches = [
     { id: 68, team1: "إنجلترا", team2: "بنما", time: "2026-06-28T00:00:00", round: "third" },
     { id: 69, team1: "كرواتيا", team2: "غانا", time: "2026-06-28T00:00:00", round: "third" },
     { id: 70, team1: "البرتغال", team2: "كولومبيا", time: "2026-06-28T02:30:00", round: "third" },
-    // ===== المباراة 71 مع رابط البث المباشر =====
     { id: 71, team1: "الكونغو الديمقراطية", team2: "أوزبكستان", time: "2026-06-28T02:30:00", round: "third", streamUrl: "https://pub-e3eb43d02df647099f49525f20574746.r2.dev/BMax2-2/index.m3u8" },
     { id: 72, team1: "الجزائر", team2: "النمسا", time: "2026-06-28T05:00:00", round: "third" },
     { id: 73, team1: "الأردن", team2: "الأرجنتين", time: "2026-06-28T05:00:00", round: "third" }
@@ -664,10 +662,49 @@ function getGroundForMatch(team1, team2, timeISO) {
     return null;
 }
 
+// ================================================================
+//  🔧 دالة findMatchResult (محسّنة للبحث في مصادر متعددة)
+// ================================================================
 function findMatchResult(team1, team2) {
+    // 1. البحث في المباريات السابقة المحفوظة (previousGamesData)
     const games = state.previousGamesData || [];
     let match = games.find(m => (m.homeAr === team1 && m.awayAr === team2) || (m.homeAr === team2 && m.awayAr === team1));
-    if (match) return { homeScore: match.homeScore, awayScore: match.awayScore, homeAr: match.homeAr, awayAr: match.awayAr };
+    if (match) {
+        return { homeScore: match.homeScore, awayScore: match.awayScore, homeAr: match.homeAr, awayAr: match.awayAr };
+    }
+    
+    // 2. البحث في بيانات API (state.allGames)
+    if (state.allGames && state.allGames.length) {
+        const apiMatch = state.allGames.find(g => {
+            const home = translateToArabic(g.home_team_name_fa || g.home_team_name_en || '');
+            const away = translateToArabic(g.away_team_name_fa || g.away_team_name_en || '');
+            return (home === team1 && away === team2) || (home === team2 && away === team1);
+        });
+        if (apiMatch && apiMatch.finished === "TRUE") {
+            const homeScore = parseInt(apiMatch.home_score, 10);
+            const awayScore = parseInt(apiMatch.away_score, 10);
+            const homeAr = translateToArabic(apiMatch.home_team_name_fa || apiMatch.home_team_name_en || '');
+            const awayAr = translateToArabic(apiMatch.away_team_name_fa || apiMatch.away_team_name_en || '');
+            return { homeScore, awayScore, homeAr, awayAr };
+        }
+    }
+    
+    // 3. البحث في openfootballMatches
+    if (state.openfootballMatches && state.openfootballMatches.length) {
+        const ofMatch = state.openfootballMatches.find(m => {
+            const h = translateToArabic(m.team1 || '');
+            const a = translateToArabic(m.team2 || '');
+            return (h === team1 && a === team2) || (h === team2 && a === team1);
+        });
+        if (ofMatch && ofMatch.finished === true) {
+            const homeScore = ofMatch.goals1?.length || 0;
+            const awayScore = ofMatch.goals2?.length || 0;
+            const homeAr = translateToArabic(ofMatch.team1 || '');
+            const awayAr = translateToArabic(ofMatch.team2 || '');
+            return { homeScore, awayScore, homeAr, awayAr };
+        }
+    }
+    
     return null;
 }
 
@@ -775,4 +812,4 @@ function saveLocalPrediction(userName, matchId, prediction) {
 function getUserPredictionFromLocal(userName, matchId) {
     if (!userName) return null;
     return getLocalPredictions()[`${userName}_${matchId}`] || null;
-} 
+}
