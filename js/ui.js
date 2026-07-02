@@ -186,7 +186,7 @@ function renderMatchCard(m, isUpcoming) {
 }
 
 // ================================================================
-//  عرض المباريات القادمة والجارية مع مسار البطولة
+//  عرض المباريات القادمة والجارية مع مسار البطولة (محسّن)
 // ================================================================
 function renderUpcoming() {
     try {
@@ -224,12 +224,8 @@ function renderUpcoming() {
             return;
         }
 
-        // ---- تقسيم المباريات إلى مجموعات الأدوار ----
-        // نعتمد على حقل 'round' الموجود في بيانات المباريات (first, second, third)
-        // ونقوم بتصنيفها يدوياً حسب الأدوار المقترحة.
-        // إذا كان هناك حقل 'type' أو 'stage' في المستقبل يمكن الاستفادة منه.
-
-        // نقوم بتعريف ترتيب الأدوار المطلوبة
+        // ---- تصنيف المباريات حسب الأدوار ----
+        // نعرف ترتيب الأدوار المطلوبة
         const roundOrder = [
             { key: 'first', label: 'دور المجموعات (الجولة الأولى)' },
             { key: 'second', label: 'دور المجموعات (الجولة الثانية)' },
@@ -242,13 +238,13 @@ function renderUpcoming() {
             { key: 'final', label: 'النهائي' }
         ];
 
-        // دالة لاستخراج مفتاح الدور من المباراة بناءً على البيانات المتاحة
+        // دالة لاستخراج مفتاح الدور من المباراة
         function getRoundKey(match) {
-            // إذا كان هناك حقل round صريح (first, second, third) نستخدمه مباشرة
+            // 1. إذا كان هناك حقل round صريح (first, second, third)
             if (match.round && ['first', 'second', 'third'].includes(match.round)) {
                 return match.round;
             }
-            // إذا كان هناك حقل type (مأخوذ من API worldcup26.ir)
+            // 2. إذا كان هناك حقل type (مأخوذ من API worldcup26.ir)
             if (match.type) {
                 const typeMap = {
                     'r32': 'r32',
@@ -261,8 +257,7 @@ function renderUpcoming() {
                 };
                 if (typeMap[match.type]) return typeMap[match.type];
             }
-            // محاولة استنتاج من معرف المباراة أو أي بيانات أخرى
-            // إذا كان يحتوي على "r32" أو "Round of 32" في أي حقل
+            // 3. محاولة استنتاج من معرف المباراة أو أي بيانات أخرى
             const idStr = match.id ? String(match.id) : '';
             if (idStr.includes('r32') || (match.round && match.round.includes('32'))) return 'r32';
             if (idStr.includes('r16') || (match.round && match.round.includes('16'))) return 'r16';
@@ -322,8 +317,9 @@ function renderUpcoming() {
             }
         });
 
-        // إذا لم يتم العثور على أي مباراة مصنفة، نعرض الكل كمجموعة افتراضية
+        // إذا لم يتم العثور على أي مباراة مصنفة (حالة نادرة)، نعرض الكل كقائمة واحدة
         if (!hasGroupMatches && !hasKnockoutMatches) {
+            console.warn('⚠️ لم يتم تصنيف أي مباراة، عرض الكل كقائمة واحدة');
             html = `<div class="matches-grid">`;
             active.forEach(m => {
                 html += renderMatchCard(m, true);
@@ -334,9 +330,9 @@ function renderUpcoming() {
         container.innerHTML = html;
         updateShareAllCount();
     } catch (e) {
-        console.error("renderUpcoming:", e);
+        console.error("❌ خطأ في renderUpcoming:", e);
         document.getElementById('matchesContainer').innerHTML =
-            `<div class="empty-state"><span class="icon">⚠️</span> حدث خطأ</div>`;
+            `<div class="empty-state"><span class="icon">⚠️</span> حدث خطأ: ${e.message}</div>`;
     }
 }
 
