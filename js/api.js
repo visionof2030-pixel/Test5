@@ -1047,4 +1047,3 @@ function generateAnalyticsCharts() {
         }
     }, 100);
 }
-// نهاية api.js 
