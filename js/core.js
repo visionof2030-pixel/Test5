@@ -776,4 +776,3 @@ function getUserPredictionFromLocal(userName, matchId) {
     if (!userName) return null;
     return getLocalPredictions()[`${userName}_${matchId}`] || null;
 }
-// نهاية core.js
