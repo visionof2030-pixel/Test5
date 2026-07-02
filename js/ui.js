@@ -134,7 +134,6 @@ function renderMatchCard(m, isUpcoming) {
 
     const showEdit = (userHasPrediction || submitted) && canPredictNow;
 
-    // ===== إضافة زر البث المباشر =====
     let streamHtml = '';
     if (m.streamUrl) {
         streamHtml = `
@@ -193,7 +192,6 @@ function renderUpcoming() {
         const groupFilter = document.getElementById('groupFilter')?.value || 'all';
         let allMatches = [];
 
-        // 1. استخدام بيانات API (state.allGames) إن وجدت، وإلا نستخدم matchesData الثابتة
         if (state.allGames && state.allGames.length > 0) {
             allMatches = state.allGames.map(game => {
                 const homeAr = translateToArabic(game.home_team_name_fa || game.home_team_name_en || '');
@@ -393,7 +391,7 @@ function getRoundLabel(round) {
 }
 
 // ================================================================
-//  عرض المباريات السابقة (مع إصلاح التوقعات)
+//  عرض المباريات السابقة (مع الحفاظ على التوقعات)
 // ================================================================
 function renderPreviousGamesFiltered() {
     const searchText = document.getElementById('prevSearchInput')?.value.trim().toLowerCase() || '';
@@ -423,7 +421,7 @@ function renderPreviousGamesFiltered() {
 
     container.innerHTML = filtered.map(g => {
         let ground = getGroundForMatch(g.homeAr, g.awayAr, null);
-        // العثور على معرف المباراة من matchesData
+        // العثور على المباراة في matchesData للحصول على المعرف الصحيح
         const match = matchesData.find(m => (m.team1 === g.homeAr && m.team2 === g.awayAr) || (m.team1 === g.awayAr && m.team2 === g.homeAr));
         const matchId = match ? `${match.timeISO}_${match.team1}_${match.team2}` : `${g.homeAr}_${g.awayAr}`;
         return `
@@ -449,7 +447,7 @@ function renderPreviousGamesFiltered() {
 }
 
 // ================================================================
-//  فتح توقعات المباراة السابقة (مع إصلاح المعرف)
+//  فتح توقعات المباراة السابقة (كما كانت في الأصل)
 // ================================================================
 function openPreviousMatchPredictions(team1, team2, homeScore, awayScore) {
     const match = matchesData.find(m => (m.team1 === team1 && m.team2 === team2) || (m.team1 === team2 && m.team2 === team1));
@@ -457,22 +455,12 @@ function openPreviousMatchPredictions(team1, team2, homeScore, awayScore) {
         const matchId = `${match.timeISO}_${match.team1}_${match.team2}`;
         openMatchPredictions(matchId, team1, team2, homeScore, awayScore);
     } else {
-        const apiMatch = state.allGames.find(g => {
-            const home = translateToArabic(g.home_team_name_fa || g.home_team_name_en || '');
-            const away = translateToArabic(g.away_team_name_fa || g.away_team_name_en || '');
-            return (home === team1 && away === team2) || (home === team2 && away === team1);
-        });
-        if (apiMatch) {
-            const matchId = `${apiMatch.id || Date.now()}_${team1}_${team2}`;
-            openMatchPredictions(matchId, team1, team2, homeScore, awayScore);
-        } else {
-            showCopyToast('⚠️ لا توجد توقعات لهذه المباراة');
-        }
+        showCopyToast('⚠️ لا توجد توقعات لهذه المباراة');
     }
 }
 
 // ================================================================
-//  فتح توقعات المباراة (مع دعم الأدوار النهائية)
+//  فتح توقعات المباراة (مع دعم جميع المباريات)
 // ================================================================
 async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore) {
     if (!state.loaded) {
@@ -552,6 +540,7 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
         predictions = state.predictions;
     }
     
+    // البحث عن التوقعات باستخدام matchId الصحيح
     const matchPredictions = predictions
         .filter(p => p.match_id === matchId)
         .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
@@ -572,26 +561,23 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
         correctResult = result.homeScore > result.awayScore ? team1 : (result.awayScore > result.homeScore ? team2 :
             "DRAW");
     } else {
-        if (homeScore !== undefined && awayScore !== undefined) {
-            correctResult = homeScore > awayScore ? team1 : (awayScore > homeScore ? team2 : "DRAW");
-        } else {
-            let rows = '';
-            matchPredictions.forEach((p, idx) => {
-                let predictionText = p.prediction === 'DRAW' ? 'تعادل' : `فوز ${p.prediction}`;
-                rows += `<tr>
+        // إذا لم تكن النتيجة معروفة، نعرض جميع التوقعات كـ "قيد الانتظار"
+        let rows = '';
+        matchPredictions.forEach((p, idx) => {
+            let predictionText = p.prediction === 'DRAW' ? 'تعادل' : `فوز ${p.prediction}`;
+            rows += `<tr>
                     <td class="user-name" onclick="openPlayerPredictions('${p.user_name || ''}')">${p.user_name || 'مجهول'}</td>
                     <td class="prediction-text">${predictionText}</td>
                     <td class="status-pending">⏳ لم تحدد</td>
                     <td class="time-cell">${p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف'}</td>
                   </tr>`;
-            });
-            tbody.innerHTML = rows;
-            correctSpan.textContent = '0';
-            wrongSpan.textContent = '0';
-            document.getElementById('matchPredictionsModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            return;
-        }
+        });
+        tbody.innerHTML = rows;
+        correctSpan.textContent = '0';
+        wrongSpan.textContent = '0';
+        document.getElementById('matchPredictionsModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        return;
     }
     
     let correctCount = 0,
@@ -620,6 +606,9 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
     document.body.style.overflow = 'hidden';
 }
 
+// ================================================================
+//  حساب ترتيب المجموعات
+// ================================================================
 function calculateStandings() {
     try {
         const standings = {};
@@ -685,6 +674,9 @@ function calculateStandings() {
     }
 }
 
+// ================================================================
+//  تحديث الهدافين
+// ================================================================
 function updateScorers() {
     let scorersDict = {};
     let playerTeamMap = {};
@@ -739,6 +731,9 @@ function updateScorers() {
     renderScorers();
 }
 
+// ================================================================
+//  عرض الهدافين
+// ================================================================
 function renderScorers() {
     const container = document.getElementById('scorersContainer');
     const countSpan = document.getElementById('scorersCount');
@@ -765,6 +760,9 @@ function renderScorers() {
     container.innerHTML = html;
 }
 
+// ================================================================
+//  إحصائيات الفرق
+// ================================================================
 function renderTeamStats() {
     const container = document.getElementById('teamStatsContainer');
     if (!state.previousGamesData.length) {
@@ -823,6 +821,9 @@ function renderTeamStats() {
     container.innerHTML = html;
 }
 
+// ================================================================
+//  مسار البطولة (Bracket)
+// ================================================================
 function renderBracket() {
     const container = document.getElementById('bracketContainer');
 
@@ -1052,6 +1053,9 @@ function renderBracket() {
     container.innerHTML = html;
 }
 
+// ================================================================
+//  جميع التوقعات
+// ================================================================
 async function renderAllPredictions() {
     const container = document.getElementById('allPredictions');
     const countSpan = document.getElementById('predictionsCount');
