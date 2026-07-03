@@ -421,7 +421,6 @@ function renderPreviousGamesFiltered() {
 
     container.innerHTML = filtered.map(g => {
         let ground = getGroundForMatch(g.homeAr, g.awayAr, null);
-        // العثور على المباراة في matchesData للحصول على المعرف الصحيح
         const match = matchesData.find(m => (m.team1 === g.homeAr && m.team2 === g.awayAr) || (m.team1 === g.awayAr && m.team2 === g.homeAr));
         const matchId = match ? `${match.timeISO}_${match.team1}_${match.team2}` : `${g.homeAr}_${g.awayAr}`;
         return `
@@ -540,7 +539,6 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
         predictions = state.predictions;
     }
     
-    // البحث عن التوقعات باستخدام matchId الصحيح
     const matchPredictions = predictions
         .filter(p => p.match_id === matchId)
         .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
@@ -561,7 +559,6 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
         correctResult = result.homeScore > result.awayScore ? team1 : (result.awayScore > result.homeScore ? team2 :
             "DRAW");
     } else {
-        // إذا لم تكن النتيجة معروفة، نعرض جميع التوقعات كـ "قيد الانتظار"
         let rows = '';
         matchPredictions.forEach((p, idx) => {
             let predictionText = p.prediction === 'DRAW' ? 'تعادل' : `فوز ${p.prediction}`;
@@ -2073,11 +2070,12 @@ async function openViewPredictionsModal(matchId, team1, team2) {
 }
 
 // ------------------------------------------------------------
-//  تحميل البيانات الخارجية
+//  تحميل البيانات الخارجية (تم التعديل هنا)
 // ------------------------------------------------------------
 
 async function loadPreviousGames() {
     try {
+        // 1. التحقق من التخزين المؤقت
         const cached = getCache("games");
         if (cached) {
             state.previousGamesData = cached;
@@ -2090,42 +2088,63 @@ async function loadPreviousGames() {
             updateNewsTicker();
             return;
         }
-        const response = await fetch('https://worldcup26.ir/get/games');
+
+        // 2. جلب البيانات من worldcup.json (المصدر الرسمي)
+        const response = await fetch('https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
-        if (!data?.games) throw new Error('تنسيق غير صحيح');
-        state.allGames = data.games;
-        const finished = state.allGames.filter(g => g.finished === "TRUE");
-        const newData = finished.map(game => {
-            const homeAr = translateToArabic(game.home_team_name_fa || game.home_team_name_en || '');
-            const awayAr = translateToArabic(game.away_team_name_fa || game.away_team_name_en || '');
-            const homeScore = parseInt(game.home_score, 10);
-            const awayScore = parseInt(game.away_score, 10);
-            const sortTimestamp = getSortTimestamp(game);
-            let dayName = '',
-                formattedDate = '',
-                timeMatch = '';
-            const dateStr = game.local_date || '';
-            if (dateStr) {
-                const parts = dateStr.split(' ');
-                const dateParts = parts[0]?.split('/');
-                if (dateParts && dateParts.length === 3) {
-                    const d = new Date(`${dateParts[2]}-${dateParts[0]}-${dateParts[1]}T12:00:00`);
-                    if (!isNaN(d)) {
-                        dayName = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][d
-                        .getDay()];
-                        formattedDate =
-                            `${d.getDate()} ${['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][d.getMonth()]} ${d.getFullYear()}`;
-                    }
-                }
-                if (parts.length > 1 && parts[1]?.match(/\d{2}:\d{2}/)) {
-                    timeMatch = parts[1];
-                }
+
+        // 3. معالجة المباريات المنتهية فقط
+        const finishedMatches = data.matches.filter(match => match.score && match.score.ft);
+
+        const newData = finishedMatches.map(match => {
+            const homeAr = translateToArabic(match.team1);
+            const awayAr = translateToArabic(match.team2);
+            const homeScore = match.score.ft[0];
+            const awayScore = match.score.ft[1];
+
+            // توليد timestamp للترتيب
+            let sortTimestamp = 0;
+            try {
+                const dateObj = new Date(`${match.date}T${match.time}`);
+                sortTimestamp = dateObj.getTime();
+            } catch (e) {
+                sortTimestamp = Date.now();
             }
-            return { homeAr, awayAr, homeScore, awayScore, dayName, formattedDate, timeMatch, sortTimestamp };
+
+            // تنسيق التاريخ واليوم
+            let dayName = '', formattedDate = '', timeMatch = '';
+            try {
+                const dateObj = new Date(`${match.date}T${match.time}`);
+                const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+                dayName = days[dateObj.getDay()];
+                const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+                formattedDate = `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+                timeMatch = match.time || '';
+            } catch (e) {
+                dayName = 'تاريخ';
+                formattedDate = match.date || '';
+                timeMatch = match.time || '';
+            }
+
+            return {
+                homeAr,
+                awayAr,
+                homeScore,
+                awayScore,
+                dayName,
+                formattedDate,
+                timeMatch,
+                sortTimestamp,
+                raw: match // حفظ البيانات الخام للاستخدام الإضافي
+            };
         });
+
+        // 4. تحديث الحالة والتخزين المؤقت
         state.previousGamesData = newData;
         setCache("games", newData);
+
+        // 5. تحديث الواجهة
         renderPreviousGamesFiltered();
         calculateStandings();
         renderTeamStats();
@@ -2133,8 +2152,13 @@ async function loadPreviousGames() {
         renderLeaderboard(currentLeaderboardPeriod);
         updateScorers();
         updateNewsTicker();
+
+        // 6. تحديث openfootballMatches بنفس البيانات (لتجنب طلب إضافي)
+        state.openfootballMatches = data.matches || [];
+        setCache("openfootball", state.openfootballMatches);
+
     } catch (e) {
-        console.error("❌ تحميل السابقة:", e);
+        console.error("❌ تحميل السابقة من worldcup.json فشل:", e);
         if (state.previousGamesData.length === 0) {
             document.getElementById('previousMatchesContainer').innerHTML =
                 `<div class="empty-state"><span class="icon">⚠️</span> فشل التحميل <button onclick="loadPreviousGames()" style="display:block;margin:12px auto 0;background:var(--gold);border:none;padding:8px 24px;border-radius:40px;font-weight:700;color:#0a1628;cursor:pointer;font-family:inherit;">🔄 إعادة المحاولة</button></div>`;
@@ -2142,25 +2166,12 @@ async function loadPreviousGames() {
     }
 }
 
+// دالة fetchOpenfootballData أصبحت غير ضرورية، لكن نتركها كواجهة للتوافق
 async function fetchOpenfootballData() {
-    const cached = getCache("openfootball");
-    if (cached) {
-        state.openfootballMatches = cached;
-        updateScorers();
-        renderBracket();
-        return;
-    }
-    try {
-        const res = await fetch("https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json");
-        const data = await res.json();
-        state.openfootballMatches = data.matches || [];
-        setCache("openfootball", state.openfootballMatches);
-        updateScorers();
-        renderBracket();
-    } catch (e) {
-        console.warn("⚠️ فشل تحميل بيانات openfootball:", e);
-        state.openfootballMatches = [];
-    }
+    // إذا كانت البيانات موجودة بالفعل، لا تفعل شيئاً
+    if (state.openfootballMatches && state.openfootballMatches.length > 0) return;
+    // وإلا قم بتحميلها عبر loadPreviousGames (التي ستجلبها)
+    await loadPreviousGames();
 }
 
 // ------------------------------------------------------------
@@ -2171,7 +2182,6 @@ async function init() {
     console.log("🚀 INIT START (محسن)");
     await Promise.all([
         loadPreviousGames(),
-        fetchOpenfootballData(),
         getAllPredictions()
     ]);
     state.loaded = true;
