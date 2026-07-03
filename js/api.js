@@ -77,9 +77,6 @@ async function getUserPrediction(userName, matchId) {
     }
 }
 
-// ============================================================
-//  🔧 دالة حفظ التوقع (تم تعديلها لإصلاح مشكلة التحديث)
-// ============================================================
 async function savePrediction(userName, matchId, prediction) {
     if (!supabaseClient) return { success: false, message: "Supabase غير متصل" };
     const match = matchesData.find(m => `${m.timeISO}_${m.team1}_${m.team2}` === matchId);
@@ -95,45 +92,22 @@ async function savePrediction(userName, matchId, prediction) {
     const existing = await getUserPrediction(userName, matchId);
 
     if (existing) {
-        // ✅ التحقق من أن التوقع الجديد مختلف عن القديم
-        if (prediction === existing.prediction) {
-            return {
-                success: true,
-                updated: false,
-                message: "⚠️ التوقع الجديد مطابق للقديم، لم يتم إجراء تغيير."
-            };
-        }
-
         try {
-            const { error, data } = await supabaseClient
+            const { error } = await supabaseClient
                 .from("predictions")
                 .update({ prediction: prediction })
-                .eq("id", existing.id)
-                .select(); // نطلب إرجاع البيانات للتأكد من التحديث
-
+                .eq("id", existing.id);
             if (error) throw error;
-
-            // التحقق من عدد الصفوف المحدثة
-            if (data && data.length === 0) {
-                return {
-                    success: false,
-                    message: "❌ لم يتم تحديث أي صف، تحقق من معرف السجل."
-                };
-            }
-
-            // تحديث التخزين المحلي والكاش
             saveLocalPrediction(userName, matchId, prediction);
             addSubmittedMatch(matchId);
             localStorage.removeItem("predictions");
             await getAllPredictions();
-
-            return { success: true, updated: true, message: "✅ تم تحديث التوقع بنجاح!" };
+            return { success: true, updated: true };
         } catch (e) {
             console.error("❌ تحديث التوقع:", e);
             return { success: false, message: e.message };
         }
     } else {
-        // ❌ لا يوجد توقع سابق => نقوم بإدراج جديد (Insert)
         if (isMatchSubmitted(matchId)) {
             return { success: false, message: `⚠️ توقعت مسبقاً هذه المباراة`, duplicate: true };
         }
@@ -1047,3 +1021,4 @@ function generateAnalyticsCharts() {
         }
     }, 100);
 }
+// نهاية api.js
