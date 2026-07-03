@@ -504,11 +504,13 @@ function calculateStandings() {
 function updateScorers() {
     let scorersDict = {};
     let playerTeamMap = {};
-    for (let match of state.allGames) {
+
+    // 1. من OpenFootball
+    for (let match of state.openfootballMatches) {
         const homeTeam = translateToArabic(match.team1 || match.home_team_name || '');
         const awayTeam = translateToArabic(match.team2 || match.away_team_name || '');
         let goals = [];
-        if (match.goals) {
+        if (match.goals && Array.isArray(match.goals)) {
             goals = match.goals;
         } else if (match.scorers) {
             try {
@@ -531,6 +533,11 @@ function updateScorers() {
             } catch (e) { /* تجاهل */ }
         }
     }
+
+    // 2. من المباريات الثابتة (في حال وجود معلومات عن الهدافين)
+    // يمكن إضافة معلومات الهدافين في extraFixedResults إذا توفرت
+
+    // حفظ النتائج
     window._scorersDict = scorersDict;
     window._playerTeamMap = playerTeamMap;
     renderScorers();
@@ -1998,7 +2005,7 @@ async function init() {
     renderScorers();
     renderBracket();
     renderAllPredictions();
-    renderPreviousGamesFiltered(); // عرض المباريات السابقة فوراً
+    renderPreviousGamesFiltered();
     initTabs();
     checkUrlForMatch();
     startAutoUpdate();
