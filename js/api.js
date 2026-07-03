@@ -1,8 +1,7 @@
 // ============================================================
 //  api.js - التفاعل مع Supabase والتحليلات والمخططات
+//  يعتمد على core.js و state
 // ============================================================
-
-// (يعتمد على core.js)
 
 async function getAllPredictions() {
     const cached = getCache("predictions");
@@ -433,9 +432,8 @@ function renderCompare() {
 }
 
 // ------------------------------------------------------------
-//  التحليلات المتقدمة والمخططات
+//  التحليلات المتقدمة والمخططات (نفس السابق)
 // ------------------------------------------------------------
-
 function openAnalytics() {
     const modal = document.getElementById('analyticsModal');
     modal.classList.add('active');
