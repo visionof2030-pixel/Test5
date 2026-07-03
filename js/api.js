@@ -27,6 +27,14 @@ async function getAllPredictions() {
 }
 
 async function getPredictionsForUserFull(userName) {
+    // أولاً نبحث في state.predictions (المخزنة محلياً)
+    if (state.predictions && state.predictions.length > 0) {
+        const filtered = state.predictions.filter(p => p.user_name === userName);
+        if (filtered.length > 0) {
+            return filtered;
+        }
+    }
+    // وإلا نجلبه من Supabase مباشرة
     if (!supabaseClient || !userName) return [];
     try {
         const { data, error } = await supabaseClient
@@ -43,6 +51,12 @@ async function getPredictionsForUserFull(userName) {
 }
 
 async function getPredictionsForMatchFull(matchId) {
+    if (state.predictions && state.predictions.length > 0) {
+        const filtered = state.predictions.filter(p => p.match_id === matchId);
+        if (filtered.length > 0) {
+            return filtered;
+        }
+    }
     if (!supabaseClient || !matchId) return [];
     try {
         const { data, error } = await supabaseClient
@@ -163,7 +177,6 @@ function getPredictionStatus(prediction) {
 // ------------------------------------------------------------
 //  لوحة المتصدرين والمقارنات
 // ------------------------------------------------------------
-
 function getAllPlayersStats() {
     const stats = {};
     const predictions = state.predictions;
@@ -432,7 +445,7 @@ function renderCompare() {
 }
 
 // ------------------------------------------------------------
-//  التحليلات المتقدمة والمخططات (نفس السابق)
+//  التحليلات المتقدمة والمخططات
 // ------------------------------------------------------------
 function openAnalytics() {
     const modal = document.getElementById('analyticsModal');
