@@ -27,14 +27,13 @@ async function getAllPredictions() {
 }
 
 async function getPredictionsForUserFull(userName) {
-    // أولاً نبحث في state.predictions (المخزنة محلياً)
+    // نبحث أولاً في التوقعات المخزنة في state
     if (state.predictions && state.predictions.length > 0) {
         const filtered = state.predictions.filter(p => p.user_name === userName);
         if (filtered.length > 0) {
             return filtered;
         }
     }
-    // وإلا نجلبه من Supabase مباشرة
     if (!supabaseClient || !userName) return [];
     try {
         const { data, error } = await supabaseClient
