@@ -9,49 +9,35 @@
 }
 
 :root {
-    /* --- اللون الأساسي --- */
     --bg-primary: #0a0e17;
     --bg-secondary: #111927;
     --bg-card: rgba(17, 25, 40, 0.85);
     --bg-card-hover: rgba(30, 45, 70, 0.92);
     --bg-input: rgba(255, 255, 255, 0.04);
-
-    /* --- الذهبي --- */
     --gold: #d4a745;
     --gold-light: #f0d080;
     --gold-glow: rgba(212, 167, 69, 0.15);
     --gold-gradient: linear-gradient(135deg, #e8c86a, #c99a2e);
-
-    /* --- النصوص --- */
     --text-primary: #edf2f7;
     --text-secondary: #8a9bb5;
     --text-muted: #5a6f8c;
-
-    /* --- الحالات --- */
     --success: #2ecc71;
     --success-bg: rgba(46, 204, 113, 0.10);
     --danger: #e74c3c;
     --danger-bg: rgba(231, 76, 60, 0.10);
     --info: #4a9eff;
     --info-bg: rgba(74, 158, 255, 0.10);
-
-    /* --- الحدود والظلال --- */
     --border-subtle: rgba(255, 255, 255, 0.04);
     --border-gold: rgba(212, 167, 69, 0.20);
     --shadow-card: 0 12px 48px rgba(0, 0, 0, 0.50), 0 0 0 1px rgba(255, 255, 255, 0.02);
     --shadow-glow: 0 0 60px rgba(212, 167, 69, 0.04);
-
-    /* --- الحجوم --- */
     --radius-lg: 24px;
     --radius-md: 16px;
     --radius-sm: 10px;
     --radius-xs: 6px;
-
-    /* --- الانتقالات --- */
     --transition: all 0.30s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- الوضع الفاتح (المحسّن) --- */
 [data-theme="light"] {
     --bg-primary: #f4f6f9;
     --bg-secondary: #ffffff;
@@ -68,9 +54,7 @@
     --gold-glow: rgba(212, 167, 69, 0.12);
 }
 
-html {
-    scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
     font-family: 'Cairo', 'Segoe UI', sans-serif;
@@ -84,25 +68,10 @@ body {
     margin: 0;
 }
 
-/* ============================================================
-   سكرول بار
-   ============================================================ */
-::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-}
-::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb {
-    background: var(--gold);
-    border-radius: 10px;
-}
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
-/* ============================================================
-   حاوية التطبيق
-   ============================================================ */
 .app-container {
     max-width: 1280px;
     margin: 0 auto;
@@ -110,9 +79,7 @@ body {
     width: 100%;
 }
 
-/* ============================================================
-   الهيدر العلوي (صورة الكأس)
-   ============================================================ */
+/* ===== Top Bar ===== */
 .top-bar {
     width: 100%;
     min-height: 120px;
@@ -175,9 +142,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.06);
     letter-spacing: 0.5px;
 }
-.top-bar .top-bar-title .icon {
-    font-size: 1.4rem;
-}
+.top-bar .top-bar-title .icon { font-size: 1.4rem; }
 .top-bar .top-bar-title .gold-text {
     background: var(--gold-gradient);
     -webkit-background-clip: text;
@@ -199,9 +164,7 @@ body {
     align-items: center;
     gap: 8px;
 }
-.top-bar .top-bar-sub .emoji {
-    font-size: 1.1rem;
-}
+.top-bar .top-bar-sub .emoji { font-size: 1.1rem; }
 
 [data-theme="light"] .top-bar {
     background: #ffffff;
@@ -225,16 +188,13 @@ body {
     color: transparent;
 }
 
-/* ============================================================
-   الهيدر اللاصق
-   ============================================================ */
+/* ===== Sticky Header ===== */
 .sticky-header {
     position: sticky;
     top: 0;
     z-index: 100;
     background: rgba(10, 14, 23, 0.92);
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border-radius: 0 0 28px 28px;
     padding: 14px 24px;
     margin: 0 -16px 24px;
@@ -251,11 +211,7 @@ body {
     background: rgba(255, 255, 255, 0.92);
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.04);
 }
-.sticky-header .brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
+.sticky-header .brand { display: flex; align-items: center; gap: 14px; }
 .sticky-header .brand h1 {
     font-size: 1.15rem;
     font-weight: 900;
@@ -273,12 +229,7 @@ body {
     margin-top: -2px;
     letter-spacing: 0.3px;
 }
-.sticky-header .header-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-}
+.sticky-header .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .sticky-header .header-btn {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -312,9 +263,7 @@ body {
     color: var(--gold);
 }
 
-/* ============================================================
-   شريط الأخبار
-   ============================================================ */
+/* ===== News Ticker ===== */
 .news-ticker-wrapper {
     background: var(--gold-glow);
     border: 1px solid var(--border-gold);
@@ -335,37 +284,17 @@ body {
     color: var(--text-secondary);
     font-weight: 500;
 }
-.news-ticker span {
-    display: inline-block;
-    padding: 0 16px;
-}
-.news-ticker .sep {
-    color: var(--gold);
-    opacity: 0.25;
-}
-.news-ticker .today-highlight {
-    color: var(--gold-light);
-    font-weight: 700;
-}
-.news-ticker .match-highlight {
-    color: var(--info);
-    font-weight: 600;
-}
+.news-ticker span { display: inline-block; padding: 0 16px; }
+.news-ticker .sep { color: var(--gold); opacity: 0.25; }
+.news-ticker .today-highlight { color: var(--gold-light); font-weight: 700; }
+.news-ticker .match-highlight { color: var(--info); font-weight: 600; }
 @keyframes tickerScroll {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(100%);
-    }
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
-.news-ticker-wrapper:hover .news-ticker {
-    animation-play-state: paused;
-}
+.news-ticker-wrapper:hover .news-ticker { animation-play-state: paused; }
 
-/* ============================================================
-   أدوات التحكم
-   ============================================================ */
+/* ===== Controls Bar ===== */
 .controls-bar {
     display: flex;
     flex-wrap: wrap;
@@ -414,14 +343,9 @@ body {
     border-color: var(--gold);
     box-shadow: 0 0 0 3px var(--gold-glow);
 }
-.controls-bar select option {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-}
+.controls-bar select option { background: var(--bg-secondary); color: var(--text-primary); }
 
-/* ============================================================
-   أزرار الإدارة
-   ============================================================ */
+/* ===== Admin Controls ===== */
 .admin-controls {
     display: none;
     gap: 12px;
@@ -436,9 +360,7 @@ body {
     flex-direction: column;
     backdrop-filter: blur(4px);
 }
-.admin-controls.visible {
-    display: flex;
-}
+.admin-controls.visible { display: flex; }
 .admin-controls .admin-info {
     font-size: 0.8rem;
     color: var(--text-secondary);
@@ -481,38 +403,28 @@ body {
     color: #fff;
     box-shadow: 0 4px 16px rgba(231, 76, 60, 0.20);
 }
-.admin-btn.danger:hover {
-    box-shadow: 0 8px 32px rgba(231, 76, 60, 0.30);
-}
+.admin-btn.danger:hover { box-shadow: 0 8px 32px rgba(231, 76, 60, 0.30); }
 .admin-btn.secondary {
     background: rgba(255, 255, 255, 0.06);
     color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
     box-shadow: none;
 }
-.admin-btn.secondary:hover {
-    background: rgba(255, 255, 255, 0.10);
-}
+.admin-btn.secondary:hover { background: rgba(255, 255, 255, 0.10); }
 .admin-btn.success {
     background: linear-gradient(135deg, var(--success), #27ae60);
     color: #fff;
     box-shadow: 0 4px 16px rgba(46, 204, 113, 0.20);
 }
-.admin-btn.success:hover {
-    box-shadow: 0 8px 32px rgba(46, 204, 113, 0.30);
-}
+.admin-btn.success:hover { box-shadow: 0 8px 32px rgba(46, 204, 113, 0.30); }
 .admin-btn.bracket-btn {
     background: linear-gradient(135deg, #8e44ad, #6c3483);
     color: #fff;
     box-shadow: 0 4px 16px rgba(142, 68, 173, 0.20);
 }
-.admin-btn.bracket-btn:hover {
-    box-shadow: 0 8px 32px rgba(142, 68, 173, 0.30);
-}
+.admin-btn.bracket-btn:hover { box-shadow: 0 8px 32px rgba(142, 68, 173, 0.30); }
 
-/* ============================================================
-   الأقسام المنبثقة (أرشيف - مكررات)
-   ============================================================ */
+/* ===== Archive & Duplicates ===== */
 .archive-section,
 .duplicates-section {
     width: 100%;
@@ -524,9 +436,7 @@ body {
     backdrop-filter: blur(4px);
 }
 .archive-section.visible,
-.duplicates-section.visible {
-    display: block;
-}
+.duplicates-section.visible { display: block; }
 .archive-section .archive-title,
 .duplicates-section .dup-title {
     font-size: 0.85rem;
@@ -536,12 +446,8 @@ body {
     gap: 10px;
     margin-bottom: 10px;
 }
-.archive-section .archive-title {
-    color: var(--success);
-}
-.duplicates-section .dup-title {
-    color: var(--danger);
-}
+.archive-section .archive-title { color: var(--success); }
+.duplicates-section .dup-title { color: var(--danger); }
 .archive-section .archive-title .count-badge,
 .duplicates-section .dup-title .count-badge {
     background: rgba(255, 255, 255, 0.04);
@@ -549,12 +455,8 @@ body {
     border-radius: 40px;
     font-size: 0.65rem;
 }
-.archive-section .archive-title .count-badge {
-    color: var(--success);
-}
-.duplicates-section .dup-title .count-badge {
-    color: var(--danger);
-}
+.archive-section .archive-title .count-badge { color: var(--success); }
+.duplicates-section .dup-title .count-badge { color: var(--danger); }
 
 .archive-item {
     background: rgba(255, 255, 255, 0.02);
@@ -581,9 +483,7 @@ body {
     font-weight: 700;
     font-size: 0.8rem;
 }
-.archive-item .match-info .flag {
-    font-size: 1.1rem;
-}
+.archive-item .match-info .flag { font-size: 1.1rem; }
 .archive-item .score {
     font-weight: 800;
     color: var(--gold-light);
@@ -604,12 +504,8 @@ body {
     font-size: 0.65rem;
     color: var(--text-secondary);
 }
-.archive-item .stats .correct {
-    color: var(--success);
-}
-.archive-item .stats .wrong {
-    color: var(--danger);
-}
+.archive-item .stats .correct { color: var(--success); }
+.archive-item .stats .wrong { color: var(--danger); }
 .archive-item .accuracy {
     font-weight: 700;
     color: var(--gold-light);
@@ -638,21 +534,10 @@ body {
     border-bottom: 1px solid var(--border-subtle);
     font-size: 0.65rem;
 }
-.duplicates-table .dup-user {
-    font-weight: 700;
-    color: var(--gold-light);
-}
-.duplicates-table .dup-match {
-    color: var(--text-secondary);
-}
-.duplicates-table .dup-preds {
-    font-size: 0.6rem;
-    color: var(--text-secondary);
-}
-.duplicates-table .dup-count {
-    font-weight: 800;
-    color: var(--danger);
-}
+.duplicates-table .dup-user { font-weight: 700; color: var(--gold-light); }
+.duplicates-table .dup-match { color: var(--text-secondary); }
+.duplicates-table .dup-preds { font-size: 0.6rem; color: var(--text-secondary); }
+.duplicates-table .dup-count { font-weight: 800; color: var(--danger); }
 .duplicates-empty {
     text-align: center;
     padding: 16px;
@@ -660,9 +545,7 @@ body {
     font-size: 0.75rem;
 }
 
-/* ============================================================
-   مشاركة الروابط
-   ============================================================ */
+/* ===== Share All ===== */
 .share-all-container {
     display: none;
     gap: 12px;
@@ -676,9 +559,7 @@ body {
     justify-content: space-between;
     backdrop-filter: blur(4px);
 }
-.share-all-container.visible {
-    display: flex;
-}
+.share-all-container.visible { display: flex; }
 .share-all-btn {
     padding: 10px 28px;
     border-radius: 60px;
@@ -700,9 +581,7 @@ body {
     box-shadow: 0 8px 40px rgba(212, 167, 69, 0.25);
 }
 
-/* ============================================================
-   كلمة السر
-   ============================================================ */
+/* ===== Password Overlay ===== */
 .password-overlay {
     display: none;
     position: fixed;
@@ -717,9 +596,7 @@ body {
     align-items: center;
     animation: fadeInModal 0.3s ease;
 }
-.password-overlay.active {
-    display: flex;
-}
+.password-overlay.active { display: flex; }
 .password-box {
     background: var(--bg-secondary);
     border: 1px solid var(--border-gold);
@@ -730,11 +607,7 @@ body {
     text-align: center;
     box-shadow: 0 40px 80px rgba(0, 0, 0, 0.60);
 }
-.password-box .lock-icon {
-    font-size: 3.2rem;
-    display: block;
-    margin-bottom: 12px;
-}
+.password-box .lock-icon { font-size: 3.2rem; display: block; margin-bottom: 12px; }
 .password-box .p-title {
     font-size: 1.2rem;
     font-weight: 800;
@@ -753,7 +626,6 @@ body {
     border: 1px solid var(--border-subtle);
     background: var(--bg-input);
     color: var(--text-primary);
-    font-size: 1rem;
     outline: none;
     transition: var(--transition);
     font-family: inherit;
@@ -800,13 +672,9 @@ body {
     font-family: inherit;
     transition: var(--transition);
 }
-.password-box .p-close:hover {
-    color: var(--text-primary);
-}
+.password-box .p-close:hover { color: var(--text-primary); }
 
-/* ============================================================
-   نافذة إدخال الاسم
-   ============================================================ */
+/* ===== Name Modal ===== */
 .name-modal-overlay {
     display: none;
     position: fixed;
@@ -821,9 +689,7 @@ body {
     align-items: center;
     animation: fadeInModal 0.3s ease;
 }
-.name-modal-overlay.active {
-    display: flex;
-}
+.name-modal-overlay.active { display: flex; }
 .name-modal-content {
     background: var(--bg-secondary);
     border: 1px solid var(--border-gold);
@@ -834,11 +700,7 @@ body {
     text-align: center;
     box-shadow: 0 40px 80px rgba(0, 0, 0, 0.60);
 }
-.name-modal-content .name-icon {
-    font-size: 3rem;
-    display: block;
-    margin-bottom: 12px;
-}
+.name-modal-content .name-icon { font-size: 3rem; display: block; margin-bottom: 12px; }
 .name-modal-content .name-title {
     font-size: 1.2rem;
     font-weight: 800;
@@ -907,9 +769,7 @@ body {
     font-family: inherit;
     transition: var(--transition);
 }
-.name-modal-content .name-close:hover {
-    color: var(--text-primary);
-}
+.name-modal-content .name-close:hover { color: var(--text-primary); }
 .name-modal-content .user-status {
     padding: 10px 16px;
     border-radius: 60px;
@@ -928,9 +788,7 @@ body {
     border: 1px solid var(--border-gold);
 }
 
-/* ============================================================
-   التبويبات
-   ============================================================ */
+/* ===== Tabs ===== */
 .tabs-container {
     display: flex;
     flex-wrap: wrap;
@@ -979,9 +837,7 @@ body {
     border-radius: 40px;
     border: 1px solid var(--border-subtle);
 }
-.day-filter-tabs.visible {
-    display: flex;
-}
+.day-filter-tabs.visible { display: flex; }
 .day-filter-tabs .day-btn {
     padding: 6px 16px;
     border-radius: 30px;
@@ -1003,22 +859,11 @@ body {
     color: var(--gold-light);
 }
 
-.tab-content {
-    display: none;
-    animation: fadeUp 0.4s ease;
-}
-.tab-content.active {
-    display: block;
-}
+.tab-content { display: none; animation: fadeUp 0.4s ease; }
+.tab-content.active { display: block; }
 @keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(16px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .section-title {
@@ -1030,9 +875,7 @@ body {
     gap: 12px;
     flex-wrap: wrap;
 }
-.section-title .gold {
-    color: var(--gold);
-}
+.section-title .gold { color: var(--gold); }
 .section-title .badge-count {
     background: var(--gold-glow);
     color: var(--gold-light);
@@ -1043,9 +886,7 @@ body {
     border: 1px solid var(--border-gold);
 }
 
-/* ============================================================
-   لوحة المتصدرين — محسّنة وجمالية
-   ============================================================ */
+/* ===== Leaderboard ===== */
 .leaderboard-section {
     background: var(--bg-card);
     border: 1px solid var(--border-gold);
@@ -1086,9 +927,7 @@ body {
     align-items: center;
     gap: 12px;
 }
-.leaderboard-section .lb-header .title .trophy {
-    font-size: 1.8rem;
-}
+.leaderboard-section .lb-header .title .trophy { font-size: 1.8rem; }
 .leaderboard-section .lb-header .title span {
     background: var(--gold-gradient);
     -webkit-background-clip: text;
@@ -1184,7 +1023,6 @@ body {
     transform: translateY(-1px);
 }
 
-/* بطاقة البطل */
 .champion-card {
     background: linear-gradient(145deg, rgba(212, 167, 69, 0.08), rgba(212, 167, 69, 0.01));
     border: 1px solid var(--gold);
@@ -1294,24 +1132,11 @@ body {
     color: var(--text-primary);
     font-weight: 700;
 }
-.champion-card .info .stats-row .item .highlight {
-    color: var(--gold-light);
-}
-.champion-card .info .stats-row .item .arrow-up {
-    color: var(--success);
-    font-weight: 900;
-}
-.champion-card .info .stats-row .item .arrow-down {
-    color: var(--danger);
-    font-weight: 900;
-}
-.champion-card .info .stats-row .item .arrow-unchanged {
-    color: var(--text-secondary);
-}
-.champion-card .progress-wrapper {
-    width: 100%;
-    margin-top: 12px;
-}
+.champion-card .info .stats-row .item .highlight { color: var(--gold-light); }
+.champion-card .info .stats-row .item .arrow-up { color: var(--success); font-weight: 900; }
+.champion-card .info .stats-row .item .arrow-down { color: var(--danger); font-weight: 900; }
+.champion-card .info .stats-row .item .arrow-unchanged { color: var(--text-secondary); }
+.champion-card .progress-wrapper { width: 100%; margin-top: 12px; }
 .champion-card .progress-wrapper .progress-label {
     display: flex;
     justify-content: space-between;
@@ -1354,7 +1179,6 @@ body {
     transform: translateY(-1px);
 }
 
-/* قائمة اللاعبين */
 .players-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1370,60 +1194,20 @@ body {
     gap: 8px;
     border-radius: var(--radius-sm);
 }
-.players-list.compact-mode .player-card .rank {
-    font-size: 0.8rem;
-    min-width: 20px;
-}
-.players-list.compact-mode .player-card .avatar-sm {
-    width: 28px;
-    height: 28px;
-    font-size: 0.6rem;
-}
-.players-list.compact-mode .player-card .info-sm .name-sm {
-    font-size: 0.7rem;
-}
-.players-list.compact-mode .player-card .info-sm .sub-sm {
-    font-size: 0.5rem;
-    gap: 6px;
-}
-.players-list.compact-mode .player-card .points-sm {
-    font-size: 0.65rem;
-    padding: 1px 8px;
-    min-width: 28px;
-}
-.players-list.compact-mode .player-card .progress-mini {
-    width: 30px;
-    height: 3px;
-}
-.players-list.compact-mode .player-card .info-sm .name-sm .mini-badge {
-    font-size: 0.35rem;
-    padding: 0px 5px;
-}
-.players-list.compact-mode .champion-card {
-    padding: 12px;
-    gap: 12px;
-}
-.players-list.compact-mode .champion-card .rank-badge {
-    font-size: 1.8rem;
-    min-width: 40px;
-}
-.players-list.compact-mode .champion-card .avatar {
-    width: 44px;
-    height: 44px;
-    font-size: 1.2rem;
-}
-.players-list.compact-mode .champion-card .info .name {
-    font-size: 0.9rem;
-}
-.players-list.compact-mode .champion-card .info .stats-row .item {
-    font-size: 0.6rem;
-}
-.players-list.compact-mode .champion-card .progress-wrapper .progress-label {
-    font-size: 0.55rem;
-}
-.players-list.compact-mode .champion-card .progress-bar {
-    height: 4px;
-}
+.players-list.compact-mode .player-card .rank { font-size: 0.8rem; min-width: 20px; }
+.players-list.compact-mode .player-card .avatar-sm { width: 28px; height: 28px; font-size: 0.6rem; }
+.players-list.compact-mode .player-card .info-sm .name-sm { font-size: 0.7rem; }
+.players-list.compact-mode .player-card .info-sm .sub-sm { font-size: 0.5rem; gap: 6px; }
+.players-list.compact-mode .player-card .points-sm { font-size: 0.65rem; padding: 1px 8px; min-width: 28px; }
+.players-list.compact-mode .player-card .progress-mini { width: 30px; height: 3px; }
+.players-list.compact-mode .player-card .info-sm .name-sm .mini-badge { font-size: 0.35rem; padding: 0px 5px; }
+.players-list.compact-mode .champion-card { padding: 12px; gap: 12px; }
+.players-list.compact-mode .champion-card .rank-badge { font-size: 1.8rem; min-width: 40px; }
+.players-list.compact-mode .champion-card .avatar { width: 44px; height: 44px; font-size: 1.2rem; }
+.players-list.compact-mode .champion-card .info .name { font-size: 0.9rem; }
+.players-list.compact-mode .champion-card .info .stats-row .item { font-size: 0.6rem; }
+.players-list.compact-mode .champion-card .progress-wrapper .progress-label { font-size: 0.55rem; }
+.players-list.compact-mode .champion-card .progress-bar { height: 4px; }
 
 .player-card {
     background: rgba(255, 255, 255, 0.02);
@@ -1449,19 +1233,10 @@ body {
     min-width: 34px;
     color: var(--text-secondary);
 }
-.player-card .rank.gold {
-    color: #FFD700;
-}
-.player-card .rank.silver {
-    color: #C0C0C0;
-}
-.player-card .rank.bronze {
-    color: #CD7F32;
-}
-.player-card .rank.tie {
-    color: var(--gold-light);
-    font-size: 0.8rem;
-}
+.player-card .rank.gold { color: #FFD700; }
+.player-card .rank.silver { color: #C0C0C0; }
+.player-card .rank.bronze { color: #CD7F32; }
+.player-card .rank.tie { color: var(--gold-light); font-size: 0.8rem; }
 .player-card .avatar-sm {
     width: 40px;
     height: 40px;
@@ -1477,19 +1252,10 @@ body {
     border: 2px solid transparent;
     transition: var(--transition);
 }
-.player-card .avatar-sm.gold-border {
-    border-color: #FFD700;
-}
-.player-card .avatar-sm.silver-border {
-    border-color: #C0C0C0;
-}
-.player-card .avatar-sm.bronze-border {
-    border-color: #CD7F32;
-}
-.player-card .info-sm {
-    flex: 1;
-    min-width: 0;
-}
+.player-card .avatar-sm.gold-border { border-color: #FFD700; }
+.player-card .avatar-sm.silver-border { border-color: #C0C0C0; }
+.player-card .avatar-sm.bronze-border { border-color: #CD7F32; }
+.player-card .info-sm { flex: 1; min-width: 0; }
 .player-card .info-sm .name-sm {
     font-weight: 700;
     font-size: 0.85rem;
@@ -1527,17 +1293,9 @@ body {
     color: var(--gold-light);
     font-weight: 600;
 }
-.player-card .info-sm .sub-sm .arrow-up {
-    color: var(--success);
-    font-weight: 900;
-}
-.player-card .info-sm .sub-sm .arrow-down {
-    color: var(--danger);
-    font-weight: 900;
-}
-.player-card .info-sm .sub-sm .arrow-unchanged {
-    color: var(--text-secondary);
-}
+.player-card .info-sm .sub-sm .arrow-up { color: var(--success); font-weight: 900; }
+.player-card .info-sm .sub-sm .arrow-down { color: var(--danger); font-weight: 900; }
+.player-card .info-sm .sub-sm .arrow-unchanged { color: var(--text-secondary); }
 .player-card .points-sm {
     background: var(--gold-gradient);
     padding: 2px 16px;
@@ -1576,9 +1334,7 @@ body {
     transition: var(--transition);
     box-shadow: 0 0 40px rgba(212, 167, 69, 0.08);
 }
-.player-card .current-user-indicator.active {
-    opacity: 1;
-}
+.player-card .current-user-indicator.active { opacity: 1; }
 .player-card .pulse-dot {
     width: 8px;
     height: 8px;
@@ -1587,15 +1343,8 @@ body {
     animation: pulseDot 1.5s infinite;
 }
 @keyframes pulseDot {
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.4;
-        transform: scale(0.8);
-    }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
 }
 .player-card .compare-btn {
     background: rgba(74, 158, 255, 0.06);
@@ -1618,9 +1367,7 @@ body {
     border-color: var(--info);
 }
 
-/* ============================================================
-   المقارنة
-   ============================================================ */
+/* ===== Compare ===== */
 .compare-container {
     display: flex;
     gap: 24px;
@@ -1638,9 +1385,7 @@ body {
     border: 1px solid var(--border-subtle);
     transition: var(--transition);
 }
-.compare-player:hover {
-    border-color: var(--border-gold);
-}
+.compare-player:hover { border-color: var(--border-gold); }
 .compare-player h3 {
     font-size: 1rem;
     font-weight: 800;
@@ -1659,22 +1404,11 @@ body {
     border-bottom: 1px solid var(--border-subtle);
     font-size: 0.8rem;
 }
-.compare-player .stat-row .label {
-    color: var(--text-secondary);
-}
-.compare-player .stat-row .value {
-    font-weight: 700;
-    color: var(--text-primary);
-}
-.compare-player .stat-row .value.gold {
-    color: var(--gold-light);
-}
-.compare-player .stat-row .value.green {
-    color: var(--success);
-}
-.compare-player .stat-row .value.red {
-    color: var(--danger);
-}
+.compare-player .stat-row .label { color: var(--text-secondary); }
+.compare-player .stat-row .value { font-weight: 700; color: var(--text-primary); }
+.compare-player .stat-row .value.gold { color: var(--gold-light); }
+.compare-player .stat-row .value.green { color: var(--success); }
+.compare-player .stat-row .value.red { color: var(--danger); }
 .compare-vs {
     font-size: 2rem;
     font-weight: 900;
@@ -1707,14 +1441,9 @@ body {
     border-color: var(--gold);
     box-shadow: 0 0 0 3px var(--gold-glow);
 }
-.compare-select select option {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-}
+.compare-select select option { background: var(--bg-secondary); color: var(--text-primary); }
 
-/* ============================================================
-   المباريات
-   ============================================================ */
+/* ===== Matches ===== */
 .matches-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -1766,9 +1495,7 @@ body {
     flex: 1;
     justify-content: center;
 }
-.match-team .flag {
-    font-size: 1.3rem;
-}
+.match-team .flag { font-size: 1.3rem; }
 .match-score {
     background: var(--gold-gradient);
     padding: 2px 18px;
@@ -1793,14 +1520,8 @@ body {
     color: #0a0e1a;
 }
 @keyframes pulseScore {
-    0%,
-    100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-        box-shadow: 0 0 30px rgba(231, 76, 60, 0.20);
-    }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(231, 76, 60, 0.20); }
 }
 .match-meta {
     display: flex;
@@ -1840,13 +1561,8 @@ body {
     animation: pulseText 1s infinite;
 }
 @keyframes pulseText {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.4;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
 }
 
 .score-penalty-badge {
@@ -1860,7 +1576,6 @@ body {
     margin-right: 6px;
 }
 
-/* أزرار التوقع */
 .predict-btn-wrap {
     display: flex;
     gap: 8px;
@@ -1901,9 +1616,7 @@ body {
     color: var(--text-muted);
     border-color: var(--border-subtle);
 }
-.predict-btn-wrap .predict-btn.submitted::after {
-    content: " ✅";
-}
+.predict-btn-wrap .predict-btn.submitted::after { content: " ✅"; }
 .predict-btn-wrap .edit-btn {
     flex: 0 1 auto;
     justify-content: center;
@@ -1920,9 +1633,7 @@ body {
     min-width: 60px;
     display: none;
 }
-.predict-btn-wrap .edit-btn.visible {
-    display: inline-flex;
-}
+.predict-btn-wrap .edit-btn.visible { display: inline-flex; }
 .predict-btn-wrap .edit-btn:hover:not(:disabled) {
     background: rgba(46, 204, 113, 0.16);
     transform: translateY(-2px);
@@ -1975,12 +1686,8 @@ body {
     gap: 6px;
     flex: 1;
 }
-.predict-btn-wrap .btn-group .predict-btn {
-    flex: 1;
-}
-.predict-btn-wrap .btn-group .edit-btn {
-    flex: 0 1 auto;
-}
+.predict-btn-wrap .btn-group .predict-btn { flex: 1; }
+.predict-btn-wrap .btn-group .edit-btn { flex: 0 1 auto; }
 
 .copy-toast {
     position: fixed;
@@ -1999,13 +1706,9 @@ body {
     backdrop-filter: blur(12px);
     display: none;
 }
-.copy-toast.show {
-    display: block;
-}
+.copy-toast.show { display: block; }
 
-/* ============================================================
-   المجموعات
-   ============================================================ */
+/* ===== Groups ===== */
 .groups-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -2020,9 +1723,7 @@ body {
     transition: var(--transition);
     box-shadow: var(--shadow-card);
 }
-.group-card:hover {
-    border-color: var(--border-gold);
-}
+.group-card:hover { border-color: var(--border-gold); }
 .group-card .group-title {
     font-size: 1.1rem;
     font-weight: 800;
@@ -2058,17 +1759,10 @@ body {
     font-weight: 700;
     color: var(--text-primary);
 }
-.standings-table .team-cell span:last-child {
-    color: var(--text-primary);
-}
-.standings-table td:last-child {
-    color: var(--gold);
-    font-weight: 800;
-}
+.standings-table .team-cell span:last-child { color: var(--text-primary); }
+.standings-table td:last-child { color: var(--gold); font-weight: 800; }
 
-/* ============================================================
-   الهدافين
-   ============================================================ */
+/* ===== Scorers ===== */
 .scorers-table {
     width: 100%;
     border-collapse: collapse;
@@ -2092,9 +1786,7 @@ body {
     border-bottom: 1px solid var(--border-subtle);
     color: var(--text-primary);
 }
-.scorers-table .medal {
-    font-size: 1.2rem;
-}
+.scorers-table .medal { font-size: 1.2rem; }
 .scorers-table .player-name {
     font-weight: 700;
     color: var(--gold-light);
@@ -2108,13 +1800,9 @@ body {
     color: var(--gold);
     font-size: 1.1rem;
 }
-.scorers-table tr:last-child td {
-    border-bottom: none;
-}
+.scorers-table tr:last-child td { border-bottom: none; }
 
-/* ============================================================
-   شجرة البطولة — المحسّنة (بدون مكررات)
-   ============================================================ */
+/* ===== Bracket ===== */
 .bracket-wrapper {
     display: none;
     width: 100%;
@@ -2125,9 +1813,7 @@ body {
     border: 1px solid var(--border-gold);
     backdrop-filter: blur(8px);
 }
-.bracket-wrapper.visible {
-    display: block;
-}
+.bracket-wrapper.visible { display: block; }
 .bracket-tree {
     display: flex;
     flex-direction: row;
@@ -2210,9 +1896,7 @@ body {
     font-weight: 600;
     font-size: 0.7rem;
 }
-.bracket-match-item .teams .team .flag {
-    font-size: 1rem;
-}
+.bracket-match-item .teams .team .flag { font-size: 1rem; }
 .bracket-match-item .teams .vs {
     color: var(--text-secondary);
     font-size: 0.45rem;
@@ -2237,9 +1921,7 @@ body {
     color: var(--text-secondary);
     margin-top: 2px;
 }
-.bracket-match-item .status.finished {
-    color: var(--success);
-}
+.bracket-match-item .status.finished { color: var(--success); }
 .bracket-match-item .status.live {
     color: var(--danger);
     animation: pulseText 1s infinite;
@@ -2254,36 +1936,7 @@ body {
     margin-top: 4px;
 }
 
-@media (max-width: 768px) {
-    .bracket-tree {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        padding: 16px 10px;
-    }
-    .bracket-round {
-        min-width: 100%;
-        gap: 10px;
-        padding: 12px 8px;
-    }
-    .bracket-match-item {
-        font-size: 0.6rem;
-        padding: 8px 10px;
-    }
-    .bracket-match-item .teams .team .flag {
-        font-size: 0.8rem;
-    }
-    .bracket-round-title {
-        font-size: 0.7rem;
-    }
-    .bracket-match-item .teams .team {
-        font-size: 0.6rem;
-    }
-}
-
-/* ============================================================
-   التوقعات
-   ============================================================ */
+/* ===== Predictions ===== */
 .predictions-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -2321,13 +1974,8 @@ body {
     color: #0a0e1a;
     font-size: 0.8rem;
 }
-.prediction-card .user .name-p {
-    font-weight: 700;
-}
-.prediction-card .prediction-text {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
+.prediction-card .user .name-p { font-weight: 700; }
+.prediction-card .prediction-text { font-size: 0.8rem; color: var(--text-secondary); }
 .prediction-card .status-badge {
     display: inline-block;
     font-size: 0.65rem;
@@ -2370,15 +2018,9 @@ body {
     border: 1px dashed var(--border-subtle);
     grid-column: 1/-1;
 }
-.empty-state .icon {
-    font-size: 2.5rem;
-    display: block;
-    margin-bottom: 12px;
-}
+.empty-state .icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
 
-/* ============================================================
-   النوافذ المنبثقة (مودال)
-   ============================================================ */
+/* ===== Modals ===== */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -2393,18 +2035,10 @@ body {
     align-items: center;
     animation: fadeInModal 0.3s ease;
 }
-.modal-overlay.active {
-    display: flex;
-}
+.modal-overlay.active { display: flex; }
 @keyframes fadeInModal {
-    from {
-        opacity: 0;
-        transform: scale(0.96);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
 }
 .modal-content {
     background: var(--bg-secondary);
@@ -2434,15 +2068,9 @@ body {
     margin-bottom: 4px !important;
     border-radius: 30px !important;
 }
-.modal-content.compact-mode .modal-teams .m-team {
-    font-size: 0.55rem !important;
-}
-.modal-content.compact-mode .modal-teams .m-team .flag {
-    font-size: 0.7rem !important;
-}
-.modal-content.compact-mode .modal-teams .m-vs {
-    font-size: 0.35rem !important;
-}
+.modal-content.compact-mode .modal-teams .m-team { font-size: 0.55rem !important; }
+.modal-content.compact-mode .modal-teams .m-team .flag { font-size: 0.7rem !important; }
+.modal-content.compact-mode .modal-teams .m-vs { font-size: 0.35rem !important; }
 .modal-content.compact-mode .modal-close {
     width: 18px !important;
     height: 18px !important;
@@ -2473,9 +2101,7 @@ body {
     display: none;
     z-index: 10;
 }
-.modal-compact-btn.visible {
-    display: block;
-}
+.modal-compact-btn.visible { display: block; }
 .modal-compact-btn:hover {
     background: var(--gold-glow);
     border-color: var(--gold);
@@ -2529,18 +2155,10 @@ body {
     gap: 6px;
     font-size: 0.9rem;
 }
-.modal-teams .m-team .flag {
-    font-size: 1.4rem;
-}
-.modal-teams .m-vs {
-    color: var(--text-secondary);
-    font-size: 0.7rem;
-}
+.modal-teams .m-team .flag { font-size: 1.4rem; }
+.modal-teams .m-vs { color: var(--text-secondary); font-size: 0.7rem; }
 
-.predictions-table-wrapper {
-    overflow-x: auto;
-    margin-top: 8px;
-}
+.predictions-table-wrapper { overflow-x: auto; margin-top: 8px; }
 .predictions-table {
     width: 100%;
     border-collapse: collapse;
@@ -2562,37 +2180,24 @@ body {
     border-bottom: 1px solid var(--border-subtle);
     font-size: 0.6rem;
 }
-.predictions-table .status-correct {
-    color: var(--success);
-    font-weight: 700;
-}
-.predictions-table .status-wrong {
-    color: var(--danger);
-    font-weight: 700;
-}
+.predictions-table .status-correct { color: var(--success); font-weight: 700; }
+.predictions-table .status-wrong { color: var(--danger); font-weight: 700; }
 .predictions-table .user-name {
     font-weight: 800;
     color: var(--gold-light) !important;
     cursor: pointer;
 }
-.predictions-table .user-name:hover {
-    text-decoration: underline;
-}
-.predictions-table .prediction-text {
-    font-weight: 600;
-}
-.predictions-table .prediction-text.correct {
-    color: var(--success);
-}
-.predictions-table .prediction-text.wrong {
-    color: var(--danger);
-}
+.predictions-table .user-name:hover { text-decoration: underline; }
+.predictions-table .prediction-text { font-weight: 600; }
+.predictions-table .prediction-text.correct { color: var(--success); }
+.predictions-table .prediction-text.wrong { color: var(--danger); }
 .predictions-table .time-cell {
     font-size: 0.5rem;
     color: var(--text-secondary);
     font-family: monospace;
     white-space: nowrap;
 }
+
 .scorers-detail {
     margin: 8px 0;
     font-size: 0.7rem;
@@ -2607,14 +2212,8 @@ body {
     border-radius: 40px;
     margin: 2px 4px;
 }
-.scorers-detail .goal-item .minute {
-    color: var(--gold-light);
-    font-weight: 700;
-}
-.scorers-detail .goal-item .type {
-    font-size: 0.55rem;
-    color: var(--text-secondary);
-}
+.scorers-detail .goal-item .minute { color: var(--gold-light); font-weight: 700; }
+.scorers-detail .goal-item .type { font-size: 0.55rem; color: var(--text-secondary); }
 
 .modal-options {
     display: flex;
@@ -2662,16 +2261,10 @@ body {
     font-weight: 900;
     font-size: 10px;
 }
-.modal-options .opt-label {
-    font-weight: 600;
-}
-.modal-options .opt-sub {
-    font-size: 0.6rem;
-    color: var(--text-secondary);
-}
-.modal-input {
-    margin-bottom: 16px;
-}
+.modal-options .opt-label { font-weight: 600; }
+.modal-options .opt-sub { font-size: 0.6rem; color: var(--text-secondary); }
+
+.modal-input { margin-bottom: 16px; }
 .modal-input input {
     width: 100%;
     padding: 12px 18px;
@@ -2719,22 +2312,10 @@ body {
     border-radius: 40px;
     font-weight: 600;
 }
-.modal-message.success {
-    color: var(--success);
-    background: var(--success-bg);
-}
-.modal-message.error {
-    color: var(--danger);
-    background: var(--danger-bg);
-}
-.modal-message.warning {
-    color: var(--gold-light);
-    background: var(--gold-glow);
-}
-.modal-message.info {
-    color: var(--info);
-    background: var(--info-bg);
-}
+.modal-message.success { color: var(--success); background: var(--success-bg); }
+.modal-message.error { color: var(--danger); background: var(--danger-bg); }
+.modal-message.warning { color: var(--gold-light); background: var(--gold-glow); }
+.modal-message.info { color: var(--info); background: var(--info-bg); }
 
 .predictions-stats {
     display: flex;
@@ -2751,9 +2332,7 @@ body {
     border-radius: 40px;
 }
 
-/* ============================================================
-   إحصائيات الفرق
-   ============================================================ */
+/* ===== Team Stats ===== */
 .team-stats-table {
     width: 100%;
     border-collapse: collapse;
@@ -2787,9 +2366,7 @@ body {
     font-weight: 800;
 }
 
-/* ============================================================
-   فوتير
-   ============================================================ */
+/* ===== Footer ===== */
 .footer {
     margin-top: 48px;
     text-align: center;
@@ -2801,27 +2378,9 @@ body {
     transition: var(--transition);
     user-select: none;
 }
-.footer:hover {
-    color: var(--gold-light);
-}
+.footer:hover { color: var(--gold-light); }
 
-/* ============================================================
-   عناصر إضافية
-   ============================================================ */
-.click-hint {
-    font-size: 0.55rem;
-    color: var(--text-secondary);
-    opacity: 0.4;
-    margin-top: 4px;
-    text-align: center;
-}
-.click-hint:hover {
-    opacity: 0.8;
-}
-.player-card-clickable:hover .click-hint {
-    opacity: 0.8;
-}
-
+/* ===== Player Prediction Item ===== */
 .player-prediction-item {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border-subtle);
@@ -2843,16 +2402,12 @@ body {
     min-width: 32px;
     font-size: 0.75rem;
 }
-.player-prediction-item .match-info {
-    flex: 1;
-}
+.player-prediction-item .match-info { flex: 1; }
 .player-prediction-item .match-info .teams {
     font-weight: 700;
     font-size: 0.85rem;
 }
-.player-prediction-item .match-info .teams .flag {
-    font-size: 1.1rem;
-}
+.player-prediction-item .match-info .teams .flag { font-size: 1.1rem; }
 .player-prediction-item .match-info .pred {
     font-size: 0.7rem;
     color: var(--gold-light);
@@ -2885,9 +2440,7 @@ body {
     white-space: nowrap;
 }
 
-/* ============================================================
-   التحليلات
-   ============================================================ */
+/* ===== Analytics ===== */
 .analytics-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -2907,64 +2460,15 @@ body {
     text-align: center;
     margin-bottom: 8px;
 }
-.analytics-grid .chart-box canvas {
-    max-height: 200px;
-    max-width: 100%;
-}
-.analytics-grid .chart-box.full-width {
-    grid-column: 1 / -1;
-}
-@media (max-width: 640px) {
-    .analytics-grid {
-        grid-template-columns: 1fr;
-    }
-    .analytics-grid .chart-box.full-width {
-        grid-column: 1;
-    }
-}
-
-.archive-list {
-    max-height: 400px;
-    overflow-y: auto;
-}
-.archive-list .archive-item {
-    cursor: default;
-}
-.archive-list .archive-item .match-info .flag {
-    font-size: 1.2rem;
-}
-.archive-list .archive-item .score {
-    font-size: 0.9rem;
-}
-.archive-summary {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 8px 0 12px;
-    border-bottom: 1px solid var(--border-subtle);
-    margin-bottom: 12px;
-}
-.archive-summary .item {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-}
-.archive-summary .item strong {
-    color: var(--text-primary);
-    font-weight: 700;
-}
-.archive-summary .item .highlight {
-    color: var(--gold-light);
-    font-weight: 700;
-}
+.analytics-grid .chart-box canvas { max-height: 200px; max-width: 100%; }
+.analytics-grid .chart-box.full-width { grid-column: 1 / -1; }
 
 .player-analytics-section {
     margin-top: 16px;
     border-top: 1px solid var(--border-gold);
     padding-top: 16px;
 }
-.player-analytics-section .select-player {
-    margin-bottom: 12px;
-}
+.player-analytics-section .select-player { margin-bottom: 12px; }
 .player-analytics-section select {
     width: 100%;
     padding: 10px 18px;
@@ -2981,10 +2485,8 @@ body {
     border-color: var(--gold);
     box-shadow: 0 0 0 3px var(--gold-glow);
 }
-.player-analytics-section select option {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-}
+.player-analytics-section select option { background: var(--bg-secondary); color: var(--text-primary); }
+
 .player-analytics-details {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -3002,22 +2504,11 @@ body {
     padding: 4px 0;
     border-bottom: 1px solid var(--border-subtle);
 }
-.player-analytics-details .stat-item .label {
-    font-weight: 600;
-}
-.player-analytics-details .stat-item .value {
-    font-weight: 700;
-    color: var(--text-primary);
-}
-.player-analytics-details .stat-item .value.gold {
-    color: var(--gold-light);
-}
-.player-analytics-details .stat-item .value.green {
-    color: var(--success);
-}
-.player-analytics-details .stat-item .value.red {
-    color: var(--danger);
-}
+.player-analytics-details .stat-item .label { font-weight: 600; }
+.player-analytics-details .stat-item .value { font-weight: 700; color: var(--text-primary); }
+.player-analytics-details .stat-item .value.gold { color: var(--gold-light); }
+.player-analytics-details .stat-item .value.green { color: var(--success); }
+.player-analytics-details .stat-item .value.red { color: var(--danger); }
 .player-analytics-details .prediction-trend {
     grid-column: 1 / -1;
     margin-top: 8px;
@@ -3035,7 +2526,6 @@ body {
     color: var(--gold-light);
 }
 
-/* نسبة الفوز (تم إزالة التعادل) */
 .win-probability {
     margin: 12px 0 16px;
     background: rgba(0, 0, 0, 0.15);
@@ -3067,15 +2557,9 @@ body {
     transition: width 0.6s ease;
     height: 100%;
 }
-.win-probability .prob-bar .segment.home {
-    background: var(--success);
-}
-.win-probability .prob-bar .segment.draw {
-    display: none;
-}
-.win-probability .prob-bar .segment.away {
-    background: var(--danger);
-}
+.win-probability .prob-bar .segment.home { background: var(--success); }
+.win-probability .prob-bar .segment.draw { display: none; }
+.win-probability .prob-bar .segment.away { background: var(--danger); }
 .win-probability .prob-labels {
     display: flex;
     justify-content: space-between;
@@ -3093,15 +2577,9 @@ body {
     height: 8px;
     border-radius: 50%;
 }
-.win-probability .prob-labels .dot.home {
-    background: var(--success);
-}
-.win-probability .prob-labels .dot.draw {
-    display: none;
-}
-.win-probability .prob-labels .dot.away {
-    background: var(--danger);
-}
+.win-probability .prob-labels .dot.home { background: var(--success); }
+.win-probability .prob-labels .dot.draw { display: none; }
+.win-probability .prob-labels .dot.away { background: var(--danger); }
 .win-probability .prob-labels .percent {
     font-weight: 700;
     color: var(--text-primary);
@@ -3158,338 +2636,129 @@ body {
     color: var(--danger);
     background: var(--danger-bg);
 }
-@media (max-width: 640px) {
-    .match-analytics-section .match-analytics-grid {
-        grid-template-columns: 1fr;
-    }
+
+.archive-list { max-height: 400px; overflow-y: auto; }
+.archive-list .archive-item { cursor: default; }
+.archive-list .archive-item .match-info .flag { font-size: 1.2rem; }
+.archive-list .archive-item .score { font-size: 0.9rem; }
+.archive-summary {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 8px 0 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 12px;
+}
+.archive-summary .item {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+.archive-summary .item strong { color: var(--text-primary); font-weight: 700; }
+.archive-summary .item .highlight {
+    color: var(--gold-light);
+    font-weight: 700;
 }
 
-/* ============================================================
-   استجابة
-   ============================================================ */
+/* ===== Responsive ===== */
 @media (max-width: 640px) {
-    .top-bar {
-        min-height: 90px;
-        padding: 8px 12px;
-    }
-    .top-bar .top-bar-content {
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-    .top-bar .top-bar-title {
-        font-size: 0.8rem;
-        padding: 4px 14px;
-        gap: 6px;
-    }
-    .top-bar .top-bar-title .icon {
-        font-size: 1rem;
-    }
-    .top-bar .top-bar-sub {
-        font-size: 0.7rem;
-        padding: 4px 12px;
-    }
-    .app-container {
-        padding: 0 8px 32px;
-    }
-    .sticky-header {
-        padding: 10px 14px;
-        margin: 0 -8px 16px;
-        border-radius: 0 0 20px 20px;
-    }
-    .sticky-header .brand h1 {
-        font-size: 1rem;
-    }
-    .sticky-header .brand .sub {
-        font-size: 0.5rem;
-    }
-    .sticky-header .header-btn {
-        padding: 6px 12px;
-        font-size: 0.6rem;
-    }
-    .controls-bar {
-        padding: 12px 16px;
-    }
-    .controls-bar .control-group {
-        min-width: 100%;
-    }
-    .controls-bar select,
-    .controls-bar input {
-        font-size: 0.7rem;
-        padding: 6px 12px;
-    }
-    .share-all-container {
-        flex-direction: column;
-        text-align: center;
-        padding: 12px 16px;
-    }
-    .share-all-btn {
-        width: 100%;
-        justify-content: center;
-    }
-    .admin-controls {
-        flex-direction: column;
-        text-align: center;
-        padding: 12px 14px;
-    }
-    .admin-btn {
-        width: 100%;
-        justify-content: center;
-        font-size: 0.7rem;
-        padding: 6px 14px;
-    }
-    .tabs-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .tabs {
-        justify-content: center;
-    }
-    .day-filter-tabs {
-        justify-content: center;
-    }
-    .leaderboard-section {
-        padding: 16px;
-        margin: 0 0 20px 0;
-    }
-    .leaderboard-section .lb-header .title {
-        font-size: 1.1rem;
-    }
-    .leaderboard-section .lb-header .lb-stats {
-        font-size: 0.6rem;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-    .lb-period-tabs {
-        justify-content: center;
-    }
-    .champion-card {
-        padding: 16px 18px;
-        flex-direction: column;
-        text-align: center;
-        gap: 12px;
-    }
-    .champion-card .rank-badge {
-        font-size: 2.2rem;
-        min-width: auto;
-    }
-    .champion-card .avatar {
-        width: 56px;
-        height: 56px;
-        font-size: 1.4rem;
-    }
-    .champion-card .info .name {
-        font-size: 1rem;
-        justify-content: center;
-    }
-    .champion-card .info .stats-row {
-        justify-content: center;
-        gap: 12px;
-    }
-    .players-list {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-    .players-list.compact-mode {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 4px;
-    }
-    .player-card {
-        padding: 10px 12px;
-    }
-    .player-card .info-sm .name-sm {
-        font-size: 0.75rem;
-    }
-    .player-card .points-sm {
-        font-size: 0.7rem;
-        padding: 2px 10px;
-    }
-    .player-card .progress-mini {
-        width: 40px;
-    }
-    .tab-btn {
-        padding: 8px 14px;
-        font-size: 0.65rem;
-    }
-    .day-filter-tabs .day-btn {
-        padding: 4px 10px;
-        font-size: 0.6rem;
-    }
-    .matches-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
-    .match-team {
-        font-size: 0.75rem;
-    }
-    .match-team .flag {
-        font-size: 1.1rem;
-    }
-    .groups-container {
-        grid-template-columns: 1fr;
-    }
-    .standings-table {
-        font-size: 0.55rem;
-    }
-    .standings-table th,
-    .standings-table td {
-        padding: 4px 2px;
-    }
-    .predictions-grid {
-        grid-template-columns: 1fr;
-    }
-    .modal-content {
-        padding: 20px;
-        max-width: 95%;
-    }
-    .modal-content.compact-mode {
-        padding: 8px !important;
-        max-width: 320px !important;
-    }
-    .modal-content.compact-mode .modal-teams .m-team {
-        font-size: 0.45rem !important;
-    }
-    .modal-content.compact-mode .predictions-table {
-        font-size: 0.4rem !important;
-    }
-    .modal-content.compact-mode .predictions-table th {
-        font-size: 0.35rem !important;
-        padding: 2px 1px !important;
-    }
-    .modal-content.compact-mode .predictions-table td {
-        font-size: 0.35rem !important;
-        padding: 1px 1px !important;
-    }
-    .modal-content.compact-mode .predictions-table .time-cell {
-        font-size: 0.3rem !important;
-    }
-    .modal-teams {
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-    .modal-teams .m-team {
-        font-size: 0.8rem;
-    }
-    .modal-options label {
-        padding: 10px 14px;
-    }
-    .password-box {
-        padding: 24px 20px;
-    }
-    .predictions-stats {
-        gap: 8px;
-    }
-    .predictions-stats .stat-item {
-        font-size: 0.65rem;
-        padding: 4px 10px;
-    }
-    .modal-compact-btn {
-        top: 8px;
-        right: 36px;
-        padding: 3px 8px;
-        font-size: 0.45rem;
-    }
-    .modal-content.compact-mode .modal-compact-btn {
-        top: 2px;
-        right: 24px;
-        padding: 1px 5px;
-        font-size: 0.35rem !important;
-    }
-    .scorers-table {
-        font-size: 0.65rem;
-    }
-    .scorers-table th,
-    .scorers-table td {
-        padding: 6px 4px;
-    }
-    .team-stats-table {
-        font-size: 0.55rem;
-    }
-    .team-stats-table th,
-    .team-stats-table td {
-        padding: 4px 2px;
-    }
-    .predict-btn-wrap .predict-btn,
-    .predict-btn-wrap .view-btn,
-    .predict-btn-wrap .edit-btn {
+    .top-bar { min-height: 90px; padding: 8px 12px; }
+    .top-bar .top-bar-content { flex-wrap: wrap; gap: 6px; }
+    .top-bar .top-bar-title { font-size: 0.8rem; padding: 4px 14px; gap: 6px; }
+    .top-bar .top-bar-title .icon { font-size: 1rem; }
+    .top-bar .top-bar-sub { font-size: 0.7rem; padding: 4px 12px; }
+    .app-container { padding: 0 8px 32px; }
+    .sticky-header { padding: 10px 14px; margin: 0 -8px 16px; border-radius: 0 0 20px 20px; }
+    .sticky-header .brand h1 { font-size: 1rem; }
+    .sticky-header .brand .sub { font-size: 0.5rem; }
+    .sticky-header .header-btn { padding: 6px 12px; font-size: 0.6rem; }
+    .controls-bar { padding: 12px 16px; }
+    .controls-bar .control-group { min-width: 100%; }
+    .controls-bar select, .controls-bar input { font-size: 0.7rem; padding: 6px 12px; }
+    .share-all-container { flex-direction: column; text-align: center; padding: 12px 16px; }
+    .share-all-btn { width: 100%; justify-content: center; }
+    .admin-controls { flex-direction: column; text-align: center; padding: 12px 14px; }
+    .admin-btn { width: 100%; justify-content: center; font-size: 0.7rem; padding: 6px 14px; }
+    .tabs-container { flex-direction: column; align-items: stretch; }
+    .tabs { justify-content: center; }
+    .day-filter-tabs { justify-content: center; }
+    .leaderboard-section { padding: 16px; margin: 0 0 20px 0; }
+    .leaderboard-section .lb-header .title { font-size: 1.1rem; }
+    .leaderboard-section .lb-header .lb-stats { font-size: 0.6rem; gap: 8px; flex-wrap: wrap; }
+    .lb-period-tabs { justify-content: center; }
+    .champion-card { padding: 16px 18px; flex-direction: column; text-align: center; gap: 12px; }
+    .champion-card .rank-badge { font-size: 2.2rem; min-width: auto; }
+    .champion-card .avatar { width: 56px; height: 56px; font-size: 1.4rem; }
+    .champion-card .info .name { font-size: 1rem; justify-content: center; }
+    .champion-card .info .stats-row { justify-content: center; gap: 12px; }
+    .players-list { grid-template-columns: 1fr; gap: 8px; }
+    .players-list.compact-mode { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+    .player-card { padding: 10px 12px; }
+    .player-card .info-sm .name-sm { font-size: 0.75rem; }
+    .player-card .points-sm { font-size: 0.7rem; padding: 2px 10px; }
+    .player-card .progress-mini { width: 40px; }
+    .tab-btn { padding: 8px 14px; font-size: 0.65rem; }
+    .day-filter-tabs .day-btn { padding: 4px 10px; font-size: 0.6rem; }
+    .matches-grid { grid-template-columns: 1fr; gap: 14px; }
+    .match-team { font-size: 0.75rem; }
+    .match-team .flag { font-size: 1.1rem; }
+    .groups-container { grid-template-columns: 1fr; }
+    .standings-table { font-size: 0.55rem; }
+    .standings-table th, .standings-table td { padding: 4px 2px; }
+    .predictions-grid { grid-template-columns: 1fr; }
+    .modal-content { padding: 20px; max-width: 95%; }
+    .modal-content.compact-mode { padding: 8px !important; max-width: 320px !important; }
+    .modal-content.compact-mode .modal-teams .m-team { font-size: 0.45rem !important; }
+    .modal-content.compact-mode .predictions-table { font-size: 0.4rem !important; }
+    .modal-content.compact-mode .predictions-table th { font-size: 0.35rem !important; padding: 2px 1px !important; }
+    .modal-content.compact-mode .predictions-table td { font-size: 0.35rem !important; padding: 1px 1px !important; }
+    .modal-content.compact-mode .predictions-table .time-cell { font-size: 0.3rem !important; }
+    .modal-teams { flex-wrap: wrap; gap: 6px; }
+    .modal-teams .m-team { font-size: 0.8rem; }
+    .modal-options label { padding: 10px 14px; }
+    .password-box { padding: 24px 20px; }
+    .predictions-stats { gap: 8px; }
+    .predictions-stats .stat-item { font-size: 0.65rem; padding: 4px 10px; }
+    .modal-compact-btn { top: 8px; right: 36px; padding: 3px 8px; font-size: 0.45rem; }
+    .modal-content.compact-mode .modal-compact-btn { top: 2px; right: 24px; padding: 1px 5px; font-size: 0.35rem !important; }
+    .scorers-table { font-size: 0.65rem; }
+    .scorers-table th, .scorers-table td { padding: 6px 4px; }
+    .team-stats-table { font-size: 0.55rem; }
+    .team-stats-table th, .team-stats-table td { padding: 4px 2px; }
+    .predict-btn-wrap .predict-btn, .predict-btn-wrap .view-btn, .predict-btn-wrap .edit-btn {
         font-size: 0.55rem !important;
         padding: 6px 8px !important;
         min-width: 50px !important;
     }
-    .predict-btn-wrap .btn-group {
-        flex-wrap: wrap;
-    }
-    .duplicates-table {
-        font-size: 0.5rem;
-    }
-    .duplicates-table th,
-    .duplicates-table td {
-        padding: 3px 2px;
-    }
-    .modal-content .player-prediction-item {
-        font-size: 0.65rem !important;
-        padding: 6px 8px !important;
-    }
-    .name-modal-content {
-        padding: 20px;
-    }
-    .archive-item {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 4px;
-    }
-    .archive-item .stats {
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-    .compare-container {
-        flex-direction: column;
-        gap: 12px;
-    }
-    .compare-vs {
-        padding: 6px 0;
-        justify-content: center;
-    }
-    .compare-select {
-        flex-direction: column;
-    }
-    .compare-select select {
-        min-width: 100%;
-    }
-    .bracket-tree {
-        flex-direction: column;
-        align-items: center;
-        gap: 16px;
-        padding: 12px 6px;
-    }
-    .bracket-round {
-        min-width: 100%;
-        gap: 8px;
-        padding: 10px 6px;
-    }
-    .bracket-match-item {
-        font-size: 0.55rem;
-        padding: 6px 8px;
-    }
-    .bracket-match-item .teams .team .flag {
-        font-size: 0.7rem;
-    }
-    .bracket-round-title {
-        font-size: 0.65rem;
-    }
+    .predict-btn-wrap .btn-group { flex-wrap: wrap; }
+    .duplicates-table { font-size: 0.5rem; }
+    .duplicates-table th, .duplicates-table td { padding: 3px 2px; }
+    .modal-content .player-prediction-item { font-size: 0.65rem !important; padding: 6px 8px !important; }
+    .name-modal-content { padding: 20px; }
+    .archive-item { flex-direction: column; align-items: stretch; gap: 4px; }
+    .archive-item .stats { gap: 8px; flex-wrap: wrap; }
+    .compare-container { flex-direction: column; gap: 12px; }
+    .compare-vs { padding: 6px 0; justify-content: center; }
+    .compare-select { flex-direction: column; }
+    .compare-select select { min-width: 100%; }
+    .bracket-tree { flex-direction: column; align-items: center; gap: 16px; padding: 12px 6px; }
+    .bracket-round { min-width: 100%; gap: 8px; padding: 10px 6px; }
+    .bracket-match-item { font-size: 0.55rem; padding: 6px 8px; }
+    .bracket-match-item .teams .team .flag { font-size: 0.7rem; }
+    .bracket-round-title { font-size: 0.65rem; }
 }
+
+@media (max-width: 640px) {
+    .analytics-grid { grid-template-columns: 1fr; }
+    .analytics-grid .chart-box.full-width { grid-column: 1; }
+    .match-analytics-section .match-analytics-grid { grid-template-columns: 1fr; }
+}
+
 @media (min-width: 768px) {
-    .matches-grid {
-        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    }
-    .players-list {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    }
-    .players-list.compact-mode {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
+    .matches-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+    .players-list { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    .players-list.compact-mode { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 }
+
 @media (min-width: 1024px) {
-    .matches-grid {
-        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    }
+    .matches-grid { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); }
 }
