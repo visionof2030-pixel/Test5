@@ -18,10 +18,7 @@ const CACHE_KEY = "wc_cache_v2";
 const CACHE_TIME = 5 * 60 * 1000;
 
 function setCache(key, value) {
-    localStorage.setItem(key, JSON.stringify({
-        value,
-        time: Date.now()
-    }));
+    localStorage.setItem(key, JSON.stringify({ value, time: Date.now() }));
 }
 
 function getCache(key) {
@@ -134,9 +131,7 @@ async function loadPreviousGamesFull() {
             const homeScore = parseInt(game.home_score, 10);
             const awayScore = parseInt(game.away_score, 10);
             let dateStr = game.local_date || '';
-            let dayName = '',
-                formattedDate = '',
-                timeMatch = '';
+            let dayName = '', formattedDate = '', timeMatch = '';
             let sortTimestamp = 0;
             if (dateStr) {
                 const parts = dateStr.split(' ');
@@ -158,9 +153,7 @@ async function loadPreviousGamesFull() {
                 }
             }
             const penaltyData = extractPenaltyData(game);
-            let homePenalty = null,
-                awayPenalty = null,
-                hadPenalties = false;
+            let homePenalty = null, awayPenalty = null, hadPenalties = false;
             if (penaltyData) {
                 homePenalty = parseInt(penaltyData.home);
                 awayPenalty = parseInt(penaltyData.away);
@@ -283,20 +276,32 @@ async function getPredictionsForUserFull(userName) {
     }
 }
 
-function getLocalPredictions() { try { const data = localStorage.getItem('predictions'); return data ? JSON.parse(data) : {}; } catch (e) { return {}; } }
+function getLocalPredictions() {
+    try {
+        const data = localStorage.getItem('predictions');
+        return data ? JSON.parse(data) : {};
+    } catch (e) { return {}; }
+}
 
-function saveLocalPrediction(userName, matchId, prediction) { try { const predictions = getLocalPredictions();
+function saveLocalPrediction(userName, matchId, prediction) {
+    try {
+        const predictions = getLocalPredictions();
         predictions[`${userName}_${matchId}`] = { userName, matchId, prediction, timestamp: new Date().toISOString() };
-        localStorage.setItem('predictions', JSON.stringify(predictions)); return true; } catch (e) { return false; } }
+        localStorage.setItem('predictions', JSON.stringify(predictions));
+        return true;
+    } catch (e) { return false; }
+}
 
-function getUserPredictionFromLocal(userName, matchId) { if (!userName) return null; return getLocalPredictions()[`${userName}_${matchId}`] || null; }
+function getUserPredictionFromLocal(userName, matchId) {
+    if (!userName) return null;
+    return getLocalPredictions()[`${userName}_${matchId}`] || null;
+}
 
-// ===== RANKING HELPERS =====
+// ===== Ranking Helpers =====
 function getPredictionStatus(prediction) {
     const parts = prediction.match_id.split('_');
     if (parts.length < 3) return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
-    const team1 = parts[1],
-        team2 = parts[2];
+    const team1 = parts[1], team2 = parts[2];
     const result = findMatchResult(team1, team2);
     if (!result) return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
     let correctResult = result.winner || (result.homeScore > result.awayScore ? result.homeAr : (result.awayScore > result.homeScore ? result.awayAr : "DRAW"));
