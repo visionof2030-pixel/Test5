@@ -1,17 +1,8 @@
 // ============================================================
-//  core.js - النواة والبيانات الثابتة والدوال المساعدة
-//  يعتمد على OpenFootball كمصدر رئيسي مع بيانات احتياطية
-//  تم إضافة نتائج المباريات الثابتة يدوياً.
+//  Core Logic & State Management
 // ============================================================
 
-const SUPABASE_URL = "https://szjxwhsmefqpfcebtvei.supabase.co";
-const SUPABASE_KEY = "sb_publishable_0um28lgPMHcjDOThT0UgDA_K-Y7Wmx3";
-const SECRET_CODE = "1406";
-const CACHE_KEY = "wc_cache_v2";
-const CACHE_TIME = 5 * 60 * 1000;
-const MATCH_DURATION = 105 * 60 * 1000;
-
-let state = {
+const state = {
     previousGamesData: [],
     allGames: [],
     openfootballMatches: [],
@@ -23,22 +14,119 @@ let userPredictionsMap = {};
 let isAuthorized = false;
 let isCompactMode = false;
 let isModalCompact = false;
-let currentDayFilter = 'all';
 let currentLeaderboardPeriod = 'all';
-let currentUserName = '';
+let currentDayFilter = 'all';
+let isLoadingPrevious = false;
 let isEditing = false;
+let currentUserName = '';
+let isNameVerified = false;
 let chartInstancesLocal = {};
-let supabaseClient = null;
+let comparePlayer1 = '';
+let comparePlayer2 = '';
 
-try {
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-} catch (e) {
-    console.error("Supabase init error", e);
+// ============================================================
+//  Saudi Time Helpers
+// ============================================================
+
+function toSaudiTime(isoString) {
+    return new Date(isoString);
 }
 
-// ------------------------------------------------------------
-//  الترجمة والبيانات الثابتة
-// ------------------------------------------------------------
+function getSaudiNow() {
+    return new Date();
+}
+
+function formatSaudiDate(isoString) {
+    const d = toSaudiTime(isoString);
+    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+    ];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function formatSaudiTime(isoString) {
+    const d = toSaudiTime(isoString);
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function formatSaudiDateTime(isoString) {
+    return `${formatSaudiDate(isoString)} - ${formatSaudiTime(isoString)}`;
+}
+
+function isTodaySaudi(isoString) {
+    const d = toSaudiTime(isoString);
+    const now = getSaudiNow();
+    return d.getFullYear() === now.getFullYear() &&
+        d.getMonth() === now.getMonth() &&
+        d.getDate() === now.getDate();
+}
+
+function isTomorrowSaudi(isoString) {
+    const d = toSaudiTime(isoString);
+    const now = getSaudiNow();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return d.getFullYear() === tomorrow.getFullYear() &&
+        d.getMonth() === tomorrow.getMonth() &&
+        d.getDate() === tomorrow.getDate();
+}
+
+function getSaudiDay(isoString) {
+    const d = toSaudiTime(isoString);
+    return ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][d.getDay()];
+}
+
+function now() { return Date.now(); }
+
+function matchTime(timeISO) { return new Date(timeISO).getTime(); }
+
+const MATCH_DURATION = 105 * 60 * 1000;
+
+function isMatchLive(timeISO) { const cur = now(); const start = matchTime(timeISO); return cur >= start && cur <=
+        start + MATCH_DURATION; }
+
+function isMatchFinished(timeISO) { return now() > matchTime(timeISO) + MATCH_DURATION; }
+
+function canPredict(timeISO) {
+    const start = matchTime(timeISO);
+    const nowTime = now();
+    const fiveMinutes = 5 * 60 * 1000;
+    return (start - nowTime) > fiveMinutes;
+}
+
+function getMatchStatus(m) {
+    const start = matchTime(m.timeISO);
+    const end = start + MATCH_DURATION;
+    const cur = now();
+    if (cur < start) {
+        const diff = start - cur;
+        const h = Math.floor(diff / 3600000);
+        const min = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        const fiveMin = 5 * 60 * 1000;
+        const remainingText = diff < fiveMin ? '⏳ تنطلق خلال أقل من 5 دقائق' : `⏱️ ${h}h ${min}m ${s}s`;
+        return { live: false, finished: false, text: remainingText };
+    } else if (cur <= end) {
+        return { live: true, finished: false, text: "🔴 تُلعب الآن" };
+    }
+    return { live: false, finished: true, text: "✅ انتهت" };
+}
+
+function upcomingMatches(arr) { return arr.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now()); }
+
+function isMatchTodayOrTomorrow(timeISO) {
+    return isTodaySaudi(timeISO) || isTomorrowSaudi(timeISO);
+}
+
+function formatDate(isoString) {
+    if (!isoString) return 'تاريخ غير معروف';
+    const d = toSaudiTime(isoString);
+    return `${d.getDate()} ${['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][d.getMonth()]} ${d.getFullYear()}، ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ============================================================
+//  Translation & Flags
+// ============================================================
 
 const nameMapping = new Map([
     ["مکزیک", "المكسيك"],
@@ -302,343 +390,36 @@ const nameMapping = new Map([
     ["أوزبكستان", "أوزبكستان"],
     ["غانا", "غانا"],
     ["باراغواي", "باراغواي"],
-    ["Côte d'Ivoire", "ساحل العاج"],
-    ["Korea Republic", "كوريا الجنوبية"],
-    ["Korea", "كوريا الجنوبية"],
-    ["Czechia", "التشيك"],
-    ["USA", "أمريكا"],
-    ["United States of America", "أمريكا"],
-    ["DR Congo", "الكونغو الديمقراطية"],
-    ["Congo DR", "الكونغو الديمقراطية"],
-    ["Bosnia-Herzegovina", "البوسنة والهرسك"],
-    ["Curaçao", "كوراساو"],
-    ["Cape Verde Islands", "الرأس الأخضر"],
-    ["Saudi Arabia", "السعودية"],
-    ["Scotland", "إسكتلندا"],
-    ["England", "إنجلترا"],
-    ["IR Iran", "إيران"],
-    ["Iran", "إيران"],
-    ["Paraguay", "باراغواي"],
-    ["Uzbekistan", "أوزبكستان"],
-    ["Colombia", "كولومبيا"],
-    ["Panama", "بنما"],
-    ["Ghana", "غانا"],
-    ["Croatia", "كرواتيا"]
+    ["جمهورية الكونغو الديمقراطية", "الكونغو الديمقراطية"],
+    ["جمهورية الكونغو", "الكونغو الديمقراطية"],
+    ["الكونغو الديمقراطية", "الكونغو الديمقراطية"],
+    ["البوسنة والهرسك", "البوسنة والهرسك"],
+    ["الرأس الأخضر", "الرأس الأخضر"],
+    ["باراجواي", "باراغواي"],
+    ["باراغواي", "باراغواي"],
+    ["السنغال", "السنغال"],
+    ["جمهورية الكونغو الديمقراطية", "الكونغو الديمقراطية"]
 ]);
 
 const groupLetters = {
-    'A': 'أ', 'B': 'ب', 'C': 'ج', 'D': 'د', 'E': 'هـ', 'F': 'و',
-    'G': 'ز', 'H': 'ح', 'I': 'ط', 'J': 'ي', 'K': 'ك', 'L': 'ل'
+    'A': 'أ',
+    'B': 'ب',
+    'C': 'ج',
+    'D': 'د',
+    'E': 'هـ',
+    'F': 'و',
+    'G': 'ز',
+    'H': 'ح',
+    'I': 'ط',
+    'J': 'ي',
+    'K': 'ك',
+    'L': 'ل'
 };
 
-const stadiums = {
-    "1": "ملعب آزتيكا (المكسيك)",
-    "2": "ملعب سيول (كوريا)",
-    "3": "ملعب تورنتو (كندا)",
-    "4": "ملعب لندن (إنجلترا)",
-    "5": "ملعب برلين (ألمانيا)",
-    "6": "ملعب بوينس آيرس (الأرجنتين)",
-    "7": "ملعب مدريد (إسبانيا)",
-    "8": "ملعب الرياض (السعودية)",
-    "9": "ملعب باريس (فرنسا)",
-    "10": "ملعب أبيدجان (ساحل العاج)",
-    "11": "ملعب الرباط (المغرب)",
-    "12": "ملعب سيدني (أستراليا)",
-    "13": "ملعب اسطنبول (تركيا)",
-    "14": "ملعب بروكسل (بلجيكا)",
-    "15": "ملعب الدوحة (قطر)",
-    "16": "ملعب واشنطن (أمريكا)"
-};
-
-// بيانات المباريات الاحتياطية (تُستخدم في حال فشل تحميل OpenFootball)
-const rawMatches = [
-    { id: 1, team1: "المكسيك", team2: "جنوب أفريقيا", time: "2026-06-11T22:00:00", round: "first" },
-    { id: 2, team1: "الأرجنتين", team2: "الجزائر", time: "2026-06-11T04:00:00", round: "first" },
-    { id: 3, team1: "النمسا", team2: "الأردن", time: "2026-06-11T07:00:00", round: "first" },
-    { id: 4, team1: "البرتغال", team2: "الكونغو الديمقراطية", time: "2026-06-11T20:00:00", round: "first" },
-    { id: 5, team1: "كوريا الجنوبية", team2: "التشيك", time: "2026-06-12T05:00:00", round: "first" },
-    { id: 6, team1: "كندا", team2: "البوسنة والهرسك", time: "2026-06-12T22:00:00", round: "first" },
-    { id: 7, team1: "أمريكا", team2: "العراق", time: "2026-06-13T04:00:00", round: "first" },
-    { id: 8, team1: "سويسرا", team2: "قطر", time: "2026-06-13T22:00:00", round: "first" },
-    { id: 9, team1: "البرازيل", team2: "المغرب", time: "2026-06-14T01:00:00", round: "first" },
-    { id: 10, team1: "هايتي", team2: "إسكتلندا", time: "2026-06-14T04:00:00", round: "first" },
-    { id: 11, team1: "أستراليا", team2: "تركيا", time: "2026-06-14T07:00:00", round: "first" },
-    { id: 12, team1: "ألمانيا", team2: "كوراساو", time: "2026-06-14T20:00:00", round: "first" },
-    { id: 13, team1: "اليابان", team2: "هولندا", time: "2026-06-14T23:00:00", round: "first" },
-    { id: 14, team1: "الإكوادور", team2: "ساحل العاج", time: "2026-06-15T02:00:00", round: "first" },
-    { id: 15, team1: "السويد", team2: "تونس", time: "2026-06-15T05:00:00", round: "first" },
-    { id: 16, team1: "إسبانيا", team2: "الرأس الأخضر", time: "2026-06-15T19:00:00", round: "first" },
-    { id: 17, team1: "مصر", team2: "بلجيكا", time: "2026-06-15T22:00:00", round: "first" },
-    { id: 18, team1: "السعودية", team2: "أوروغواي", time: "2026-06-16T01:00:00", round: "first" },
-    { id: 19, team1: "إيران", team2: "نيوزيلندا", time: "2026-06-16T04:00:00", round: "first" },
-    { id: 20, team1: "السنغال", team2: "فرنسا", time: "2026-06-16T22:00:00", round: "first" },
-    { id: 21, team1: "النرويج", team2: "العراق", time: "2026-06-17T01:00:00", round: "first" },
-    { id: 22, team1: "الجزائر", team2: "الأرجنتين", time: "2026-06-17T04:00:00", round: "first" },
-    { id: 23, team1: "الأردن", team2: "النمسا", time: "2026-06-17T07:00:00", round: "first" },
-    { id: 24, team1: "البرتغال", team2: "كرواتيا", time: "2026-06-17T20:00:00", round: "first" },
-    { id: 25, team1: "إنجلترا", team2: "كرواتيا", time: "2026-06-17T23:00:00", round: "first" },
-    { id: 26, team1: "جنوب أفريقيا", team2: "التشيك", time: "2026-06-18T19:00:00", round: "second" },
-    { id: 27, team1: "سويسرا", team2: "البوسنة والهرسك", time: "2026-06-18T22:00:00", round: "second" },
-    { id: 28, team1: "قطر", team2: "كندا", time: "2026-06-19T01:00:00", round: "second" },
-    { id: 29, team1: "المكسيك", team2: "كوريا الجنوبية", time: "2026-06-19T04:00:00", round: "second" },
-    { id: 30, team1: "أستراليا", team2: "أمريكا", time: "2026-06-19T22:00:00", round: "second" },
-    { id: 31, team1: "المغرب", team2: "إسكتلندا", time: "2026-06-20T01:00:00", round: "second" },
-    { id: 32, team1: "البرازيل", team2: "هايتي", time: "2026-06-20T03:30:00", round: "second" },
-    { id: 33, team1: "تركيا", team2: "باراغواي", time: "2026-06-20T06:00:00", round: "second" },
-    { id: 34, team1: "السويد", team2: "هولندا", time: "2026-06-20T20:00:00", round: "second" },
-    { id: 35, team1: "ساحل العاج", team2: "ألمانيا", time: "2026-06-20T23:00:00", round: "second" },
-    { id: 36, team1: "الإكوادور", team2: "كوراساو", time: "2026-06-21T03:00:00", round: "second" },
-    { id: 37, team1: "اليابان", team2: "تونس", time: "2026-06-21T07:00:00", round: "second" },
-    { id: 38, team1: "إسبانيا", team2: "السعودية", time: "2026-06-21T19:00:00", round: "second" },
-    { id: 39, team1: "بلجيكا", team2: "إيران", time: "2026-06-21T22:00:00", round: "second" },
-    { id: 40, team1: "أوروغواي", team2: "الرأس الأخضر", time: "2026-06-22T01:00:00", round: "second" },
-    { id: 41, team1: "مصر", team2: "نيوزيلندا", time: "2026-06-22T04:00:00", round: "second" },
-    { id: 42, team1: "الأرجنتين", team2: "النمسا", time: "2026-06-22T20:00:00", round: "second" },
-    { id: 43, team1: "العراق", team2: "فرنسا", time: "2026-06-23T00:00:00", round: "second" },
-    { id: 44, team1: "النرويج", team2: "السنغال", time: "2026-06-23T03:00:00", round: "second" },
-    { id: 45, team1: "الأردن", team2: "الجزائر", time: "2026-06-23T06:00:00", round: "second" },
-    { id: 46, team1: "البرتغال", team2: "أوزبكستان", time: "2026-06-23T20:00:00", round: "second" },
-    { id: 47, team1: "إنجلترا", team2: "غانا", time: "2026-06-23T23:00:00", round: "second" },
-    { id: 48, team1: "بنما", team2: "كرواتيا", time: "2026-06-24T02:00:00", round: "second" },
-    { id: 49, team1: "كولومبيا", team2: "الكونغو الديمقراطية", time: "2026-06-24T05:00:00", round: "second" },
-    { id: 50, team1: "كندا", team2: "سويسرا", time: "2026-06-24T22:00:00", round: "third" },
-    { id: 51, team1: "قطر", team2: "البوسنة والهرسك", time: "2026-06-24T22:00:00", round: "third" },
-    { id: 52, team1: "المغرب", team2: "هايتي", time: "2026-06-25T01:00:00", round: "third" },
-    { id: 53, team1: "إسكتلندا", team2: "البرازيل", time: "2026-06-25T01:00:00", round: "third" },
-    { id: 54, team1: "جنوب أفريقيا", team2: "كوريا الجنوبية", time: "2026-06-25T04:00:00", round: "third" },
-    { id: 55, team1: "المكسيك", team2: "التشيك", time: "2026-06-25T04:00:00", round: "third" },
-    { id: 56, team1: "كوراساو", team2: "ساحل العاج", time: "2026-06-25T23:00:00", round: "third" },
-    { id: 57, team1: "ألمانيا", team2: "الإكوادور", time: "2026-06-25T23:00:00", round: "third" },
-    { id: 58, team1: "هولندا", team2: "تونس", time: "2026-06-26T02:00:00", round: "third" },
-    { id: 59, team1: "اليابان", team2: "السويد", time: "2026-06-26T02:00:00", round: "third" },
-    { id: 60, team1: "أمريكا", team2: "تركيا", time: "2026-06-26T05:00:00", round: "third" },
-    { id: 61, team1: "أستراليا", team2: "باراغواي", time: "2026-06-26T05:00:00", round: "third" },
-    { id: 62, team1: "فرنسا", team2: "النرويج", time: "2026-06-26T22:00:00", round: "third" },
-    { id: 63, team1: "السنغال", team2: "العراق", time: "2026-06-26T22:00:00", round: "third" },
-    { id: 64, team1: "السعودية", team2: "الرأس الأخضر", time: "2026-06-27T03:00:00", round: "third" },
-    { id: 65, team1: "إسبانيا", team2: "أوروغواي", time: "2026-06-27T03:00:00", round: "third" },
-    { id: 66, team1: "إيران", team2: "مصر", time: "2026-06-27T06:00:00", round: "third" },
-    { id: 67, team1: "نيوزيلندا", team2: "بلجيكا", time: "2026-06-27T06:00:00", round: "third" },
-    { id: 68, team1: "إنجلترا", team2: "بنما", time: "2026-06-28T00:00:00", round: "third" },
-    { id: 69, team1: "كرواتيا", team2: "غانا", time: "2026-06-28T00:00:00", round: "third" },
-    { id: 70, team1: "البرتغال", team2: "كولومبيا", time: "2026-06-28T02:30:00", round: "third" },
-    { id: 71, team1: "الكونغو الديمقراطية", team2: "أوزبكستان", time: "2026-06-28T02:30:00", round: "third" },
-    { id: 72, team1: "الجزائر", team2: "النمسا", time: "2026-06-28T05:00:00", round: "third" },
-    { id: 73, team1: "الأردن", team2: "الأرجنتين", time: "2026-06-28T05:00:00", round: "third" }
-];
-
-const finalGroups = {
-    "A": ["المكسيك", "جنوب أفريقيا", "كوريا الجنوبية", "التشيك"],
-    "B": ["كندا", "البوسنة والهرسك", "قطر", "سويسرا"],
-    "C": ["البرازيل", "المغرب", "هايتي", "إسكتلندا"],
-    "D": ["أمريكا", "باراغواي", "أستراليا", "تركيا"],
-    "E": ["ألمانيا", "كوراساو", "ساحل العاج", "الإكوادور"],
-    "F": ["هولندا", "اليابان", "السويد", "تونس"],
-    "G": ["بلجيكا", "مصر", "إيران", "نيوزيلندا"],
-    "H": ["إسبانيا", "الرأس الأخضر", "السعودية", "أوروغواي"],
-    "I": ["فرنسا", "السنغال", "النرويج", "العراق"],
-    "J": ["الأرجنتين", "الجزائر", "النمسا", "الأردن"],
-    "K": ["البرتغال", "الكونغو الديمقراطية", "أوزبكستان", "كولومبيا"],
-    "L": ["إنجلترا", "كرواتيا", "غانا", "بنما"]
-};
-
-const matchesData = rawMatches.map(m => ({
-    ...m,
-    timeISO: m.time + "+03:00",
-    roundLabel: m.round === 'first' ? 'الجولة الأولى' : (m.round === 'second' ? 'الجولة الثانية' : 'الجولة الثالثة')
-}));
-
-// ------------------------------------------------------------
-//  المباريات الثابتة مع النتائج (مضافة يدوياً)
-// ------------------------------------------------------------
-const extraFixedResults = [
-    // Group A
-    { homeAr: "المكسيك", awayAr: "جنوب أفريقيا", homeScore: 2, awayScore: 0, dayName: "الخميس", formattedDate: "11 يونيو 2026", timeMatch: "22:00", sortTimestamp: 1 },
-    { homeAr: "كوريا الجنوبية", awayAr: "التشيك", homeScore: 2, awayScore: 1, dayName: "الجمعة", formattedDate: "12 يونيو 2026", timeMatch: "05:00", sortTimestamp: 2 },
-    { homeAr: "التشيك", awayAr: "جنوب أفريقيا", homeScore: 1, awayScore: 1, dayName: "الخميس", formattedDate: "18 يونيو 2026", timeMatch: "19:00", sortTimestamp: 3 },
-    { homeAr: "المكسيك", awayAr: "كوريا الجنوبية", homeScore: 1, awayScore: 0, dayName: "الخميس", formattedDate: "19 يونيو 2026", timeMatch: "04:00", sortTimestamp: 4 },
-    { homeAr: "التشيك", awayAr: "المكسيك", homeScore: 0, awayScore: 3, dayName: "الخميس", formattedDate: "25 يونيو 2026", timeMatch: "04:00", sortTimestamp: 5 },
-    { homeAr: "جنوب أفريقيا", awayAr: "كوريا الجنوبية", homeScore: 1, awayScore: 0, dayName: "الخميس", formattedDate: "25 يونيو 2026", timeMatch: "04:00", sortTimestamp: 6 },
-    // Group B
-    { homeAr: "كندا", awayAr: "البوسنة والهرسك", homeScore: 1, awayScore: 1, dayName: "الجمعة", formattedDate: "12 يونيو 2026", timeMatch: "22:00", sortTimestamp: 7 },
-    { homeAr: "قطر", awayAr: "سويسرا", homeScore: 1, awayScore: 1, dayName: "السبت", formattedDate: "13 يونيو 2026", timeMatch: "22:00", sortTimestamp: 8 },
-    { homeAr: "سويسرا", awayAr: "البوسنة والهرسك", homeScore: 4, awayScore: 1, dayName: "الخميس", formattedDate: "18 يونيو 2026", timeMatch: "22:00", sortTimestamp: 9 },
-    { homeAr: "كندا", awayAr: "قطر", homeScore: 6, awayScore: 0, dayName: "الجمعة", formattedDate: "19 يونيو 2026", timeMatch: "01:00", sortTimestamp: 10 },
-    { homeAr: "سويسرا", awayAr: "كندا", homeScore: 2, awayScore: 1, dayName: "الخميس", formattedDate: "25 يونيو 2026", timeMatch: "04:00", sortTimestamp: 11 },
-    { homeAr: "البوسنة والهرسك", awayAr: "قطر", homeScore: 3, awayScore: 1, dayName: "الخميس", formattedDate: "25 يونيو 2026", timeMatch: "04:00", sortTimestamp: 12 },
-    // Group C
-    { homeAr: "البرازيل", awayAr: "المغرب", homeScore: 1, awayScore: 1, dayName: "السبت", formattedDate: "13 يونيو 2026", timeMatch: "01:00", sortTimestamp: 13 },
-    { homeAr: "هايتي", awayAr: "إسكتلندا", homeScore: 0, awayScore: 1, dayName: "السبت", formattedDate: "13 يونيو 2026", timeMatch: "04:00", sortTimestamp: 14 },
-    { homeAr: "إسكتلندا", awayAr: "المغرب", homeScore: 0, awayScore: 1, dayName: "الجمعة", formattedDate: "19 يونيو 2026", timeMatch: "01:00", sortTimestamp: 15 },
-    { homeAr: "البرازيل", awayAr: "هايتي", homeScore: 3, awayScore: 0, dayName: "الجمعة", formattedDate: "19 يونيو 2026", timeMatch: "03:30", sortTimestamp: 16 },
-    { homeAr: "إسكتلندا", awayAr: "البرازيل", homeScore: 0, awayScore: 3, dayName: "الخميس", formattedDate: "25 يونيو 2026", timeMatch: "01:00", sortTimestamp: 17 },
-    { homeAr: "المغرب", awayAr: "هايتي", homeScore: 4, awayScore: 2, dayName: "الخميس", formattedDate: "25 يونيو 2026", timeMatch: "01:00", sortTimestamp: 18 },
-    // Group D
-    { homeAr: "أمريكا", awayAr: "باراغواي", homeScore: 4, awayScore: 1, dayName: "الجمعة", formattedDate: "12 يونيو 2026", timeMatch: "22:00", sortTimestamp: 19 },
-    { homeAr: "أستراليا", awayAr: "تركيا", homeScore: 2, awayScore: 0, dayName: "السبت", formattedDate: "13 يونيو 2026", timeMatch: "07:00", sortTimestamp: 20 },
-    { homeAr: "أمريكا", awayAr: "أستراليا", homeScore: 2, awayScore: 0, dayName: "الجمعة", formattedDate: "19 يونيو 2026", timeMatch: "22:00", sortTimestamp: 21 },
-    { homeAr: "تركيا", awayAr: "باراغواي", homeScore: 0, awayScore: 1, dayName: "السبت", formattedDate: "20 يونيو 2026", timeMatch: "06:00", sortTimestamp: 22 },
-    { homeAr: "تركيا", awayAr: "أمريكا", homeScore: 3, awayScore: 2, dayName: "الجمعة", formattedDate: "26 يونيو 2026", timeMatch: "05:00", sortTimestamp: 23 },
-    { homeAr: "باراغواي", awayAr: "أستراليا", homeScore: 0, awayScore: 0, dayName: "الجمعة", formattedDate: "26 يونيو 2026", timeMatch: "05:00", sortTimestamp: 24 },
-    // Group E
-    { homeAr: "ألمانيا", awayAr: "كوراساو", homeScore: 7, awayScore: 1, dayName: "السبت", formattedDate: "13 يونيو 2026", timeMatch: "20:00", sortTimestamp: 25 },
-    { homeAr: "ساحل العاج", awayAr: "الإكوادور", homeScore: 1, awayScore: 0, dayName: "السبت", formattedDate: "13 يونيو 2026", timeMatch: "23:00", sortTimestamp: 26 },
-    { homeAr: "ألمانيا", awayAr: "ساحل العاج", homeScore: 2, awayScore: 1, dayName: "السبت", formattedDate: "20 يونيو 2026", timeMatch: "23:00", sortTimestamp: 27 },
-    { homeAr: "الإكوادور", awayAr: "كوراساو", homeScore: 0, awayScore: 0, dayName: "السبت", formattedDate: "20 يونيو 2026", timeMatch: "03:00", sortTimestamp: 28 },
-    { homeAr: "كوراساو", awayAr: "ساحل العاج", homeScore: 0, awayScore: 2, dayName: "الخميس", formattedDate: "25 يونيو 2026", timeMatch: "23:00", sortTimestamp: 29 },
-    { homeAr: "الإكوادور", awayAr: "ألمانيا", homeScore: 2, awayScore: 1, dayName: "الخميس", formattedDate: "25 يونيو 2026", timeMatch: "23:00", sortTimestamp: 30 },
-    // Group F
-    { homeAr: "هولندا", awayAr: "اليابان", homeScore: 2, awayScore: 2, dayName: "السبت", formattedDate: "13 يونيو 2026", timeMatch: "23:00", sortTimestamp: 31 },
-    { homeAr: "السويد", awayAr: "تونس", homeScore: 5, awayScore: 1, dayName: "الأحد", formattedDate: "14 يونيو 2026", timeMatch: "05:00", sortTimestamp: 32 },
-    { homeAr: "هولندا", awayAr: "السويد", homeScore: 5, awayScore: 1, dayName: "السبت", formattedDate: "20 يونيو 2026", timeMatch: "20:00", sortTimestamp: 33 },
-    { homeAr: "تونس", awayAr: "اليابان", homeScore: 0, awayScore: 4, dayName: "الأحد", formattedDate: "21 يونيو 2026", timeMatch: "07:00", sortTimestamp: 34 },
-    { homeAr: "اليابان", awayAr: "السويد", homeScore: 1, awayScore: 1, dayName: "الجمعة", formattedDate: "26 يونيو 2026", timeMatch: "02:00", sortTimestamp: 35 },
-    { homeAr: "تونس", awayAr: "هولندا", homeScore: 1, awayScore: 3, dayName: "الجمعة", formattedDate: "26 يونيو 2026", timeMatch: "02:00", sortTimestamp: 36 },
-    // Group G
-    { homeAr: "بلجيكا", awayAr: "مصر", homeScore: 1, awayScore: 1, dayName: "الأحد", formattedDate: "14 يونيو 2026", timeMatch: "22:00", sortTimestamp: 37 },
-    { homeAr: "إيران", awayAr: "نيوزيلندا", homeScore: 2, awayScore: 2, dayName: "الاثنين", formattedDate: "15 يونيو 2026", timeMatch: "04:00", sortTimestamp: 38 },
-    { homeAr: "بلجيكا", awayAr: "إيران", homeScore: 0, awayScore: 0, dayName: "الأحد", formattedDate: "21 يونيو 2026", timeMatch: "22:00", sortTimestamp: 39 },
-    { homeAr: "نيوزيلندا", awayAr: "مصر", homeScore: 1, awayScore: 3, dayName: "الأحد", formattedDate: "21 يونيو 2026", timeMatch: "01:00", sortTimestamp: 40 },
-    { homeAr: "مصر", awayAr: "إيران", homeScore: 1, awayScore: 1, dayName: "السبت", formattedDate: "27 يونيو 2026", timeMatch: "06:00", sortTimestamp: 41 },
-    { homeAr: "نيوزيلندا", awayAr: "بلجيكا", homeScore: 1, awayScore: 5, dayName: "السبت", formattedDate: "27 يونيو 2026", timeMatch: "06:00", sortTimestamp: 42 },
-    // Group H
-    { homeAr: "إسبانيا", awayAr: "الرأس الأخضر", homeScore: 0, awayScore: 0, dayName: "الأحد", formattedDate: "14 يونيو 2026", timeMatch: "19:00", sortTimestamp: 43 },
-    { homeAr: "السعودية", awayAr: "أوروغواي", homeScore: 1, awayScore: 1, dayName: "الاثنين", formattedDate: "15 يونيو 2026", timeMatch: "01:00", sortTimestamp: 44 },
-    { homeAr: "إسبانيا", awayAr: "السعودية", homeScore: 4, awayScore: 0, dayName: "الأحد", formattedDate: "21 يونيو 2026", timeMatch: "19:00", sortTimestamp: 45 },
-    { homeAr: "أوروغواي", awayAr: "الرأس الأخضر", homeScore: 2, awayScore: 2, dayName: "الأحد", formattedDate: "21 يونيو 2026", timeMatch: "22:00", sortTimestamp: 46 },
-    { homeAr: "الرأس الأخضر", awayAr: "السعودية", homeScore: 0, awayScore: 0, dayName: "السبت", formattedDate: "27 يونيو 2026", timeMatch: "03:00", sortTimestamp: 47 },
-    { homeAr: "أوروغواي", awayAr: "إسبانيا", homeScore: 0, awayScore: 1, dayName: "السبت", formattedDate: "27 يونيو 2026", timeMatch: "03:00", sortTimestamp: 48 },
-    // Group I
-    { homeAr: "فرنسا", awayAr: "السنغال", homeScore: 3, awayScore: 1, dayName: "الاثنين", formattedDate: "15 يونيو 2026", timeMatch: "22:00", sortTimestamp: 49 },
-    { homeAr: "العراق", awayAr: "النرويج", homeScore: 1, awayScore: 4, dayName: "الثلاثاء", formattedDate: "16 يونيو 2026", timeMatch: "04:00", sortTimestamp: 50 },
-    { homeAr: "فرنسا", awayAr: "العراق", homeScore: 3, awayScore: 0, dayName: "الاثنين", formattedDate: "22 يونيو 2026", timeMatch: "20:00", sortTimestamp: 51 },
-    { homeAr: "النرويج", awayAr: "السنغال", homeScore: 3, awayScore: 2, dayName: "الثلاثاء", formattedDate: "23 يونيو 2026", timeMatch: "03:00", sortTimestamp: 52 },
-    { homeAr: "النرويج", awayAr: "فرنسا", homeScore: 1, awayScore: 4, dayName: "الجمعة", formattedDate: "26 يونيو 2026", timeMatch: "22:00", sortTimestamp: 53 },
-    { homeAr: "السنغال", awayAr: "العراق", homeScore: 5, awayScore: 0, dayName: "الجمعة", formattedDate: "26 يونيو 2026", timeMatch: "22:00", sortTimestamp: 54 },
-    // Group J
-    { homeAr: "الأرجنتين", awayAr: "الجزائر", homeScore: 3, awayScore: 0, dayName: "الاثنين", formattedDate: "15 يونيو 2026", timeMatch: "04:00", sortTimestamp: 55 },
-    { homeAr: "النمسا", awayAr: "الأردن", homeScore: 3, awayScore: 1, dayName: "الثلاثاء", formattedDate: "16 يونيو 2026", timeMatch: "07:00", sortTimestamp: 56 },
-    { homeAr: "الأرجنتين", awayAr: "النمسا", homeScore: 2, awayScore: 0, dayName: "الاثنين", formattedDate: "22 يونيو 2026", timeMatch: "20:00", sortTimestamp: 57 },
-    { homeAr: "الأردن", awayAr: "الجزائر", homeScore: 1, awayScore: 2, dayName: "الثلاثاء", formattedDate: "23 يونيو 2026", timeMatch: "06:00", sortTimestamp: 58 },
-    { homeAr: "الجزائر", awayAr: "النمسا", homeScore: 3, awayScore: 3, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "05:00", sortTimestamp: 59 },
-    { homeAr: "الأردن", awayAr: "الأرجنتين", homeScore: 1, awayScore: 3, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "05:00", sortTimestamp: 60 },
-    // Group K
-    { homeAr: "البرتغال", awayAr: "الكونغو الديمقراطية", homeScore: 1, awayScore: 1, dayName: "الثلاثاء", formattedDate: "16 يونيو 2026", timeMatch: "20:00", sortTimestamp: 61 },
-    { homeAr: "أوزبكستان", awayAr: "كولومبيا", homeScore: 1, awayScore: 3, dayName: "الثلاثاء", formattedDate: "16 يونيو 2026", timeMatch: "20:00", sortTimestamp: 62 },
-    { homeAr: "البرتغال", awayAr: "أوزبكستان", homeScore: 5, awayScore: 0, dayName: "الثلاثاء", formattedDate: "23 يونيو 2026", timeMatch: "20:00", sortTimestamp: 63 },
-    { homeAr: "كولومبيا", awayAr: "الكونغو الديمقراطية", homeScore: 1, awayScore: 0, dayName: "الثلاثاء", formattedDate: "23 يونيو 2026", timeMatch: "23:00", sortTimestamp: 64 },
-    { homeAr: "كولومبيا", awayAr: "البرتغال", homeScore: 0, awayScore: 0, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "02:30", sortTimestamp: 65 },
-    { homeAr: "الكونغو الديمقراطية", awayAr: "أوزبكستان", homeScore: 3, awayScore: 1, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "02:30", sortTimestamp: 66 },
-    // Group L
-    { homeAr: "إنجلترا", awayAr: "كرواتيا", homeScore: 4, awayScore: 2, dayName: "الثلاثاء", formattedDate: "16 يونيو 2026", timeMatch: "23:00", sortTimestamp: 67 },
-    { homeAr: "غانا", awayAr: "بنما", homeScore: 1, awayScore: 0, dayName: "الثلاثاء", formattedDate: "16 يونيو 2026", timeMatch: "23:00", sortTimestamp: 68 },
-    { homeAr: "إنجلترا", awayAr: "غانا", homeScore: 0, awayScore: 0, dayName: "الثلاثاء", formattedDate: "23 يونيو 2026", timeMatch: "23:00", sortTimestamp: 69 },
-    { homeAr: "بنما", awayAr: "كرواتيا", homeScore: 0, awayScore: 1, dayName: "الأربعاء", formattedDate: "24 يونيو 2026", timeMatch: "02:00", sortTimestamp: 70 },
-    { homeAr: "بنما", awayAr: "إنجلترا", homeScore: 0, awayScore: 2, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 71 },
-    { homeAr: "كرواتيا", awayAr: "غانا", homeScore: 2, awayScore: 1, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 72 },
-    // Round of 32
-    { homeAr: "جنوب أفريقيا", awayAr: "كندا", homeScore: 0, awayScore: 1, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 73 },
-    { homeAr: "ألمانيا", awayAr: "باراغواي", homeScore: 1, awayScore: 1, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 74 },
-    { homeAr: "هولندا", awayAr: "المغرب", homeScore: 1, awayScore: 1, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 75 },
-    { homeAr: "البرازيل", awayAr: "اليابان", homeScore: 2, awayScore: 1, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 76 },
-    { homeAr: "فرنسا", awayAr: "السويد", homeScore: 3, awayScore: 0, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 77 },
-    { homeAr: "ساحل العاج", awayAr: "النرويج", homeScore: 1, awayScore: 2, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 78 },
-    { homeAr: "المكسيك", awayAr: "الإكوادور", homeScore: 2, awayScore: 0, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 79 },
-    { homeAr: "إنجلترا", awayAr: "الكونغو الديمقراطية", homeScore: 2, awayScore: 1, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 80 },
-    { homeAr: "أمريكا", awayAr: "البوسنة والهرسك", homeScore: 2, awayScore: 0, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 81 },
-    { homeAr: "بلجيكا", awayAr: "السنغال", homeScore: 3, awayScore: 2, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 82 },
-    { homeAr: "البرتغال", awayAr: "كرواتيا", homeScore: 2, awayScore: 1, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 83 },
-    { homeAr: "إسبانيا", awayAr: "النمسا", homeScore: 3, awayScore: 0, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 84 },
-    { homeAr: "سويسرا", awayAr: "الجزائر", homeScore: 2, awayScore: 0, dayName: "الأحد", formattedDate: "28 يونيو 2026", timeMatch: "00:00", sortTimestamp: 85 }
-];
-
-// ------------------------------------------------------------
-//  دوال الأعلام (محدثة)
-// ------------------------------------------------------------
-function getFlag(name) {
-    const map = {
-        "المكسيك": "🇲🇽",
-        "جنوب أفريقيا": "🇿🇦",
-        "الأرجنتين": "🇦🇷",
-        "الجزائر": "🇩🇿",
-        "النمسا": "🇦🇹",
-        "الأردن": "🇯🇴",
-        "البرتغال": "🇵🇹",
-        "الكونغو الديمقراطية": "🇨🇩",
-        "كوريا الجنوبية": "🇰🇷",
-        "التشيك": "🇨🇿",
-        "كندا": "🇨🇦",
-        "البوسنة والهرسك": "🇧🇦",
-        "أمريكا": "🇺🇸",
-        "العراق": "🇮🇶",
-        "سويسرا": "🇨🇭",
-        "قطر": "🇶🇦",
-        "البرازيل": "🇧🇷",
-        "المغرب": "🇲🇦",
-        "هايتي": "🇭🇹",
-        "إسكتلندا": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-        "أستراليا": "🇦🇺",
-        "تركيا": "🇹🇷",
-        "ألمانيا": "🇩🇪",
-        "كوراساو": "🇨🇼",
-        "اليابان": "🇯🇵",
-        "هولندا": "🇳🇱",
-        "الإكوادور": "🇪🇨",
-        "ساحل العاج": "🇨🇮",
-        "السويد": "🇸🇪",
-        "تونس": "🇹🇳",
-        "إسبانيا": "🇪🇸",
-        "الرأس الأخضر": "🇨🇻",
-        "مصر": "🇪🇬",
-        "بلجيكا": "🇧🇪",
-        "السعودية": "🇸🇦",
-        "أوروغواي": "🇺🇾",
-        "إيران": "🇮🇷",
-        "نيوزيلندا": "🇳🇿",
-        "السنغال": "🇸🇳",
-        "فرنسا": "🇫🇷",
-        "النرويج": "🇳🇴",
-        "إنجلترا": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-        "كرواتيا": "🇭🇷",
-        "بنما": "🇵🇦",
-        "كولومبيا": "🇨🇴",
-        "أوزبكستان": "🇺🇿",
-        "غانا": "🇬🇭",
-        "باراغواي": "🇵🇾",
-        "غينيا": "🇬🇳",
-        // أسماء بديلة
-        "Bosnia and Herzegovina": "🇧🇦",
-        "Bosnia-Herzegovina": "🇧🇦",
-        "Côte d'Ivoire": "🇨🇮",
-        "Korea Republic": "🇰🇷",
-        "Czechia": "🇨🇿",
-        "USA": "🇺🇸",
-        "United States": "🇺🇸",
-        "DR Congo": "🇨🇩",
-        "Congo DR": "🇨🇩",
-        "Curaçao": "🇨🇼",
-        "Cape Verde": "🇨🇻",
-        "Saudi Arabia": "🇸🇦",
-        "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-        "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-        "IR Iran": "🇮🇷",
-        "Paraguay": "🇵🇾",
-        "Uzbekistan": "🇺🇿",
-        "Colombia": "🇨🇴",
-        "Panama": "🇵🇦",
-        "Ghana": "🇬🇭",
-        "Croatia": "🇭🇷"
-    };
-    return map[name] || "🏁";
-}
-
-// ------------------------------------------------------------
-//  دوال الترجمة والتطبيع
-// ------------------------------------------------------------
-function normalizeName(str) {
-    if (!str) return "";
+function normalizeName(str) { if (!str) return "";
     str = str.normalize("NFD").replace(/[\u064B-\u065F]/g, "");
-    str = str.replace(/[ى]/g, "ا").replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/[ک]/g, "ك").replace(/[ی]/g, "ي").replace(/[ي]/g, "ي").replace(/[ئ]/g, "ي").replace(/[ؤ]/g, "و").replace(/[إ]/g, "ا").replace(/[آ]/g, "ا");
+    str = str.replace(/[ى]/g, "ا").replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/[ک]/g, "ك").replace(/[ی]/g, "ي")
+        .replace(/[ي]/g, "ي").replace(/[ئ]/g, "ي").replace(/[ؤ]/g, "و").replace(/[إ]/g, "ا").replace(/[آ]/g, "ا");
     return str.trim().replace(/\s+/g, ' ');
 }
 
@@ -692,110 +473,303 @@ function translateBracketTeamName(name) {
     return translateToArabic(name);
 }
 
-// ------------------------------------------------------------
-//  دوال الوقت والتنسيق
-// ------------------------------------------------------------
-function toSaudiTime(isoString) { return new Date(isoString); }
-function getSaudiNow() { return new Date(); }
-
-function formatSaudiDate(isoString) {
-    const d = toSaudiTime(isoString);
-    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
-    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+function getFlag(name) {
+    const map = {
+        "المكسيك": "🇲🇽",
+        "جنوب أفريقيا": "🇿🇦",
+        "الأرجنتين": "🇦🇷",
+        "الجزائر": "🇩🇿",
+        "النمسا": "🇦🇹",
+        "الأردن": "🇯🇴",
+        "البرتغال": "🇵🇹",
+        "الكونغو الديمقراطية": "🇨🇩",
+        "كوريا الجنوبية": "🇰🇷",
+        "التشيك": "🇨🇿",
+        "كندا": "🇨🇦",
+        "البوسنة والهرسك": "🇧🇦",
+        "أمريكا": "🇺🇸",
+        "العراق": "🇮🇶",
+        "سويسرا": "🇨🇭",
+        "قطر": "🇶🇦",
+        "البرازيل": "🇧🇷",
+        "المغرب": "🇲🇦",
+        "هايتي": "🇭🇹",
+        "إسكتلندا": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+        "أستراليا": "🇦🇺",
+        "تركيا": "🇹🇷",
+        "ألمانيا": "🇩🇪",
+        "كوراساو": "🇨🇼",
+        "اليابان": "🇯🇵",
+        "هولندا": "🇳🇱",
+        "الإكوادور": "🇪🇨",
+        "ساحل العاج": "🇨🇮",
+        "السويد": "🇸🇪",
+        "تونس": "🇹🇳",
+        "إسبانيا": "🇪🇸",
+        "الرأس الأخضر": "🇨🇻",
+        "مصر": "🇪🇬",
+        "بلجيكا": "🇧🇪",
+        "السعودية": "🇸🇦",
+        "أوروغواي": "🇺🇾",
+        "إيران": "🇮🇷",
+        "نيوزيلندا": "🇳🇿",
+        "السنغال": "🇸🇳",
+        "فرنسا": "🇫🇷",
+        "النرويج": "🇳🇴",
+        "إنجلترا": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        "كرواتيا": "🇭🇷",
+        "بنما": "🇵🇦",
+        "كولومبيا": "🇨🇴",
+        "أوزبكستان": "🇺🇿",
+        "غانا": "🇬🇭",
+        "باراغواي": "🇵🇾"
+    };
+    return map[name] || "🏁";
 }
 
-function formatSaudiTime(isoString) {
-    const d = toSaudiTime(isoString);
-    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-}
+// ============================================================
+//  Static Data
+// ============================================================
 
-function formatSaudiDateTime(isoString) {
-    return `${formatSaudiDate(isoString)} - ${formatSaudiTime(isoString)}`;
-}
+const stadiums = {
+    "1": "ملعب آزتيكا (المكسيك)",
+    "2": "ملعب سيول (كوريا)",
+    "3": "ملعب تورنتو (كندا)",
+    "4": "ملعب لندن (إنجلترا)",
+    "5": "ملعب برلين (ألمانيا)",
+    "6": "ملعب بوينس آيرس (الأرجنتين)",
+    "7": "ملعب مدريد (إسبانيا)",
+    "8": "ملعب الرياض (السعودية)",
+    "9": "ملعب باريس (فرنسا)",
+    "10": "ملعب أبيدجان (ساحل العاج)",
+    "11": "ملعب الرباط (المغرب)",
+    "12": "ملعب سيدني (أستراليا)",
+    "13": "ملعب اسطنبول (تركيا)",
+    "14": "ملعب بروكسل (بلجيكا)",
+    "15": "ملعب الدوحة (قطر)",
+    "16": "ملعب واشنطن (أمريكا)"
+};
 
-function isTodaySaudi(isoString) {
-    const d = toSaudiTime(isoString);
-    const now = getSaudiNow();
-    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
-}
+const rawMatches = [
+    // الجولات الثلاث الأولى
+    { id: 1, team1: "المكسيك", team2: "جنوب أفريقيا", time: "2026-06-11T22:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 2, team1: "الأرجنتين", team2: "الجزائر", time: "2026-06-11T04:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 3, team1: "النمسا", team2: "الأردن", time: "2026-06-11T07:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 4, team1: "البرتغال", team2: "الكونغو الديمقراطية", time: "2026-06-11T20:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 5, team1: "كوريا الجنوبية", team2: "التشيك", time: "2026-06-12T05:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 6, team1: "كندا", team2: "البوسنة والهرسك", time: "2026-06-12T22:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 7, team1: "أمريكا", team2: "العراق", time: "2026-06-13T04:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 8, team1: "سويسرا", team2: "قطر", time: "2026-06-13T22:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 9, team1: "البرازيل", team2: "المغرب", time: "2026-06-14T01:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 10, team1: "هايتي", team2: "إسكتلندا", time: "2026-06-14T04:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 11, team1: "أستراليا", team2: "تركيا", time: "2026-06-14T07:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 12, team1: "ألمانيا", team2: "كوراساو", time: "2026-06-14T20:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 13, team1: "اليابان", team2: "هولندا", time: "2026-06-14T23:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 14, team1: "الإكوادور", team2: "ساحل العاج", time: "2026-06-15T02:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 15, team1: "السويد", team2: "تونس", time: "2026-06-15T05:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 16, team1: "إسبانيا", team2: "الرأس الأخضر", time: "2026-06-15T19:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 17, team1: "مصر", team2: "بلجيكا", time: "2026-06-15T22:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 18, team1: "السعودية", team2: "أوروغواي", time: "2026-06-16T01:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 19, team1: "إيران", team2: "نيوزيلندا", time: "2026-06-16T04:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 20, team1: "السنغال", team2: "فرنسا", time: "2026-06-16T22:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 21, team1: "النرويج", team2: "العراق", time: "2026-06-17T01:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 22, team1: "الجزائر", team2: "الأرجنتين", time: "2026-06-17T04:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 23, team1: "الأردن", team2: "النمسا", time: "2026-06-17T07:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 24, team1: "البرتغال", team2: "كرواتيا", time: "2026-06-17T20:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 25, team1: "إنجلترا", team2: "كرواتيا", time: "2026-06-17T23:00:00+03:00", round: "first",
+        roundLabel: "الجولة الأولى" },
+    { id: 26, team1: "جنوب أفريقيا", team2: "التشيك", time: "2026-06-18T19:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 27, team1: "سويسرا", team2: "البوسنة والهرسك", time: "2026-06-18T22:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 28, team1: "قطر", team2: "كندا", time: "2026-06-19T01:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 29, team1: "المكسيك", team2: "كوريا الجنوبية", time: "2026-06-19T04:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 30, team1: "أستراليا", team2: "أمريكا", time: "2026-06-19T22:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 31, team1: "المغرب", team2: "إسكتلندا", time: "2026-06-20T01:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 32, team1: "البرازيل", team2: "هايتي", time: "2026-06-20T03:30:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 33, team1: "تركيا", team2: "باراغواي", time: "2026-06-20T06:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 34, team1: "السويد", team2: "هولندا", time: "2026-06-20T20:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 35, team1: "ساحل العاج", team2: "ألمانيا", time: "2026-06-20T23:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 36, team1: "الإكوادور", team2: "كوراساو", time: "2026-06-21T03:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 37, team1: "اليابان", team2: "تونس", time: "2026-06-21T07:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 38, team1: "إسبانيا", team2: "السعودية", time: "2026-06-21T19:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 39, team1: "بلجيكا", team2: "إيران", time: "2026-06-21T22:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 40, team1: "أوروغواي", team2: "الرأس الأخضر", time: "2026-06-22T01:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 41, team1: "مصر", team2: "نيوزيلندا", time: "2026-06-22T04:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 42, team1: "الأرجنتين", team2: "النمسا", time: "2026-06-22T20:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 43, team1: "العراق", team2: "فرنسا", time: "2026-06-23T00:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 44, team1: "النرويج", team2: "السنغال", time: "2026-06-23T03:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 45, team1: "الأردن", team2: "الجزائر", time: "2026-06-23T06:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 46, team1: "البرتغال", team2: "أوزبكستان", time: "2026-06-23T20:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 47, team1: "إنجلترا", team2: "غانا", time: "2026-06-23T23:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 48, team1: "بنما", team2: "كرواتيا", time: "2026-06-24T02:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 49, team1: "كولومبيا", team2: "الكونغو الديمقراطية", time: "2026-06-24T05:00:00+03:00", round: "second",
+        roundLabel: "الجولة الثانية" },
+    { id: 50, team1: "كندا", team2: "سويسرا", time: "2026-06-24T22:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 51, team1: "قطر", team2: "البوسنة والهرسك", time: "2026-06-24T22:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 52, team1: "المغرب", team2: "هايتي", time: "2026-06-25T01:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 53, team1: "إسكتلندا", team2: "البرازيل", time: "2026-06-25T01:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 54, team1: "جنوب أفريقيا", team2: "كوريا الجنوبية", time: "2026-06-25T04:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 55, team1: "المكسيك", team2: "التشيك", time: "2026-06-25T04:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 56, team1: "كوراساو", team2: "ساحل العاج", time: "2026-06-25T23:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 57, team1: "ألمانيا", team2: "الإكوادور", time: "2026-06-25T23:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 58, team1: "هولندا", team2: "تونس", time: "2026-06-26T02:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 59, team1: "اليابان", team2: "السويد", time: "2026-06-26T02:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 60, team1: "أمريكا", team2: "تركيا", time: "2026-06-26T05:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 61, team1: "أستراليا", team2: "باراغواي", time: "2026-06-26T05:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 62, team1: "فرنسا", team2: "النرويج", time: "2026-06-26T22:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 63, team1: "السنغال", team2: "العراق", time: "2026-06-26T22:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 64, team1: "السعودية", team2: "الرأس الأخضر", time: "2026-06-27T03:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 65, team1: "إسبانيا", team2: "أوروغواي", time: "2026-06-27T03:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 66, team1: "إيران", team2: "مصر", time: "2026-06-27T06:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 67, team1: "نيوزيلندا", team2: "بلجيكا", time: "2026-06-27T06:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 68, team1: "إنجلترا", team2: "بنما", time: "2026-06-28T00:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 69, team1: "كرواتيا", team2: "غانا", time: "2026-06-28T00:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 70, team1: "البرتغال", team2: "كولومبيا", time: "2026-06-28T02:30:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 71, team1: "الكونغو الديمقراطية", team2: "أوزبكستان", time: "2026-06-28T02:30:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 72, team1: "الجزائر", team2: "النمسا", time: "2026-06-28T05:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
+    { id: 73, team1: "الأردن", team2: "الأرجنتين", time: "2026-06-28T05:00:00+03:00", round: "third",
+        roundLabel: "الجولة الثالثة" },
 
-function isTomorrowSaudi(isoString) {
-    const d = toSaudiTime(isoString);
-    const now = getSaudiNow();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return d.getFullYear() === tomorrow.getFullYear() && d.getMonth() === tomorrow.getMonth() && d.getDate() === tomorrow.getDate();
-}
+    // ===== دور الـ 32 (16 مباراة فقط) =====
+    { id: 101, team1: "جنوب أفريقيا", team2: "كندا", time: "2026-06-28T22:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب سوفي - إنجلوود" },
+    { id: 102, team1: "البرازيل", team2: "اليابان", time: "2026-06-29T20:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب إن آر جي - هيوستن" },
+    { id: 103, team1: "ألمانيا", team2: "باراغواي", time: "2026-06-29T23:30:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب جيليت - فوكسبورو" },
+    { id: 104, team1: "هولندا", team2: "المغرب", time: "2026-06-30T04:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب بي بي في إيه - غوادالوبي" },
+    { id: 105, team1: "ساحل العاج", team2: "النرويج", time: "2026-06-30T20:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب آيه تي آند تي - أرلينغتون" },
+    { id: 106, team1: "فرنسا", team2: "السويد", time: "2026-07-01T00:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب متلايف - إيست رذرفورد" },
+    { id: 107, team1: "المكسيك", team2: "الإكوادور", time: "2026-07-01T04:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب أزتيكا - مكسيكو سيتي" },
+    { id: 108, team1: "إنجلترا", team2: "الكونغو الديمقراطية", time: "2026-07-01T19:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب مرسيدس بنز - أتلانتا" },
+    { id: 109, team1: "بلجيكا", team2: "السنغال", time: "2026-07-01T23:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب لومن فيلد - سياتل" },
+    { id: 110, team1: "أمريكا", team2: "البوسنة والهرسك", time: "2026-07-02T03:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب ليفاي - سانتا كلارا" },
+    { id: 111, team1: "إسبانيا", team2: "النمسا", time: "2026-07-02T22:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب سوفي - إنجلوود" },
+    { id: 112, team1: "البرتغال", team2: "كرواتيا", time: "2026-07-03T02:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب بي إم أو فيلد - تورونتو" },
+    { id: 113, team1: "سويسرا", team2: "الجزائر", time: "2026-07-03T06:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب بي سي بليس - فانكوفر" },
+    { id: 114, team1: "أستراليا", team2: "مصر", time: "2026-07-03T21:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب آيه تي آند تي - أرلينغتون" },
+    { id: 115, team1: "الأرجنتين", team2: "الرأس الأخضر", time: "2026-07-04T01:00:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب هارد روك - ميامي غاردنز" },
+    { id: 116, team1: "كولومبيا", team2: "غانا", time: "2026-07-04T04:30:00+03:00", round: "round32",
+        roundLabel: "دور الـ 32", stadium: "ملعب أروهيد - كانساس سيتي" }
+];
 
-function getSaudiDay(isoString) {
-    const d = toSaudiTime(isoString);
-    return ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][d.getDay()];
-}
+const matchesData = rawMatches.map(m => ({
+    ...m,
+    timeISO: m.time,
+    roundLabel: m.roundLabel || (m.round === 'first' ? 'الجولة الأولى' : (m.round === 'second' ? 'الجولة الثانية' :
+        (m.round === 'third' ? 'الجولة الثالثة' : 'دور الـ 32')))
+}));
 
-function matchTime(timeISO) { return new Date(timeISO).getTime(); }
-function now() { return Date.now(); }
+const finalGroups = {
+    "A": ["المكسيك", "جنوب أفريقيا", "كوريا الجنوبية", "التشيك"],
+    "B": ["كندا", "البوسنة والهرسك", "قطر", "سويسرا"],
+    "C": ["البرازيل", "المغرب", "هايتي", "إسكتلندا"],
+    "D": ["أمريكا", "باراغواي", "أستراليا", "تركيا"],
+    "E": ["ألمانيا", "كوراساو", "ساحل العاج", "الإكوادور"],
+    "F": ["هولندا", "اليابان", "السويد", "تونس"],
+    "G": ["بلجيكا", "مصر", "إيران", "نيوزيلندا"],
+    "H": ["إسبانيا", "الرأس الأخضر", "السعودية", "أوروغواي"],
+    "I": ["فرنسا", "السنغال", "النرويج", "العراق"],
+    "J": ["الأرجنتين", "الجزائر", "النمسا", "الأردن"],
+    "K": ["البرتغال", "الكونغو الديمقراطية", "أوزبكستان", "كولومبيا"],
+    "L": ["إنجلترا", "كرواتيا", "غانا", "بنما"]
+};
 
-function isMatchLive(timeISO) {
-    const cur = now();
-    const start = matchTime(timeISO);
-    return cur >= start && cur <= start + MATCH_DURATION;
-}
-
-function isMatchFinished(timeISO) {
-    return now() > matchTime(timeISO) + MATCH_DURATION;
-}
-
-function canPredict(timeISO) {
-    const start = matchTime(timeISO);
-    const nowTime = now();
-    const fiveMinutes = 5 * 60 * 1000;
-    return (start - nowTime) > fiveMinutes;
-}
-
-function getMatchStatus(m) {
-    const start = matchTime(m.timeISO);
-    const end = start + MATCH_DURATION;
-    const cur = now();
-    if (cur < start) {
-        const diff = start - cur;
-        const h = Math.floor(diff / 3600000);
-        const min = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
-        const fiveMin = 5 * 60 * 1000;
-        const remainingText = diff < fiveMin ? '⏳ تنطلق خلال أقل من 5 دقائق' : `⏱️ ${h}h ${min}m ${s}s`;
-        return { live: false, finished: false, text: remainingText };
-    } else if (cur <= end) {
-        return { live: true, finished: false, text: "🔴 تُلعب الآن" };
-    }
-    return { live: false, finished: true, text: "✅ انتهت" };
-}
-
-function upcomingMatches(arr) {
-    return arr.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now());
-}
-
-function isMatchTodayOrTomorrow(timeISO) {
-    return isTodaySaudi(timeISO) || isTomorrowSaudi(timeISO);
-}
-
-function isMatchToday(timeISO) { return isTodaySaudi(timeISO); }
-function getDay(t) { return getSaudiDay(t); }
-function getDateFmt(t) { return formatSaudiDate(t); }
-function getTimeFromISO(t) { return formatSaudiTime(t); }
-function getDateTimeDisplay(t) { return formatSaudiDateTime(t); }
-
-function formatDate(isoString) {
-    if (!isoString) return 'تاريخ غير معروف';
-    const d = toSaudiTime(isoString);
-    return `${d.getDate()} ${['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][d.getMonth()]} ${d.getFullYear()}، ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-}
+// ============================================================
+//  Get Stadium Name
+// ============================================================
 
 function getStadiumName(id) {
     return stadiums[id] || `ملعب رقم ${id}`;
 }
 
 function getGroundForMatch(team1, team2, timeISO) {
-    if (!state.openfootballMatches) return null;
+    const directMatch = matchesData.find(m => (m.team1 === team1 && m.team2 === team2) || (m.team1 === team2 && m
+        .team2 === team1));
+    if (directMatch && directMatch.stadium) return directMatch.stadium;
+
+    if (!state.openfootballMatches || !state.openfootballMatches.length) return null;
     const t1 = translateToArabic(team1);
     const t2 = translateToArabic(team2);
     let match = state.openfootballMatches.find(m => {
@@ -815,116 +789,33 @@ function getGroundForMatch(team1, team2, timeISO) {
     return null;
 }
 
-function findMatchResult(team1, team2) {
-    const games = state.previousGamesData || [];
-    let match = games.find(m => (m.homeAr === team1 && m.awayAr === team2) || (m.homeAr === team2 && m.awayAr === team1));
-    if (match) return { homeScore: match.homeScore, awayScore: match.awayScore, homeAr: match.homeAr, awayAr: match.awayAr };
-    return null;
-}
+function getDateFmt(t) { return formatSaudiDate(t); }
 
-function parseScorersWithMinutes(scorerString) {
-    if (!scorerString || scorerString === "null") return [];
-    let cleaned = scorerString.trim();
-    if (cleaned.startsWith('{') && cleaned.endsWith('}')) cleaned = cleaned.slice(1, -1);
-    let parts = cleaned.split(',').map(s => s.trim());
-    let result = [];
-    for (let part of parts) {
-        part = part.replace(/^["“”]|["“”]$/g, '').trim();
-        let minuteMatch = part.match(/^(.+?)\s+(\d+['’]?)(?:\s*\(([^)]+)\))?$/);
-        if (minuteMatch) {
-            let name = minuteMatch[1].trim();
-            let minute = minuteMatch[2].trim();
-            let type = minuteMatch[3] ? minuteMatch[3].trim() : '';
-            result.push({ name, minute, type });
-        } else {
-            result.push({ name: part, minute: '', type: '' });
-        }
-    }
-    return result;
-}
+// ============================================================
+//  Getting Started
+// ============================================================
 
-function getSortTimestamp(game) {
-    let ts = 0;
-    const dateStr = game.local_date || '';
-    if (dateStr) {
-        const parts = dateStr.split(' ');
-        const dateParts = parts[0]?.split('/');
-        if (dateParts && dateParts.length === 3) {
-            const d = new Date(`${dateParts[2]}-${dateParts[0]}-${dateParts[1]}T12:00:00`);
-            if (!isNaN(d)) {
-                ts = d.getTime();
-            }
-        }
-        if (parts.length > 1 && parts[1]?.match(/\d{2}:\d{2}/)) {
-            const timeParts = parts[1].split(':');
-            if (timeParts.length === 2) {
-                ts += parseInt(timeParts[0]) * 3600000 + parseInt(timeParts[1]) * 60000;
-            }
-        }
-    }
-    return ts;
-}
+async function init() {
+    console.log("🚀 INIT START (محسن)");
+    await Promise.all([
+        loadPreviousGamesFull(),
+        fetchOpenfootballData(),
+        getAllPredictions()
+    ]);
+    state.loaded = true;
 
-// ------------------------------------------------------------
-//  دوال التخزين المحلي
-// ------------------------------------------------------------
-function getCache(key) {
-    try {
-        const raw = localStorage.getItem(key);
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        if (Date.now() - parsed.time > CACHE_TIME) return null;
-        return parsed.value;
-    } catch { return null; }
-}
+    updateScorers();
+    renderLeaderboard('all');
+    renderUpcoming();
+    calculateStandings();
+    renderTeamStats();
+    renderScorers();
+    renderBracket();
+    renderAllPredictions();
+    initTabs();
+    checkUrlForMatch();
+    startAutoUpdate();
+    updateNewsTicker();
 
-function setCache(key, value) {
-    localStorage.setItem(key, JSON.stringify({ value, time: Date.now() }));
+    console.log("✅ INIT DONE (محسن)");
 }
-
-function getSubmittedMatches() {
-    try {
-        const raw = localStorage.getItem('submitted_matches');
-        if (!raw) return [];
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
-    } catch { return []; }
-}
-
-function addSubmittedMatch(matchId) {
-    const current = getSubmittedMatches();
-    if (!current.includes(matchId)) {
-        current.push(matchId);
-        localStorage.setItem('submitted_matches', JSON.stringify(current));
-    }
-}
-
-function removeSubmittedMatch(matchId) {
-    const current = getSubmittedMatches();
-    const filtered = current.filter(id => id !== matchId);
-    localStorage.setItem('submitted_matches', JSON.stringify(filtered));
-}
-
-function isMatchSubmitted(matchId) {
-    return getSubmittedMatches().includes(matchId);
-}
-
-function getLocalPredictions() {
-    try { const data = localStorage.getItem('predictions'); return data ? JSON.parse(data) : {}; } catch (e) { return {}; }
-}
-
-function saveLocalPrediction(userName, matchId, prediction) {
-    try {
-        const predictions = getLocalPredictions();
-        predictions[`${userName}_${matchId}`] = { userName, matchId, prediction, timestamp: new Date().toISOString() };
-        localStorage.setItem('predictions', JSON.stringify(predictions));
-        return true;
-    } catch (e) { return false; }
-}
-
-function getUserPredictionFromLocal(userName, matchId) {
-    if (!userName) return null;
-    return getLocalPredictions()[`${userName}_${matchId}`] || null;
-}
-
-// نهاية core.js
