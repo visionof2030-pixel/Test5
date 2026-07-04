@@ -1,8 +1,8 @@
 // ============================================================
-//  API & Supabase
+//  API - التعامل مع Supabase والبيانات الخارجية
 // ============================================================
 
-// Supabase configuration
+// ===== Supabase Configuration =====
 const SUPABASE_URL = "https://szjxwhsmefqpfcebtvei.supabase.co";
 const SUPABASE_KEY = "sb_publishable_0um28lgPMHcjDOThT0UgDA_K-Y7Wmx3";
 
@@ -13,7 +13,7 @@ try {
     console.error("Supabase init error", e);
 }
 
-// Cache helpers
+// ===== Caching =====
 const CACHE_KEY = "wc_cache_v2";
 const CACHE_TIME = 5 * 60 * 1000;
 
@@ -34,7 +34,7 @@ function getCache(key) {
     } catch { return null; }
 }
 
-// Submitted matches
+// ===== Local Storage Helpers =====
 function getSubmittedMatches() {
     try {
         const raw = localStorage.getItem('submitted_matches');
@@ -62,10 +62,7 @@ function isMatchSubmitted(matchId) {
     return getSubmittedMatches().includes(matchId);
 }
 
-// ============================================================
-//  Data Fetching
-// ============================================================
-
+// ===== Load Data =====
 async function loadPreviousGames() {
     const cached = getCache("games");
     if (cached) {
@@ -147,10 +144,8 @@ async function loadPreviousGamesFull() {
                 if (dateParts && dateParts.length === 3) {
                     const d = new Date(`${dateParts[2]}-${dateParts[0]}-${dateParts[1]}T12:00:00`);
                     if (!isNaN(d)) {
-                        dayName = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][d
-                        .getDay()];
-                        formattedDate =
-                            `${d.getDate()} ${['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][d.getMonth()]} ${d.getFullYear()}`;
+                        dayName = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][d.getDay()];
+                        formattedDate = `${d.getDate()} ${['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][d.getMonth()]} ${d.getFullYear()}`;
                         sortTimestamp = d.getTime();
                     }
                 }
@@ -162,7 +157,6 @@ async function loadPreviousGamesFull() {
                     }
                 }
             }
-            // استخراج بيانات ركلات الترجيح
             const penaltyData = extractPenaltyData(game);
             let homePenalty = null,
                 awayPenalty = null,
@@ -177,15 +171,23 @@ async function loadPreviousGamesFull() {
         });
         state.previousGamesData = newData;
         setCache("games", newData);
+        renderPreviousGamesFiltered();
+        calculateStandings();
+        renderTeamStats();
+        renderBracket();
+        renderLeaderboard(currentLeaderboardPeriod);
+        updateScorers();
+        updateNewsTicker();
     } catch (e) {
         console.error("❌ تحميل السابقة:", e);
+        if (state.previousGamesData.length === 0) {
+            document.getElementById('previousMatchesContainer').innerHTML =
+                `<div class="empty-state"><span class="icon">⚠️</span> فشل التحميل <button onclick="loadPreviousGamesFull()" style="display:block;margin:12px auto 0;background:var(--gold-gradient);border:none;padding:8px 24px;border-radius:40px;font-weight:700;color:#0a0e1a;cursor:pointer;font-family:inherit;">🔄 إعادة المحاولة</button></div>`;
+        }
     } finally { isLoadingPrevious = false; }
 }
 
-// ============================================================
-//  Prediction Functions
-// ============================================================
-
+// ===== Save Prediction =====
 async function savePrediction(userName, matchId, prediction) {
     if (!supabaseClient) return { success: false, message: "Supabase غير متصل" };
     const match = matchesData.find(m => `${m.timeISO}_${m.team1}_${m.team2}` === matchId);
@@ -196,16 +198,6 @@ async function savePrediction(userName, matchId, prediction) {
         }
     } else {
         return { success: false, message: "⛔ مباراة غير معروفة" };
-    }
-
-    async function isUserNameExists(userName) {
-        if (!supabaseClient || !userName) return false;
-        try {
-            const { data, error } = await supabaseClient.from("predictions").select("user_name").eq("user_name",
-                userName).limit(1);
-            if (error) throw error;
-            return data && data.length > 0;
-        } catch (e) { console.error("❌ التحقق من الاسم:", e); return false; }
     }
 
     const existing = await getUserPrediction(userName, matchId);
@@ -226,15 +218,6 @@ async function savePrediction(userName, matchId, prediction) {
     } else {
         if (isMatchSubmitted(matchId)) {
             return { success: false, message: `⚠️ توقعت مسبقاً هذه المباراة`, duplicate: true };
-        }
-
-        const exists = await isUserNameExists(userName);
-        if (exists) {
-            const storedUserName = localStorage.getItem('lastUserName') || '';
-            if (storedUserName !== userName) {
-                return { success: false,
-                    message: `⚠️ هذا الاسم "${userName}" مسجل لمستخدم آخر. الرجاء استخدام اسم مختلف أو تأكيد أنك أنت صاحب الاسم.` };
-            }
         }
 
         try {
@@ -300,194 +283,24 @@ async function getPredictionsForUserFull(userName) {
     }
 }
 
-// ============================================================
-//  Local Storage Prediction Helpers
-// ============================================================
-
-function getLocalPredictions() { try { const data = localStorage.getItem('predictions'); return data ? JSON.parse(
-            data) : {}; } catch (e) { return {}; } }
+function getLocalPredictions() { try { const data = localStorage.getItem('predictions'); return data ? JSON.parse(data) : {}; } catch (e) { return {}; } }
 
 function saveLocalPrediction(userName, matchId, prediction) { try { const predictions = getLocalPredictions();
-        predictions[`${userName}_${matchId}`] = { userName, matchId, prediction, timestamp: new Date()
-            .toISOString() };
+        predictions[`${userName}_${matchId}`] = { userName, matchId, prediction, timestamp: new Date().toISOString() };
         localStorage.setItem('predictions', JSON.stringify(predictions)); return true; } catch (e) { return false; } }
 
-function getUserPredictionFromLocal(userName, matchId) { if (!userName) return null; return getLocalPredictions()[
-        `${userName}_${matchId}`] || null; }
+function getUserPredictionFromLocal(userName, matchId) { if (!userName) return null; return getLocalPredictions()[`${userName}_${matchId}`] || null; }
 
-// ============================================================
-//  Utility Functions for Data Extraction
-// ============================================================
-
-function extractPenaltyData(game) {
-    let homePen = game.home_penalty_score;
-    let awayPen = game.away_penalty_score;
-    if (homePen !== undefined && homePen !== null && homePen !== 'null' && homePen !== '') {
-        homePen = String(homePen);
-    } else { homePen = null; }
-    if (awayPen !== undefined && awayPen !== null && awayPen !== 'null' && awayPen !== '') {
-        awayPen = String(awayPen);
-    } else { awayPen = null; }
-    if (homePen === null || awayPen === null) {
-        if (game.penalties && typeof game.penalties === 'object') {
-            homePen = game.penalties.home_score || game.penalties.home || null;
-            awayPen = game.penalties.away_score || game.penalties.away || null;
-            if (homePen) homePen = String(homePen);
-            if (awayPen) awayPen = String(awayPen);
-        }
-    }
-    if (homePen !== null && awayPen !== null) {
-        return { home: homePen, away: awayPen };
-    }
-    return null;
-}
-
-function findMatchResult(team1, team2) {
-    // البحث في البيانات المحملة
-    let match = state.previousGamesData.find(m => (m.homeAr === team1 && m.awayAr === team2) || (m.homeAr === team2 &&
-            m.awayAr === team1));
-    if (match) {
-        let result = {
-            homeScore: match.homeScore,
-            awayScore: match.awayScore,
-            homeAr: match.homeAr,
-            awayAr: match.awayAr,
-            homePenalty: match.homePenalty || null,
-            awayPenalty: match.awayPenalty || null,
-            hadPenalties: match.hadPenalties || false
-        };
-        if (result.hadPenalties && result.homePenalty !== null && result.awayPenalty !== null) {
-            if (parseInt(result.homePenalty) > parseInt(result.awayPenalty)) {
-                result.winner = result.homeAr;
-            } else if (parseInt(result.awayPenalty) > parseInt(result.homePenalty)) {
-                result.winner = result.awayAr;
-            } else {
-                result.winner = null;
-            }
-        } else if (result.homeScore > result.awayScore) {
-            result.winner = result.homeAr;
-        } else if (result.awayScore > result.homeScore) {
-            result.winner = result.awayAr;
-        } else {
-            result.winner = null;
-        }
-        return result;
-    }
-
-    // البحث في allGames
-    if (state.allGames && state.allGames.length) {
-        let g = state.allGames.find(m => {
-            const home = translateToArabic(m.home_team_name_fa || m.home_team_name_en || '');
-            const away = translateToArabic(m.away_team_name_fa || m.away_team_name_en || '');
-            return (home === team1 && away === team2) || (home === team2 && away === team1);
-        });
-        if (g && g.finished === "TRUE") {
-            let homeScore = parseInt(g.home_score, 10);
-            let awayScore = parseInt(g.away_score, 10);
-            let homeAr = translateToArabic(g.home_team_name_fa || g.home_team_name_en || '');
-            let awayAr = translateToArabic(g.away_team_name_fa || g.away_team_name_en || '');
-            let penaltyData = extractPenaltyData(g);
-            let result = { homeScore, awayScore, homeAr, awayAr, homePenalty: null, awayPenalty: null,
-                hadPenalties: false };
-            if (penaltyData) {
-                result.homePenalty = parseInt(penaltyData.home);
-                result.awayPenalty = parseInt(penaltyData.away);
-                result.hadPenalties = true;
-            }
-            if (result.hadPenalties && result.homePenalty !== null && result.awayPenalty !== null) {
-                if (result.homePenalty > result.awayPenalty) result.winner = result.homeAr;
-                else if (result.awayPenalty > result.homePenalty) result.winner = result.awayAr;
-                else result.winner = null;
-            } else if (homeScore > awayScore) result.winner = homeAr;
-            else if (awayScore > homeScore) result.winner = awayAr;
-            else result.winner = null;
-            return result;
-        }
-    }
-
-    // البحث في openfootball
-    if (state.openfootballMatches && state.openfootballMatches.length) {
-        let m = state.openfootballMatches.find(m => {
-            const h = translateToArabic(m.team1 || '');
-            const a = translateToArabic(m.team2 || '');
-            return (h === team1 && a === team2) || (h === team2 && a === team1);
-        });
-        if (m && (m.finished === true || m.finished === "TRUE" || m.status === 'finished')) {
-            let homeScore = m.home_score || m.goals1?.length || 0;
-            let awayScore = m.away_score || m.goals2?.length || 0;
-            let homeAr = translateToArabic(m.team1 || '');
-            let awayAr = translateToArabic(m.team2 || '');
-            let result = { homeScore, awayScore, homeAr, awayAr, homePenalty: null, awayPenalty: null,
-                hadPenalties: false };
-            if (m.penalties && typeof m.penalties === 'object') {
-                let hPen = m.penalties.home_score || m.penalties.home || null;
-                let aPen = m.penalties.away_score || m.penalties.away || null;
-                if (hPen !== null && aPen !== null) {
-                    result.homePenalty = parseInt(hPen);
-                    result.awayPenalty = parseInt(aPen);
-                    result.hadPenalties = true;
-                }
-            }
-            if (result.hadPenalties && result.homePenalty !== null && result.awayPenalty !== null) {
-                if (result.homePenalty > result.awayPenalty) result.winner = result.homeAr;
-                else if (result.awayPenalty > result.homePenalty) result.winner = result.awayAr;
-                else result.winner = null;
-            } else if (homeScore > awayScore) result.winner = homeAr;
-            else if (awayScore > homeScore) result.winner = awayAr;
-            else result.winner = null;
-            return result;
-        }
-    }
-
-    // البحث في matchesData الثابتة (دور الـ 32)
-    let staticMatch = matchesData.find(m => (m.team1 === team1 && m.team2 === team2) || (m.team1 === team2 && m
-        .team2 === team1));
-    if (staticMatch && isMatchFinished(staticMatch.timeISO)) {
-        for (let pg of state.previousGamesData) {
-            if ((pg.homeAr === team1 && pg.awayAr === team2) || (pg.homeAr === team2 && pg.awayAr === team1)) {
-                let result = {
-                    homeScore: pg.homeScore,
-                    awayScore: pg.awayScore,
-                    homeAr: pg.homeAr,
-                    awayAr: pg.awayAr,
-                    homePenalty: pg.homePenalty || null,
-                    awayPenalty: pg.awayPenalty || null,
-                    hadPenalties: pg.hadPenalties || false
-                };
-                if (result.hadPenalties && result.homePenalty !== null && result.awayPenalty !== null) {
-                    if (parseInt(result.homePenalty) > parseInt(result.awayPenalty)) result.winner = result
-                        .homeAr;
-                    else if (parseInt(result.awayPenalty) > parseInt(result.homePenalty)) result.winner = result
-                        .awayAr;
-                    else result.winner = null;
-                } else if (pg.homeScore > pg.awayScore) result.winner = pg.homeAr;
-                else if (pg.awayScore > pg.homeScore) result.winner = pg.awayAr;
-                else result.winner = null;
-                return result;
-            }
-        }
-    }
-
-    return null;
-}
-
-function parseScorersWithMinutes(scorerString) {
-    if (!scorerString || scorerString === "null") return [];
-    let cleaned = scorerString.trim();
-    if (cleaned.startsWith('{') && cleaned.endsWith('}')) cleaned = cleaned.slice(1, -1);
-    let parts = cleaned.split(',').map(s => s.trim());
-    let result = [];
-    for (let part of parts) {
-        part = part.replace(/^["“”]|["“”]$/g, '').trim();
-        let minuteMatch = part.match(/^(.+?)\s+(\d+['’]?)(?:\s*\(([^)]+)\))?$/);
-        if (minuteMatch) {
-            let name = minuteMatch[1].trim();
-            let minute = minuteMatch[2].trim();
-            let type = minuteMatch[3] ? minuteMatch[3].trim() : '';
-            result.push({ name, minute, type });
-        } else {
-            result.push({ name: part, minute: '', type: '' });
-        }
-    }
-    return result;
+// ===== RANKING HELPERS =====
+function getPredictionStatus(prediction) {
+    const parts = prediction.match_id.split('_');
+    if (parts.length < 3) return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
+    const team1 = parts[1],
+        team2 = parts[2];
+    const result = findMatchResult(team1, team2);
+    if (!result) return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
+    let correctResult = result.winner || (result.homeScore > result.awayScore ? result.homeAr : (result.awayScore > result.homeScore ? result.awayAr : "DRAW"));
+    const isCorrect = prediction.prediction === correctResult;
+    if (isCorrect) return { status: 'correct', text: '✅ توقع صحيح', color: 'var(--success)' };
+    else return { status: 'wrong', text: '❌ توقع خاطئ', color: 'var(--danger)' };
 }
