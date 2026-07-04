@@ -61,10 +61,11 @@ function renderScorers() {
     const scorersArray = Object.entries(scorersDict).map(([name, goals]) => ({ name, goals }));
     scorersArray.sort((a, b) => b.goals - a.goals);
     countSpan.textContent = scorersArray.length;
-    if (!scorersArray.length) { container.innerHTML =
-            `<div class="empty-state"><span class="icon">📭</span> لا توجد أهداف مسجلة بعد</div>`; return; }
-    let html =
-        `<table class="scorers-table"><thead><tr><th>#</th><th>اللاعب</th><th>الفريق</th><th>الأهداف</th></tr></thead><tbody>`;
+    if (!scorersArray.length) {
+        container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد أهداف مسجلة بعد</div>`;
+        return;
+    }
+    let html = `<table class="scorers-table"><thead><tr><th>#</th><th>اللاعب</th><th>الفريق</th><th>الأهداف</th></tr></thead><tbody>`;
     scorersArray.forEach((s, i) => {
         const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}`;
         const team = playerTeamMap[s.name] || '';
@@ -96,8 +97,7 @@ function renderPreviousGamesFiltered() {
     if (!filtered.length) {
         let message = '📭 لا توجد مباريات مطابقة';
         if (state.previousGamesData.length === 0) message = '⏳ جاري التحميل...';
-        if (searchText && state.previousGamesData.length > 0) message =
-            `🔍 لا توجد مباريات سابقة للمنتخب "${searchText}"`;
+        if (searchText && state.previousGamesData.length > 0) message = `🔍 لا توجد مباريات سابقة للمنتخب "${searchText}"`;
         container.innerHTML = `<div class="empty-state"><span class="icon">${message === '⏳ جاري التحميل...' ? '⏳' : '📭'}</span> ${message}</div>`;
         return;
     }
@@ -106,8 +106,7 @@ function renderPreviousGamesFiltered() {
         let ground = getGroundForMatch(g.homeAr, g.awayAr, null);
         let penaltyHtml = '';
         if (g.hadPenalties && g.homePenalty !== null && g.awayPenalty !== null) {
-            penaltyHtml =
-                `<span class="score-penalty-badge">⚽ ركلات ترجيح: ${g.homePenalty} — ${g.awayPenalty}</span>`;
+            penaltyHtml = `<span class="score-penalty-badge">⚽ ركلات ترجيح: ${g.homePenalty} — ${g.awayPenalty}</span>`;
         }
         let winnerText = '';
         if (g.hadPenalties && g.homePenalty !== null && g.awayPenalty !== null) {
@@ -120,25 +119,25 @@ function renderPreviousGamesFiltered() {
         }
 
         return `
-              <div class="match-card finished-match" onclick="openPreviousMatchPredictions('${g.homeAr}', '${g.awayAr}', ${g.homeScore}, ${g.awayScore})">
+            <div class="match-card finished-match" onclick="openPreviousMatchPredictions('${g.homeAr}', '${g.awayAr}', ${g.homeScore}, ${g.awayScore})">
                 <div class="match-teams">
-                  <div class="match-team"><span class="flag">${getFlag(g.homeAr)}</span> ${g.homeAr}</div>
-                  <div class="match-score finished">${g.homeScore} - ${g.awayScore} ${penaltyHtml}</div>
-                  <div class="match-team"><span class="flag">${getFlag(g.awayAr)}</span> ${g.awayAr}</div>
+                    <div class="match-team"><span class="flag">${getFlag(g.homeAr)}</span> ${g.homeAr}</div>
+                    <div class="match-score finished">${g.homeScore} - ${g.awayScore} ${penaltyHtml}</div>
+                    <div class="match-team"><span class="flag">${getFlag(g.awayAr)}</span> ${g.awayAr}</div>
                 </div>
                 <div class="match-meta">
-                  <span class="tag">${g.dayName || 'تاريخ'}</span>
-                  <span class="tag">${g.formattedDate || ''} ${g.timeMatch || ''}</span>
-                  <span class="tag finished-tag">✅ انتهت - اضغط لعرض التوقعات</span>
-                  ${ground ? `<span class="tag stadium-tag">🏟️ ${ground}</span>` : ''}
-                  ${winnerText ? `<span class="tag" style="color:var(--gold-light);">${winnerText}</span>` : ''}
+                    <span class="tag">${g.dayName || 'تاريخ'}</span>
+                    <span class="tag">${g.formattedDate || ''} ${g.timeMatch || ''}</span>
+                    <span class="tag finished-tag">✅ انتهت - اضغط لعرض التوقعات</span>
+                    ${ground ? `<span class="tag stadium-tag">🏟️ ${ground}</span>` : ''}
+                    ${winnerText ? `<span class="tag" style="color:var(--gold-light);">${winnerText}</span>` : ''}
                 </div>
                 <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
-                  <button class="view-btn" onclick="event.stopPropagation();openPreviousMatchPredictions('${g.homeAr}','${g.awayAr}',${g.homeScore},${g.awayScore})" style="padding:6px 14px;border-radius:40px;font-size:0.6rem;font-weight:600;background:var(--info-bg);border:1px solid rgba(74,158,255,0.10);color:var(--info);cursor:pointer;font-family:inherit;">📋 عرض التوقعات</button>
-                  <button class="share-link-btn" onclick="event.stopPropagation();copyMatchLink('${g.homeAr}_${g.awayAr}','${g.homeAr}','${g.awayAr}')" style="padding:4px 12px;border-radius:40px;font-size:0.55rem;font-weight:600;background:var(--info-bg);border:1px solid rgba(74,158,255,0.10);color:var(--info);cursor:pointer;font-family:inherit;">🔗 مشاركة</button>
+                    <button class="view-btn" onclick="event.stopPropagation();openPreviousMatchPredictions('${g.homeAr}','${g.awayAr}',${g.homeScore},${g.awayScore})" style="padding:6px 14px;border-radius:40px;font-size:0.6rem;font-weight:600;background:var(--info-bg);border:1px solid rgba(74,158,255,0.10);color:var(--info);cursor:pointer;font-family:inherit;">📋 عرض التوقعات</button>
+                    <button class="share-link-btn" onclick="event.stopPropagation();copyMatchLink('${g.homeAr}_${g.awayAr}','${g.homeAr}','${g.awayAr}')" style="padding:4px 12px;border-radius:40px;font-size:0.55rem;font-weight:600;background:var(--info-bg);border:1px solid rgba(74,158,255,0.10);color:var(--info);cursor:pointer;font-family:inherit;">🔗 مشاركة</button>
                 </div>
-              </div>
-            `;
+            </div>
+        `;
     }).join('');
 }
 
@@ -148,8 +147,9 @@ function calculateStandings() {
         const standings = {};
         for (const [group, teams] of Object.entries(finalGroups)) {
             standings[group] = {};
-            teams.forEach(team => { standings[group][team] = { played: 0, wins: 0, draws: 0, losses: 0,
-                    goalsFor: 0, goalsAgainst: 0, points: 0 }; });
+            teams.forEach(team => {
+                standings[group][team] = { played: 0, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0, points: 0 };
+            });
         }
         state.previousGamesData.forEach(game => {
             const { homeAr, awayAr, homeScore, awayScore, homePenalty, awayPenalty, hadPenalties } = game;
@@ -175,14 +175,20 @@ function calculateStandings() {
                 winner = homeScore > awayScore ? homeAr : (awayScore > homeScore ? awayAr : null);
             }
 
-            if (winner === homeAr) { stats[homeAr].wins++;
+            if (winner === homeAr) {
+                stats[homeAr].wins++;
                 stats[homeAr].points += 3;
-                stats[awayAr].losses++; } else if (winner === awayAr) { stats[awayAr].wins++;
+                stats[awayAr].losses++;
+            } else if (winner === awayAr) {
+                stats[awayAr].wins++;
                 stats[awayAr].points += 3;
-                stats[homeAr].losses++; } else { stats[homeAr].draws++;
+                stats[homeAr].losses++;
+            } else {
+                stats[homeAr].draws++;
                 stats[awayAr].draws++;
                 stats[homeAr].points++;
-                stats[awayAr].points++; }
+                stats[awayAr].points++;
+            }
         });
         const container = document.getElementById('standingsContainer');
         let html = '';
@@ -192,19 +198,17 @@ function calculateStandings() {
                 tableRows.push({ team, ...stat, diff: stat.goalsFor - stat.goalsAgainst });
             }
             tableRows.sort((a, b) => b.points - a.points || b.diff - a.diff || b.goalsFor - a.goalsFor);
-            html +=
-                `<div class="group-card"><div class="group-title">المجموعة ${group}</div><table class="standings-table"><thead><tr><th>#</th><th>الفريق</th><th>ل</th><th>ف</th><th>ت</th><th>خ</th><th>له</th><th>عليه</th><th>±</th><th>ن</th></tr></thead><tbody>`;
+            html += `<div class="group-card"><div class="group-title">المجموعة ${group}</div><table class="standings-table"><thead><tr><th>#</th><th>الفريق</th><th>ل</th><th>ف</th><th>ت</th><th>خ</th><th>له</th><th>عليه</th><th>±</th><th>ن</th></tr></thead><tbody>`;
             tableRows.forEach((row, idx) => {
-                html +=
-                    `<tr><td>${idx+1}</td><td><div class="team-cell"><span>${getFlag(row.team)}</span> <span>${row.team}</span></div></td><td>${row.played}</td><td>${row.wins}</td><td>${row.draws}</td><td>${row.losses}</td><td>${row.goalsFor}</td><td>${row.goalsAgainst}</td><td>${row.diff}</td><td style="color:var(--gold);font-weight:800;">${row.points}</td></tr>`;
+                html += `<tr><td>${idx+1}</td><td><div class="team-cell"><span>${getFlag(row.team)}</span> <span>${row.team}</span></div></td><td>${row.played}</td><td>${row.wins}</td><td>${row.draws}</td><td>${row.losses}</td><td>${row.goalsFor}</td><td>${row.goalsAgainst}</td><td>${row.diff}</td><td style="color:var(--gold);font-weight:800;">${row.points}</td></tr>`;
             });
             html += `</tbody></table></div>`;
         }
-        container.innerHTML = html ||
-            `<div class="empty-state"><span class="icon">📊</span> لا توجد نتائج كافية</div>`;
-    } catch (e) { console.error("calculateStandings:", e);
-        document.getElementById('standingsContainer').innerHTML =
-            `<div class="empty-state"><span class="icon">⚠️</span> خطأ في حساب الترتيب</div>`; }
+        container.innerHTML = html || `<div class="empty-state"><span class="icon">📊</span> لا توجد نتائج كافية</div>`;
+    } catch (e) {
+        console.error("calculateStandings:", e);
+        document.getElementById('standingsContainer').innerHTML = `<div class="empty-state"><span class="icon">⚠️</span> خطأ في حساب الترتيب</div>`;
+    }
 }
 
 // ===== Render Team Stats =====
@@ -225,10 +229,8 @@ function renderTeamStats() {
             winner = homeScore > awayScore ? homeAr : (awayScore > homeScore ? awayAr : null);
         }
 
-        if (!stats[homeAr]) stats[homeAr] = { played: 0, goalsFor: 0, goalsAgainst: 0, wins: 0, draws: 0,
-            losses: 0 };
-        if (!stats[awayAr]) stats[awayAr] = { played: 0, goalsFor: 0, goalsAgainst: 0, wins: 0, draws: 0,
-            losses: 0 };
+        if (!stats[homeAr]) stats[homeAr] = { played: 0, goalsFor: 0, goalsAgainst: 0, wins: 0, draws: 0, losses: 0 };
+        if (!stats[awayAr]) stats[awayAr] = { played: 0, goalsFor: 0, goalsAgainst: 0, wins: 0, draws: 0, losses: 0 };
         stats[homeAr].played++;
         stats[awayAr].played++;
         stats[homeAr].goalsFor += homeScore;
@@ -236,34 +238,39 @@ function renderTeamStats() {
         stats[awayAr].goalsFor += awayScore;
         stats[awayAr].goalsAgainst += homeScore;
 
-        if (winner === homeAr) { stats[homeAr].wins++;
-            stats[awayAr].losses++; } else if (winner === awayAr) { stats[awayAr].wins++;
-            stats[homeAr].losses++; } else { stats[homeAr].draws++;
-            stats[awayAr].draws++; }
+        if (winner === homeAr) {
+            stats[homeAr].wins++;
+            stats[awayAr].losses++;
+        } else if (winner === awayAr) {
+            stats[awayAr].wins++;
+            stats[homeAr].losses++;
+        } else {
+            stats[homeAr].draws++;
+            stats[awayAr].draws++;
+        }
     });
     const sorted = Object.keys(stats).sort((a, b) => {
         const diffA = stats[a].goalsFor - stats[a].goalsAgainst;
         const diffB = stats[b].goalsFor - stats[b].goalsAgainst;
         return diffB - diffA || stats[b].goalsFor - stats[a].goalsFor;
     });
-    let html =
-        `<table class="team-stats-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>±</th><th>معدل الأهداف</th></tr></thead><tbody>`;
+    let html = `<table class="team-stats-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>له</th><th>عليه</th><th>±</th><th>معدل الأهداف</th></tr></thead><tbody>`;
     sorted.forEach((team, idx) => {
         const s = stats[team];
         const diff = s.goalsFor - s.goalsAgainst;
         const avg = s.played > 0 ? (s.goalsFor / s.played).toFixed(2) : '0.00';
         html += `<tr>
-                <td>${idx+1}</td>
-                <td class="team-name">${getFlag(team)} ${team}</td>
-                <td>${s.played}</td>
-                <td>${s.wins}</td>
-                <td>${s.draws}</td>
-                <td>${s.losses}</td>
-                <td class="stat-highlight">${s.goalsFor}</td>
-                <td>${s.goalsAgainst}</td>
-                <td>${diff > 0 ? '+' : ''}${diff}</td>
-                <td>${avg}</td>
-              </tr>`;
+            <td>${idx+1}</td>
+            <td class="team-name">${getFlag(team)} ${team}</td>
+            <td>${s.played}</td>
+            <td>${s.wins}</td>
+            <td>${s.draws}</td>
+            <td>${s.losses}</td>
+            <td class="stat-highlight">${s.goalsFor}</td>
+            <td>${s.goalsAgainst}</td>
+            <td>${diff > 0 ? '+' : ''}${diff}</td>
+            <td>${avg}</td>
+        </tr>`;
     });
     html += `</tbody></table>`;
     container.innerHTML = html;
@@ -305,21 +312,12 @@ function renderBracket() {
     }
 
     const roundMapping = {
-        'Round of 32': 'R32',
-        'R32': 'R32',
-        'Round of 16': 'R16',
-        'R16': 'R16',
-        'Quarter-finals': 'QF',
-        'Quarterfinal': 'QF',
-        'QF': 'QF',
-        'Semi-finals': 'SF',
-        'Semifinal': 'SF',
-        'SF': 'SF',
-        'Final': 'FINAL',
-        'FINAL': 'FINAL',
-        '3rd Place': '3RD',
-        'Third Place': '3RD',
-        '3RD': '3RD'
+        'Round of 32': 'R32', 'R32': 'R32',
+        'Round of 16': 'R16', 'R16': 'R16',
+        'Quarter-finals': 'QF', 'Quarterfinal': 'QF', 'QF': 'QF',
+        'Semi-finals': 'SF', 'Semifinal': 'SF', 'SF': 'SF',
+        'Final': 'FINAL', 'FINAL': 'FINAL',
+        '3rd Place': '3RD', 'Third Place': '3RD', '3RD': '3RD'
     };
 
     const roundOrder = ['R32', 'R16', 'QF', 'SF', '3RD', 'FINAL'];
@@ -334,7 +332,6 @@ function renderBracket() {
 
     const rounds = {};
     roundOrder.forEach(r => rounds[r] = []);
-
     const seenMatches = new Set();
 
     for (let match of allMatches) {
@@ -362,10 +359,8 @@ function renderBracket() {
         }
 
         if (roundKey && rounds[roundKey]) {
-            const homeName = match.team1 || match.home_team_name_fa || match.home_team_name_en || match
-                .home_team_label || '?';
-            const awayName = match.team2 || match.away_team_name_fa || match.away_team_name_en || match
-                .away_team_label || '?';
+            const homeName = match.team1 || match.home_team_name_fa || match.home_team_name_en || match.home_team_label || '?';
+            const awayName = match.team2 || match.away_team_name_fa || match.away_team_name_en || match.away_team_label || '?';
             const matchKey = `${roundKey}|${homeName}|${awayName}`;
 
             if (!seenMatches.has(matchKey)) {
@@ -396,15 +391,9 @@ function renderBracket() {
         }
     }
 
-    if (rounds['R32'] && rounds['R32'].length > 16) {
-        rounds['R32'] = rounds['R32'].slice(0, 16);
-    }
-    if (rounds['R16'] && rounds['R16'].length > 8) {
-        rounds['R16'] = rounds['R16'].slice(0, 8);
-    }
-    if (rounds['FINAL'] && rounds['FINAL'].length > 1) {
-        rounds['FINAL'] = rounds['FINAL'].slice(0, 1);
-    }
+    if (rounds['R32'] && rounds['R32'].length > 16) rounds['R32'] = rounds['R32'].slice(0, 16);
+    if (rounds['R16'] && rounds['R16'].length > 8) rounds['R16'] = rounds['R16'].slice(0, 8);
+    if (rounds['FINAL'] && rounds['FINAL'].length > 1) rounds['FINAL'] = rounds['FINAL'].slice(0, 1);
 
     let hasMatches = false;
     let html = `<div class="bracket-tree">`;
@@ -417,21 +406,17 @@ function renderBracket() {
         matches.sort((a, b) => (a.date || a.time || '').localeCompare(b.date || b.time || ''));
 
         html += `<div class="bracket-round">
-                    <div class="bracket-round-title">🏅 ${roundNames[r] || r}</div>`;
+            <div class="bracket-round-title">🏅 ${roundNames[r] || r}</div>`;
 
         for (let match of matches) {
-            let homeName = match.team1 || match.home_team_name_fa || match.home_team_name_en || match
-                .home_team_label || '?';
-            let awayName = match.team2 || match.away_team_name_fa || match.away_team_name_en || match
-                .away_team_label || '?';
+            let homeName = match.team1 || match.home_team_name_fa || match.home_team_name_en || match.home_team_label || '?';
+            let awayName = match.team2 || match.away_team_name_fa || match.away_team_name_en || match.away_team_label || '?';
             let homeDisplay = translateBracketTeamName(homeName);
             let awayDisplay = translateBracketTeamName(awayName);
-            if (homeDisplay === homeName && !homeName.includes('متصدر') && !homeName.includes('وصيف') && !homeName
-                .includes('ثالث')) {
+            if (homeDisplay === homeName && !homeName.includes('متصدر') && !homeName.includes('وصيف') && !homeName.includes('ثالث')) {
                 homeDisplay = translateToArabic(homeName);
             }
-            if (awayDisplay === awayName && !awayName.includes('متصدر') && !awayName.includes('وصيف') && !awayName
-                .includes('ثالث')) {
+            if (awayDisplay === awayName && !awayName.includes('متصدر') && !awayName.includes('وصيف') && !awayName.includes('ثالث')) {
                 awayDisplay = translateToArabic(awayName);
             }
             const flag1 = getFlag(homeDisplay) || '🏁';
@@ -469,17 +454,17 @@ function renderBracket() {
             const matchId = match._id || match.id || `bracket_${homeName}_${awayName}_${Date.now()}`;
 
             html += `
-                        <div class="bracket-match-item" onclick="openBracketMatchDetail('${matchId}')">
-                            <div class="teams">
-                                <span class="team"><span class="flag">${flag1}</span> ${homeDisplay}</span>
-                                <span class="vs">🆚</span>
-                                <span class="team"><span class="flag">${flag2}</span> ${awayDisplay}</span>
-                            </div>
-                            ${scoreText ? `<div class="score">${scoreText}${penaltyText}</div>` : ''}
-                            ${winnerText ? `<div class="match-winner">${winnerText}</div>` : ''}
-                            <div class="status ${statusClass}">${statusText}</div>
-                        </div>
-                    `;
+                <div class="bracket-match-item" onclick="openBracketMatchDetail('${matchId}')">
+                    <div class="teams">
+                        <span class="team"><span class="flag">${flag1}</span> ${homeDisplay}</span>
+                        <span class="vs">🆚</span>
+                        <span class="team"><span class="flag">${flag2}</span> ${awayDisplay}</span>
+                    </div>
+                    ${scoreText ? `<div class="score">${scoreText}${penaltyText}</div>` : ''}
+                    ${winnerText ? `<div class="match-winner">${winnerText}</div>` : ''}
+                    <div class="status ${statusClass}">${statusText}</div>
+                </div>
+            `;
         }
 
         html += `</div>`;
@@ -506,17 +491,15 @@ function renderMatchCard(m, isUpcoming) {
 
     const userHasPrediction = userPredictionsMap && userPredictionsMap[matchId] === true;
 
-    let scoreDisplay = '🆚',
-        scoreClass = 'upcoming',
-        matchClass = '';
-    let homeScore = 0,
-        awayScore = 0,
-        matchResult = null;
+    let scoreDisplay = '🆚', scoreClass = 'upcoming', matchClass = '';
+    let homeScore = 0, awayScore = 0, matchResult = null;
     let penaltyHtml = '';
 
-    if (isLive) { scoreDisplay = '🔴 LIVE';
+    if (isLive) {
+        scoreDisplay = '🔴 LIVE';
         scoreClass = 'live';
-        matchClass = 'live'; } else if (isFinished) {
+        matchClass = 'live';
+    } else if (isFinished) {
         const result = findMatchResult(m.team1, m.team2);
         if (result) {
             homeScore = result.homeScore;
@@ -526,12 +509,13 @@ function renderMatchCard(m, isUpcoming) {
             matchClass = 'finished-match';
             matchResult = { homeScore, awayScore };
             if (result.hadPenalties && result.homePenalty !== null && result.awayPenalty !== null) {
-                penaltyHtml =
-                    `<span class="score-penalty-badge">⚽ ركلات ترجيح: ${result.homePenalty} — ${result.awayPenalty}</span>`;
+                penaltyHtml = `<span class="score-penalty-badge">⚽ ركلات ترجيح: ${result.homePenalty} — ${result.awayPenalty}</span>`;
             }
-        } else { scoreDisplay = '✅';
+        } else {
+            scoreDisplay = '✅';
             scoreClass = 'finished';
-            matchClass = 'finished-match'; }
+            matchClass = 'finished-match';
+        }
     }
 
     let predictBtnHtml = 'توقع الآن';
@@ -597,8 +581,7 @@ function renderMatchCard(m, isUpcoming) {
         if (isFinished) {
             predictBtnHtml = '📋 عرض التوقعات';
             predictBtnClass += ' view-btn';
-            predictBtnExtra = 'onclick="openMatchPredictions(\'' + matchId + '\', \'' + m.team1 + '\', \'' + m
-                .team2 + '\', ' + homeScore + ', ' + awayScore + ')"';
+            predictBtnExtra = `onclick="openMatchPredictions('${matchId}', '${m.team1}', '${m.team2}', ${homeScore}, ${awayScore})"`;
         } else if (isLive) {
             predictBtnHtml = '⛔ جارية';
             predictBtnClass += ' view-btn';
@@ -631,47 +614,46 @@ function renderMatchCard(m, isUpcoming) {
         }
     }
     const onclickAttr = (isFinished && matchResult) ?
-        `onclick="openMatchPredictions('${matchId}', '${m.team1}', '${m.team2}', ${homeScore}, ${awayScore})"` :
-        '';
+        `onclick="openMatchPredictions('${matchId}', '${m.team1}', '${m.team2}', ${homeScore}, ${awayScore})"` : '';
 
     const showEdit = (userHasPrediction || submitted) && canPredictNow && isAuthorized;
 
     return `
-            <div class="match-card ${matchClass}" ${onclickAttr}>
-              <div class="match-teams">
+        <div class="match-card ${matchClass}" ${onclickAttr}>
+            <div class="match-teams">
                 <div class="match-team"><span class="flag">${getFlag(m.team1)}</span> ${m.team1}</div>
                 <div class="match-score ${scoreClass}">${scoreDisplay} ${penaltyHtml}</div>
                 <div class="match-team"><span class="flag">${getFlag(m.team2)}</span> ${m.team2}</div>
-              </div>
-              <div class="match-meta">
+            </div>
+            <div class="match-meta">
                 <span class="tag">🏅 ${m.roundLabel}</span>
                 <span class="tag">${groupName ? `المجموعة ${groupName}` : ''}</span>
                 ${isUpcoming ? `<span class="timer ${isLive ? 'live' : ''}">${isLive ? '🔴 تُلعب الآن' : st.text}</span>` : `<span class="tag finished-tag">✅ انتهت - اضغط لعرض التوقعات</span>`}
-              </div>
-              <div class="match-meta" style="margin-top:4px;">
+            </div>
+            <div class="match-meta" style="margin-top:4px;">
                 <span class="tag">${getDay(m.timeISO)}</span>
                 <span class="tag">${getDateTimeDisplay(m.timeISO)}</span>
                 ${dayLabel ? `<span class="tag" style="color:var(--gold-light);">${dayLabel}</span>` : ''}
                 ${ground ? `<span class="tag stadium-tag">🏟️ ${ground}</span>` : ''}
-              </div>
-              ${isUpcoming ? `
-                <div class="predict-btn-wrap">
-                  <div class="btn-group">
-                    <button class="${predictBtnClass}" ${predictBtnExtra} data-matchid="${matchId}">
-                      ${predictBtnHtml}
-                    </button>
-                    ${showEdit ? `<button class="${editBtnClass}" ${editBtnExtra} data-matchid="${matchId}">✏️ ${editBtnHtml}</button>` : (isAuthorized ? `<button class="${editBtnClass}" ${editBtnExtra} data-matchid="${matchId}" style="display:none;">✏️ ${editBtnHtml}</button>` : '')}
-                  </div>
-                  <button class="view-btn" onclick="openViewPredictionsModal('${matchId}','${m.team1}','${m.team2}')">
-                    📋 استعراض التوقعات
-                  </button>
-                  <button class="share-link-btn" onclick="copyMatchLink('${m.id}', '${m.team1}', '${m.team2}')">
-                    🔗 مشاركة
-                  </button>
-                </div>
-              ` : ''}
             </div>
-          `;
+            ${isUpcoming ? `
+                <div class="predict-btn-wrap">
+                    <div class="btn-group">
+                        <button class="${predictBtnClass}" ${predictBtnExtra} data-matchid="${matchId}">
+                            ${predictBtnHtml}
+                        </button>
+                        ${showEdit ? `<button class="${editBtnClass}" ${editBtnExtra} data-matchid="${matchId}">✏️ ${editBtnHtml}</button>` : (isAuthorized ? `<button class="${editBtnClass}" ${editBtnExtra} data-matchid="${matchId}" style="display:none;">✏️ ${editBtnHtml}</button>` : '')}
+                    </div>
+                    <button class="view-btn" onclick="openViewPredictionsModal('${matchId}','${m.team1}','${m.team2}')">
+                        📋 استعراض التوقعات
+                    </button>
+                    <button class="share-link-btn" onclick="copyMatchLink('${m.id}', '${m.team1}', '${m.team2}')">
+                        🔗 مشاركة
+                    </button>
+                </div>
+            ` : ''}
+        </div>
+    `;
 }
 
 // ===== Render Upcoming Matches =====
@@ -683,8 +665,7 @@ function renderUpcoming() {
             active = upcomingMatches(matchesData);
         } else {
             const teams = finalGroups[groupFilter] || [];
-            const allMatchesForGroup = matchesData.filter(m => teams.includes(m.team1) || teams.includes(m
-            .team2));
+            const allMatchesForGroup = matchesData.filter(m => teams.includes(m.team1) || teams.includes(m.team2));
             active = allMatchesForGroup;
             active.sort((a, b) => matchTime(a.timeISO) - matchTime(b.timeISO));
         }
@@ -705,16 +686,19 @@ function renderUpcoming() {
         }
         const container = document.getElementById('matchesContainer');
         document.getElementById('upcomingCount').textContent = active.length;
-        if (!active.length) { container.innerHTML =
-                `<div class="empty-state"><span class="icon">📭</span> لا توجد مباريات تطابق الفلاتر</div>`; return; }
+        if (!active.length) {
+            container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد مباريات تطابق الفلاتر</div>`;
+            return;
+        }
         container.innerHTML = active.map(m => {
             const isUpcoming = (matchTime(m.timeISO) + MATCH_DURATION) > now();
             return renderMatchCard(m, isUpcoming);
         }).join('');
         updateShareAllCount();
-    } catch (e) { console.error("renderUpcoming:", e);
-        document.getElementById('matchesContainer').innerHTML =
-            `<div class="empty-state"><span class="icon">⚠️</span> حدث خطأ</div>`; }
+    } catch (e) {
+        console.error("renderUpcoming:", e);
+        document.getElementById('matchesContainer').innerHTML = `<div class="empty-state"><span class="icon">⚠️</span> حدث خطأ</div>`;
+    }
 }
 
 // ===== Render All Predictions =====
@@ -728,28 +712,27 @@ async function renderAllPredictions() {
     }
     allPredictionsCache = predictions;
     countSpan.textContent = predictions.length;
-    if (!predictions || !predictions.length) { container.innerHTML =
-            `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات بعد</div>`; return; }
+    if (!predictions || !predictions.length) {
+        container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات بعد</div>`;
+        return;
+    }
     const sorted = [...predictions].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     container.innerHTML = sorted.slice(0, 20).map(p => {
         const parts = p.match_id.split('_');
-        const team1 = parts[1] || '?',
-            team2 = parts[2] || '?';
+        const team1 = parts[1] || '?', team2 = parts[2] || '?';
         let predictionText = p.prediction === 'DRAW' ? '🤝 تعادل' : `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
         const status = getPredictionStatus(p);
-        let cardClass = '',
-            badgeClass = '';
-        if (status.status === 'correct') { cardClass = 'correct';
-            badgeClass = 'correct'; } else if (status.status === 'wrong') { cardClass = 'wrong';
-            badgeClass = 'wrong'; } else { cardClass = 'pending';
-            badgeClass = 'pending'; }
+        let cardClass = '', badgeClass = '';
+        if (status.status === 'correct') { cardClass = 'correct'; badgeClass = 'correct'; }
+        else if (status.status === 'wrong') { cardClass = 'wrong'; badgeClass = 'wrong'; }
+        else { cardClass = 'pending'; badgeClass = 'pending'; }
         return `<div class="prediction-card ${cardClass}" onclick="openPlayerPredictions('${p.user_name || ''}')" style="cursor:pointer;">
-              <div class="user"><div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div><span class="name-p">${p.user_name || 'مجهول'}</span></div>
-              <div class="prediction-text">${team1} 🆚 ${team2}</div>
-              <div class="prediction-text" style="color:var(--gold-light);">🔮 ${predictionText}</div>
-              <span class="status-badge ${badgeClass}">${status.text}</span>
-              <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف'}</div>
-            </div>`;
+            <div class="user"><div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div><span class="name-p">${p.user_name || 'مجهول'}</span></div>
+            <div class="prediction-text">${team1} 🆚 ${team2}</div>
+            <div class="prediction-text" style="color:var(--gold-light);">🔮 ${predictionText}</div>
+            <span class="status-badge ${badgeClass}">${status.text}</span>
+            <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف'}</div>
+        </div>`;
     }).join('');
 }
 
@@ -785,8 +768,7 @@ function renderLeaderboard(period) {
         scores[p.user_name].total++;
         const parts = (p.match_id || "").split("_");
         if (parts.length < 3) continue;
-        const team1 = parts[1],
-            team2 = parts[2];
+        const team1 = parts[1], team2 = parts[2];
         const match = filteredGames.find(g =>
             (g.homeAr === team1 && g.awayAr === team2) ||
             (g.homeAr === team2 && g.awayAr === team1)
@@ -795,8 +777,7 @@ function renderLeaderboard(period) {
         const result = findMatchResult(team1, team2);
         let winner = null;
         if (result) {
-            winner = result.winner || (result.homeScore > result.awayScore ? result.homeAr : (result.awayScore >
-                result.homeScore ? result.awayAr : "DRAW"));
+            winner = result.winner || (result.homeScore > result.awayScore ? result.homeAr : (result.awayScore > result.homeScore ? result.awayAr : "DRAW"));
         } else {
             winner = match.homeScore > match.awayScore ? match.homeAr :
                 match.awayScore > match.homeScore ? match.awayAr : "DRAW";
@@ -822,13 +803,9 @@ function renderLeaderboard(period) {
     while (i < board.length) {
         let j = i;
         let points = board[i].points;
-        while (j < board.length && board[j].points === points) {
-            j++;
-        }
+        while (j < board.length && board[j].points === points) { j++; }
         const groupSize = j - i;
-        for (let k = i; k < j; k++) {
-            board[k].rank = rank;
-        }
+        for (let k = i; k < j; k++) { board[k].rank = rank; }
         i = j;
         rank += groupSize;
     }
@@ -841,9 +818,7 @@ function renderLeaderboard(period) {
     } catch (e) {}
 
     const currentRank = {};
-    board.forEach((p) => {
-        currentRank[p.name] = p.rank;
-    });
+    board.forEach((p) => { currentRank[p.name] = p.rank; });
     localStorage.setItem(prevRankKey, JSON.stringify(currentRank));
 
     const topThree = board.slice(0, 3);
@@ -865,27 +840,27 @@ function renderLeaderboard(period) {
         }
         const medal = champ.rank === 1 ? '🥇' : champ.rank === 2 ? '🥈' : champ.rank === 3 ? '🥉' : `#${champ.rank}`;
         html += `
-              <div class="champion-card" style="${isCurrentUser ? 'border-color:var(--gold);box-shadow:0 0 60px rgba(212,167,69,0.08);' : ''}" onclick="openPlayerPredictions('${champ.name}')">
+            <div class="champion-card" style="${isCurrentUser ? 'border-color:var(--gold);box-shadow:0 0 60px rgba(212,167,69,0.08);' : ''}" onclick="openPlayerPredictions('${champ.name}')">
                 <div class="rank-badge">${medal}</div>
                 <div class="avatar">${champ.name.charAt(0).toUpperCase()}</div>
                 <div class="info">
-                  <div class="name">${champ.name} ${isCurrentUser ? '👤' : ''}
-                    <button class="compare-btn" onclick="event.stopPropagation(); openCompareModal('${champ.name}')">📊 مقارنة</button>
-                  </div>
-                  <div class="stats-row">
-                    <span class="item">🏆 <strong>${champ.points}</strong> نقطة</span>
-                    <span class="item">✅ <strong style="color:var(--gold-light);">${champ.correct}</strong></span>
-                    <span class="item">📊 <strong style="font-size:0.7rem;">${champ.total}</strong></span>
-                    <span class="item">📊 <strong>${accuracy}%</strong> نجاح</span>
-                    <span class="item">${arrow}</span>
-                  </div>
-                  <div class="progress-wrapper">
-                    <div class="progress-label"><span>نسبة النجاح</span><span>${accuracy}%</span></div>
-                    <div class="progress-bar"><div class="fill" style="width:${Math.min(accuracy,100)}%;"></div></div>
-                  </div>
+                    <div class="name">${champ.name} ${isCurrentUser ? '👤' : ''}
+                        <button class="compare-btn" onclick="event.stopPropagation(); openCompareModal('${champ.name}')">📊 مقارنة</button>
+                    </div>
+                    <div class="stats-row">
+                        <span class="item">🏆 <strong>${champ.points}</strong> نقطة</span>
+                        <span class="item">✅ <strong style="color:var(--gold-light);">${champ.correct}</strong></span>
+                        <span class="item">📊 <strong style="font-size:0.7rem;">${champ.total}</strong></span>
+                        <span class="item">📊 <strong>${accuracy}%</strong> نجاح</span>
+                        <span class="item">${arrow}</span>
+                    </div>
+                    <div class="progress-wrapper">
+                        <div class="progress-label"><span>نسبة النجاح</span><span>${accuracy}%</span></div>
+                        <div class="progress-bar"><div class="fill" style="width:${Math.min(accuracy,100)}%;"></div></div>
+                    </div>
                 </div>
-              </div>
-            `;
+            </div>
+        `;
     }
     if (rest.length || topThree.length > 1) {
         const allPlayers = [...topThree.slice(1), ...rest];
@@ -906,7 +881,6 @@ function renderLeaderboard(period) {
             if (rankNum === 1) rankClass = 'gold';
             else if (rankNum === 2) rankClass = 'silver';
             else if (rankNum === 3) rankClass = 'bronze';
-            else rankClass = '';
 
             let borderClass = '';
             if (rankNum === 1) borderClass = 'gold-border';
@@ -925,30 +899,29 @@ function renderLeaderboard(period) {
             } else if (prevPos) {
                 arrow = ' —';
             }
-            const arrowClass = arrow.includes('▲') ? 'arrow-up' : (arrow.includes('▼') ? 'arrow-down' :
-                'arrow-unchanged');
+            const arrowClass = arrow.includes('▲') ? 'arrow-up' : (arrow.includes('▼') ? 'arrow-down' : 'arrow-unchanged');
 
             html += `
                 <div class="player-card" style="${isCurrentUser ? 'border-color:rgba(212,167,69,0.30);' : ''}" onclick="openPlayerPredictions('${player.name}')">
-                  <div class="rank ${rankClass}">${medal}${tieBadge}</div>
-                  <div class="avatar-sm ${borderClass}">${player.name.charAt(0).toUpperCase()}</div>
-                  <div class="info-sm">
-                    <div class="name-sm">${player.name} ${isCurrentUser ? '👤' : ''}
-                      ${isTie ? `<span class="mini-badge gold">⚡ متعادل</span>` : ''}
+                    <div class="rank ${rankClass}">${medal}${tieBadge}</div>
+                    <div class="avatar-sm ${borderClass}">${player.name.charAt(0).toUpperCase()}</div>
+                    <div class="info-sm">
+                        <div class="name-sm">${player.name} ${isCurrentUser ? '👤' : ''}
+                            ${isTie ? `<span class="mini-badge gold">⚡ متعادل</span>` : ''}
+                        </div>
+                        <div class="sub-sm">
+                            <span>✅ <span style="color:var(--gold-light);">${player.correct}</span></span>
+                            <span>📊 <span style="font-size:0.65rem;">${player.total}</span></span>
+                            <span>📊 ${accuracy}%</span>
+                            <span class="${arrowClass}">${arrow.trim()}</span>
+                        </div>
+                        <div class="progress-mini"><div class="fill-mini" style="width:${Math.min(accuracy,100)}%;"></div></div>
                     </div>
-                    <div class="sub-sm">
-                      <span>✅ <span style="color:var(--gold-light);">${player.correct}</span></span>
-                      <span>📊 <span style="font-size:0.65rem;">${player.total}</span></span>
-                      <span>📊 ${accuracy}%</span>
-                      <span class="${arrowClass}">${arrow.trim()}</span>
-                    </div>
-                    <div class="progress-mini"><div class="fill-mini" style="width:${Math.min(accuracy,100)}%;"></div></div>
-                  </div>
-                  <div class="points-sm">${player.points}</div>
-                  <button class="compare-btn" onclick="event.stopPropagation(); openCompareModal('${player.name}')">📊 مقارنة</button>
-                  ${isCurrentUser ? `<div class="current-user-indicator active"></div><div class="pulse-dot"></div>` : ''}
+                    <div class="points-sm">${player.points}</div>
+                    <button class="compare-btn" onclick="event.stopPropagation(); openCompareModal('${player.name}')">📊 مقارنة</button>
+                    ${isCurrentUser ? `<div class="current-user-indicator active"></div><div class="pulse-dot"></div>` : ''}
                 </div>
-              `;
+            `;
         });
         html += `</div>`;
     }
@@ -957,8 +930,7 @@ function renderLeaderboard(period) {
 
 // ===== Utility Functions =====
 function getGroundForMatch(team1, team2, timeISO) {
-    const directMatch = matchesData.find(m => (m.team1 === team1 && m.team2 === team2) || (m.team1 === team2 && m
-        .team2 === team1));
+    const directMatch = matchesData.find(m => (m.team1 === team1 && m.team2 === team2) || (m.team1 === team2 && m.team2 === team1));
     if (directMatch && directMatch.stadium) return directMatch.stadium;
 
     if (!state.openfootballMatches || !state.openfootballMatches.length) return null;
@@ -982,41 +954,29 @@ function getGroundForMatch(team1, team2, timeISO) {
 }
 
 function getDateFmt(t) { return formatSaudiDate(t); }
-
 function getDay(t) { return getSaudiDay(t); }
-
-function isMatchTodayOrTomorrow(timeISO) {
-    return isTodaySaudi(timeISO) || isTomorrowSaudi(timeISO);
-}
-
+function isMatchTodayOrTomorrow(timeISO) { return isTodaySaudi(timeISO) || isTomorrowSaudi(timeISO); }
 function isMatchToday(timeISO) { return isTodaySaudi(timeISO); }
 
-function isMatchYesterday(timeISO) {
-    const d = toSaudiTime(timeISO);
-    const now = getSaudiNow();
-    const yesterday = new Date(now);
-    yesterday.setDate(yesterday.getDate() - 1);
-    return d.getFullYear() === yesterday.getFullYear() &&
-        d.getMonth() === yesterday.getMonth() &&
-        d.getDate() === yesterday.getDate();
-}
-
 // ===== Toast Notification =====
-function showCopyToast(msg) { const t = document.getElementById('copyToast');
+function showCopyToast(msg) {
+    const t = document.getElementById('copyToast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000); }
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
 
 // ===== Copy Match Link =====
 function copyMatchLink(matchId, team1, team2) {
     const shareUrl = `${window.location.origin}${window.location.pathname}?m=${matchId}`;
     if (navigator.share) {
-        navigator.share({ title: `🏆 توقع مباراة ${team1} 🆚 ${team2}`,
-            text: `🔮 توقع نتيجة مباراة ${team1} 🆚 ${team2} في كأس العالم 2026\n\n🔗 ${shareUrl}`, url: shareUrl })
-            .catch(() => {});
+        navigator.share({
+            title: `🏆 توقع مباراة ${team1} 🆚 ${team2}`,
+            text: `🔮 توقع نتيجة مباراة ${team1} 🆚 ${team2} في كأس العالم 2026\n\n🔗 ${shareUrl}`,
+            url: shareUrl
+        }).catch(() => {});
     } else {
-        navigator.clipboard.writeText(shareUrl).then(() => showCopyToast('✅ تم نسخ رابط المباراة!')).catch(
-        () => {
+        navigator.clipboard.writeText(shareUrl).then(() => showCopyToast('✅ تم نسخ رابط المباراة!')).catch(() => {
             const textArea = document.createElement('textarea');
             textArea.value = shareUrl;
             document.body.appendChild(textArea);
@@ -1051,11 +1011,16 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
     } else {
         document.getElementById('mpResult').textContent = `⚠️ لم يتم العثور على نتيجة هذه المباراة بعد`;
     }
-    if (isAuthorized) { document.getElementById('modalCompactBtn').classList.add('visible'); } else { document
-            .getElementById('modalCompactBtn').classList.remove('visible'); }
-    if (isModalCompact) { isModalCompact = false;
+    if (isAuthorized) {
+        document.getElementById('modalCompactBtn').classList.add('visible');
+    } else {
+        document.getElementById('modalCompactBtn').classList.remove('visible');
+    }
+    if (isModalCompact) {
+        isModalCompact = false;
         document.getElementById('matchPredictionsContent').classList.remove('compact-mode');
-        document.getElementById('modalCompactBtn').textContent = '📐 تصغير'; }
+        document.getElementById('modalCompactBtn').textContent = '📐 تصغير';
+    }
     const scorersDiv = document.getElementById('mpScorersDetail');
     let scorersHtml = '';
     let matchOF = state.openfootballMatches.find(m => {
@@ -1097,8 +1062,7 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
     const wrongSpan = document.getElementById('mpWrongCount');
     const totalSpan = document.getElementById('mpTotalCount');
     const tbody = document.getElementById('predictionsTableBody');
-    tbody.innerHTML =
-        `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-secondary);">⏳ جاري التحميل...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-secondary);">⏳ جاري التحميل...</td></tr>`;
     correctSpan.textContent = '...';
     wrongSpan.textContent = '...';
     totalSpan.textContent = '...';
@@ -1114,8 +1078,7 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
 
     totalSpan.textContent = matchPredictions.length;
     if (matchPredictions.length === 0) {
-        tbody.innerHTML =
-            `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-secondary);">📭 لا توجد توقعات لهذه المباراة</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-secondary);">📭 لا توجد توقعات لهذه المباراة</td></tr>`;
         correctSpan.textContent = '0';
         wrongSpan.textContent = '0';
         document.getElementById('matchPredictionsModal').classList.add('active');
@@ -1124,8 +1087,7 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
     }
     let correctResult = "DRAW";
     if (result) {
-        correctResult = result.winner || (result.homeScore > result.awayScore ? team1 : (result.awayScore > result
-            .homeScore ? team2 : "DRAW"));
+        correctResult = result.winner || (result.homeScore > result.awayScore ? team1 : (result.awayScore > result.homeScore ? team2 : "DRAW"));
     } else {
         let rows = '';
         matchPredictions.forEach((p, idx) => {
@@ -1135,7 +1097,7 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
                 <td class="prediction-text">${predictionText}</td>
                 <td class="status-pending">⏳ لم تحدد</td>
                 <td class="time-cell">${p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف'}</td>
-              </tr>`;
+            </tr>`;
         });
         tbody.innerHTML = rows;
         correctSpan.textContent = '0';
@@ -1144,8 +1106,7 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
         document.body.style.overflow = 'hidden';
         return;
     }
-    let correctCount = 0,
-        wrongCount = 0;
+    let correctCount = 0, wrongCount = 0;
     let rows = '';
     matchPredictions.forEach((p, idx) => {
         const isCorrect = p.prediction === correctResult;
@@ -1157,11 +1118,11 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
         const predClass = isCorrect ? 'correct' : 'wrong';
         const timeStr = p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف';
         rows += `<tr>
-              <td class="user-name" onclick="openPlayerPredictions('${p.user_name || ''}')">${p.user_name || 'مجهول'}</td>
-              <td class="prediction-text ${predClass}">${predictionText}</td>
-              <td class="${statusClass}">${statusText}</td>
-              <td class="time-cell">${timeStr}</td>
-            </tr>`;
+            <td class="user-name" onclick="openPlayerPredictions('${p.user_name || ''}')">${p.user_name || 'مجهول'}</td>
+            <td class="prediction-text ${predClass}">${predictionText}</td>
+            <td class="${statusClass}">${statusText}</td>
+            <td class="time-cell">${timeStr}</td>
+        </tr>`;
     });
     correctSpan.textContent = correctCount;
     wrongSpan.textContent = wrongCount;
@@ -1172,11 +1133,13 @@ async function openMatchPredictions(matchId, team1, team2, homeScore, awayScore)
 
 // ===== Open Previous Match Predictions =====
 function openPreviousMatchPredictions(team1, team2, homeScore, awayScore) {
-    const match = matchesData.find(m => (m.team1 === team1 && m.team2 === team2) || (m.team1 === team2 && m.team2 ===
-        team1));
-    if (match) { const matchId = `${match.timeISO}_${match.team1}_${match.team2}`;
-        openMatchPredictions(matchId, team1, team2, homeScore, awayScore); } else { showCopyToast(
-            '⚠️ لا توجد توقعات لهذه المباراة'); }
+    const match = matchesData.find(m => (m.team1 === team1 && m.team2 === team2) || (m.team1 === team2 && m.team2 === team1));
+    if (match) {
+        const matchId = `${match.timeISO}_${match.team1}_${match.team2}`;
+        openMatchPredictions(matchId, team1, team2, homeScore, awayScore);
+    } else {
+        showCopyToast('⚠️ لا توجد توقعات لهذه المباراة');
+    }
 }
 
 // ===== Open View Predictions Modal =====
@@ -1195,8 +1158,7 @@ async function openViewPredictionsModal(matchId, team1, team2) {
     const predictions = await getPredictionsForMatchFull(matchId);
     countSpan.textContent = predictions.length;
 
-    let homeCount = 0,
-        awayCount = 0;
+    let homeCount = 0, awayCount = 0;
     for (let p of predictions) {
         if (p.prediction === team1) homeCount++;
         else if (p.prediction === team2) awayCount++;
@@ -1224,27 +1186,24 @@ async function openViewPredictionsModal(matchId, team1, team2) {
     }
 
     if (!predictions || predictions.length === 0) {
-        listContainer.innerHTML =
-            `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذه المباراة</div>`;
+        listContainer.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذه المباراة</div>`;
     } else {
         let html = '';
         predictions.forEach((p, idx) => {
-            let text = p.prediction === 'DRAW' ? '🤝 تعادل الفريقين' :
-                `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
+            let text = p.prediction === 'DRAW' ? '🤝 تعادل الفريقين' : `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
             const status = getPredictionStatus(p);
             let statusText = '⏳ قيد الانتظار';
             let statusClass = 'pending';
-            if (status.status === 'correct') { statusText = '✅ صحيح';
-                statusClass = 'correct'; } else if (status.status === 'wrong') { statusText = '❌ خاطئ';
-                statusClass = 'wrong'; }
+            if (status.status === 'correct') { statusText = '✅ صحيح'; statusClass = 'correct'; }
+            else if (status.status === 'wrong') { statusText = '❌ خاطئ'; statusClass = 'wrong'; }
             html += `
                 <div class="prediction-card ${statusClass}" onclick="openPlayerPredictions('${p.user_name || ''}')" style="cursor:pointer;">
-                  <div class="user"><div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div><span class="name-p">${p.user_name || 'مجهول'}</span></div>
-                  <div class="prediction-text">🔮 ${text}</div>
-                  <span class="status-badge ${statusClass}">${statusText}</span>
-                  <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف'}</div>
+                    <div class="user"><div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div><span class="name-p">${p.user_name || 'مجهول'}</span></div>
+                    <div class="prediction-text">🔮 ${text}</div>
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                    <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف'}</div>
                 </div>
-              `;
+            `;
         });
         listContainer.innerHTML = html;
     }
@@ -1266,8 +1225,7 @@ async function openPlayerPredictions(userName) {
     totalSpan.textContent = '...';
 
     const predictions = await getPredictionsForUserFull(userName);
-    let correct = 0,
-        wrong = 0;
+    let correct = 0, wrong = 0;
     for (let p of predictions) {
         const status = getPredictionStatus(p);
         if (status.status === 'correct') correct++;
@@ -1278,8 +1236,7 @@ async function openPlayerPredictions(userName) {
     totalSpan.textContent = predictions.length;
 
     if (!predictions || predictions.length === 0) {
-        listContainer.innerHTML =
-            `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذا اللاعب</div>`;
+        listContainer.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذا اللاعب</div>`;
         document.getElementById('playerPredictionsModal').classList.add('active');
         document.body.style.overflow = 'hidden';
         return;
@@ -1296,24 +1253,23 @@ async function openPlayerPredictions(userName) {
         const status = getPredictionStatus(p);
         let statusClass = 'pending';
         let statusText = '⏳ لم تحدد';
-        if (status.status === 'correct') { statusClass = 'correct';
-            statusText = '✅ صحيح'; } else if (status.status === 'wrong') { statusClass = 'wrong';
-            statusText = '❌ خاطئ'; } else { statusClass = 'pending';
-            statusText = '⏳ قيد الانتظار'; }
+        if (status.status === 'correct') { statusClass = 'correct'; statusText = '✅ صحيح'; }
+        else if (status.status === 'wrong') { statusClass = 'wrong'; statusText = '❌ خاطئ'; }
+        else { statusClass = 'pending'; statusText = '⏳ قيد الانتظار'; }
 
         html += `
-              <div class="player-prediction-item">
+            <div class="player-prediction-item">
                 <div class="num">#${idx + 1}</div>
                 <div class="match-info">
-                  <div class="teams">
-                    <span class="flag">${getFlag(team1)}</span> ${team1} 🆚 <span class="flag">${getFlag(team2)}</span> ${team2}
-                  </div>
-                  <div class="pred">🔮 ${predText}</div>
-                  <span class="status ${statusClass}">${statusText}</span>
+                    <div class="teams">
+                        <span class="flag">${getFlag(team1)}</span> ${team1} 🆚 <span class="flag">${getFlag(team2)}</span> ${team2}
+                    </div>
+                    <div class="pred">🔮 ${predText}</div>
+                    <span class="status ${statusClass}">${statusText}</span>
                 </div>
                 <div class="time">🕒 ${p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف'}</div>
-              </div>
-            `;
+            </div>
+        `;
     });
 
     listContainer.innerHTML = html;
@@ -1346,24 +1302,19 @@ async function openBracketMatchDetail(matchId) {
         }
     }
     if (!match) {
-        detailDiv.innerHTML =
-            `<div class="empty-state"><span class="icon">⚠️</span> لا توجد تفاصيل لهذه المباراة</div>`;
+        detailDiv.innerHTML = `<div class="empty-state"><span class="icon">⚠️</span> لا توجد تفاصيل لهذه المباراة</div>`;
         document.getElementById('bracketMatchModal').classList.add('active');
         document.body.style.overflow = 'hidden';
         return;
     }
-    let homeName = match.team1 || match.home_team_name_fa || match.home_team_name_en || match.home_team_label ||
-    '?';
-    let awayName = match.team2 || match.away_team_name_fa || match.away_team_name_en || match.away_team_label ||
-    '?';
+    let homeName = match.team1 || match.home_team_name_fa || match.home_team_name_en || match.home_team_label || '?';
+    let awayName = match.team2 || match.away_team_name_fa || match.away_team_name_en || match.away_team_label || '?';
     let homeDisplay = translateBracketTeamName(homeName);
     let awayDisplay = translateBracketTeamName(awayName);
-    if (homeDisplay === homeName && !homeName.includes('متصدر') && !homeName.includes('وصيف') && !homeName
-        .includes('ثالث')) {
+    if (homeDisplay === homeName && !homeName.includes('متصدر') && !homeName.includes('وصيف') && !homeName.includes('ثالث')) {
         homeDisplay = translateToArabic(homeName);
     }
-    if (awayDisplay === awayName && !awayName.includes('متصدر') && !awayName.includes('وصيف') && !awayName
-        .includes('ثالث')) {
+    if (awayDisplay === awayName && !awayName.includes('متصدر') && !awayName.includes('وصيف') && !awayName.includes('ثالث')) {
         awayDisplay = translateToArabic(awayName);
     }
     const flag1 = getFlag(homeDisplay) || '🏁';
@@ -1394,24 +1345,24 @@ async function openBracketMatchDetail(matchId) {
     const predCount = predictions.length;
 
     detailDiv.innerHTML = `
-            <div class="modal-teams">
-              <div class="m-team"><span class="flag">${flag1}</span> ${homeDisplay}</div>
-              <div class="m-vs">🆚</div>
-              <div class="m-team"><span class="flag">${flag2}</span> ${awayDisplay}</div>
-            </div>
-            <div style="text-align:center;font-size:1.2rem;font-weight:800;color:var(--gold-light);">${scoreText}${penaltyText}</div>
-            ${winnerText ? `<div style="text-align:center;font-size:0.9rem;color:var(--success);font-weight:700;margin:4px 0;">${winnerText}</div>` : ''}
-            <div style="text-align:center;margin:8px 0;font-size:0.8rem;color:var(--text-secondary);">
-              📅 ${dateStr} 
-              ${stadium ? `| 🏟️ ${stadium}` : ''}
-              ${predCount > 0 ? `| 📋 ${predCount} توقع` : ''}
-            </div>
-            <div style="text-align:center;margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-              <button class="tab-btn" style="background:var(--gold-glow);border-color:var(--border-gold);color:var(--gold-light);" onclick="closeBracketModal()">إغلاق</button>
-              ${isFinished ? `<button class="tab-btn" style="background:var(--info-bg);border-color:rgba(74,158,255,0.15);color:var(--info);" onclick="openMatchPredictions('${matchId}', '${homeDisplay}', '${awayDisplay}', ${match.home_score || match.goals1?.length || 0}, ${match.away_score || match.goals2?.length || 0})">📋 عرض التوقعات</button>` : ''}
-              <button class="tab-btn" style="background:var(--info-bg);border-color:rgba(74,158,255,0.15);color:var(--info);" onclick="openViewPredictionsModal('${matchId}', '${homeDisplay}', '${awayDisplay}')">📋 استعراض التوقعات</button>
-            </div>
-          `;
+        <div class="modal-teams">
+            <div class="m-team"><span class="flag">${flag1}</span> ${homeDisplay}</div>
+            <div class="m-vs">🆚</div>
+            <div class="m-team"><span class="flag">${flag2}</span> ${awayDisplay}</div>
+        </div>
+        <div style="text-align:center;font-size:1.2rem;font-weight:800;color:var(--gold-light);">${scoreText}${penaltyText}</div>
+        ${winnerText ? `<div style="text-align:center;font-size:0.9rem;color:var(--success);font-weight:700;margin:4px 0;">${winnerText}</div>` : ''}
+        <div style="text-align:center;margin:8px 0;font-size:0.8rem;color:var(--text-secondary);">
+            📅 ${dateStr} 
+            ${stadium ? `| 🏟️ ${stadium}` : ''}
+            ${predCount > 0 ? `| 📋 ${predCount} توقع` : ''}
+        </div>
+        <div style="text-align:center;margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+            <button class="tab-btn" style="background:var(--gold-glow);border-color:var(--border-gold);color:var(--gold-light);" onclick="closeBracketModal()">إغلاق</button>
+            ${isFinished ? `<button class="tab-btn" style="background:var(--info-bg);border-color:rgba(74,158,255,0.15);color:var(--info);" onclick="openMatchPredictions('${matchId}', '${homeDisplay}', '${awayDisplay}', ${match.home_score || match.goals1?.length || 0}, ${match.away_score || match.goals2?.length || 0})">📋 عرض التوقعات</button>` : ''}
+            <button class="tab-btn" style="background:var(--info-bg);border-color:rgba(74,158,255,0.15);color:var(--info);" onclick="openViewPredictionsModal('${matchId}', '${homeDisplay}', '${awayDisplay}')">📋 استعراض التوقعات</button>
+        </div>
+    `;
     document.getElementById('bracketMatchModal').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -1427,7 +1378,11 @@ function toggleModalCompact() {
     const btn = document.getElementById('modalCompactBtn');
     isModalCompact = !isModalCompact;
     modalContent.classList.toggle('compact-mode');
-    if (isModalCompact) { btn.textContent = '📐 تكبير';
-        showCopyToast('📐 تم تصغير جدول التوقعات للتصوير'); } else { btn.textContent = '📐 تصغير';
-        showCopyToast('📐 تم تكبير جدول التوقعات'); }
+    if (isModalCompact) {
+        btn.textContent = '📐 تكبير';
+        showCopyToast('📐 تم تصغير جدول التوقعات للتصوير');
+    } else {
+        btn.textContent = '📐 تصغير';
+        showCopyToast('📐 تم تكبير جدول التوقعات');
+    }
 }
