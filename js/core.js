@@ -41,7 +41,7 @@ const SECRET_CODE = "1406";
 const stadiums = {
     "1": "ملعب آزتيكا (المكسيك)",
     "2": "ملعب سيول (كوريا)",
-    "3": "ملعب تورنتو (كندا)",
+    "3": "ملعب تورونتو (كندا)",
     "4": "ملعب لندن (إنجلترا)",
     "5": "ملعب برلين (ألمانيا)",
     "6": "ملعب بوينس آيرس (الأرجنتين)",
@@ -83,9 +83,15 @@ function now() { return Date.now(); }
 function matchTime(timeISO) { return new Date(timeISO).getTime(); }
 const MATCH_DURATION = 105 * 60 * 1000;
 
-function isMatchLive(timeISO) { const cur = now(); const start = matchTime(timeISO); return cur >= start && cur <= start + MATCH_DURATION; }
+function isMatchLive(timeISO) {
+    const cur = now();
+    const start = matchTime(timeISO);
+    return cur >= start && cur <= start + MATCH_DURATION;
+}
 
-function isMatchFinished(timeISO) { return now() > matchTime(timeISO) + MATCH_DURATION; }
+function isMatchFinished(timeISO) {
+    return now() > matchTime(timeISO) + MATCH_DURATION;
+}
 
 function canPredict(timeISO) {
     const start = matchTime(timeISO);
@@ -112,7 +118,9 @@ function getMatchStatus(m) {
     return { live: false, finished: true, text: "✅ انتهت" };
 }
 
-function upcomingMatches(arr) { return arr.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now()); }
+function upcomingMatches(arr) {
+    return arr.filter(m => (matchTime(m.timeISO) + MATCH_DURATION) > now());
+}
 
 // ===== Saudi Time Helpers =====
 function toSaudiTime(isoString) {
@@ -321,7 +329,8 @@ const nameMapping = new Map([
     ["پاراگوئه", "باراغواي"],
 ]);
 
-function normalizeName(str) { if (!str) return "";
+function normalizeName(str) {
+    if (!str) return "";
     str = str.normalize("NFD").replace(/[\u064B-\u065F]/g, "");
     str = str.replace(/[ى]/g, "ا").replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/[ک]/g, "ك").replace(/[ی]/g, "ي")
         .replace(/[ي]/g, "ي").replace(/[ئ]/g, "ي").replace(/[ؤ]/g, "و").replace(/[إ]/g, "ا").replace(/[آ]/g, "ا");
@@ -458,7 +467,6 @@ function extractPenaltyData(game) {
 
 // ===== Find Match Result =====
 function findMatchResult(team1, team2) {
-    // البحث في البيانات المحملة
     let match = state.previousGamesData.find(m => (m.homeAr === team1 && m.awayAr === team2) || (m.homeAr === team2 && m.awayAr === team1));
     if (match) {
         let result = {
@@ -488,7 +496,6 @@ function findMatchResult(team1, team2) {
         return result;
     }
 
-    // البحث في allGames
     if (state.allGames && state.allGames.length) {
         let g = state.allGames.find(m => {
             const home = translateToArabic(m.home_team_name_fa || m.home_team_name_en || '');
@@ -519,7 +526,6 @@ function findMatchResult(team1, team2) {
         }
     }
 
-    // البحث في openfootball
     if (state.openfootballMatches && state.openfootballMatches.length) {
         let m = state.openfootballMatches.find(m => {
             const h = translateToArabic(m.team1 || '');
@@ -579,7 +585,6 @@ function parseScorersWithMinutes(scorerString) {
 
 // ===== Static Matches Data =====
 const matchesData = [
-    // الجولات الثلاث الأولى
     { id: 1, team1: "المكسيك", team2: "جنوب أفريقيا", time: "2026-06-11T22:00:00+03:00", round: "first", roundLabel: "الجولة الأولى" },
     { id: 2, team1: "الأرجنتين", team2: "الجزائر", time: "2026-06-11T04:00:00+03:00", round: "first", roundLabel: "الجولة الأولى" },
     { id: 3, team1: "النمسا", team2: "الأردن", time: "2026-06-11T07:00:00+03:00", round: "first", roundLabel: "الجولة الأولى" },
@@ -653,8 +658,6 @@ const matchesData = [
     { id: 71, team1: "الكونغو الديمقراطية", team2: "أوزبكستان", time: "2026-06-28T02:30:00+03:00", round: "third", roundLabel: "الجولة الثالثة" },
     { id: 72, team1: "الجزائر", team2: "النمسا", time: "2026-06-28T05:00:00+03:00", round: "third", roundLabel: "الجولة الثالثة" },
     { id: 73, team1: "الأردن", team2: "الأرجنتين", time: "2026-06-28T05:00:00+03:00", round: "third", roundLabel: "الجولة الثالثة" },
-
-    // ===== دور الـ 32 (16 مباراة) =====
     { id: 101, team1: "جنوب أفريقيا", team2: "كندا", time: "2026-06-28T22:00:00+03:00", round: "round32", roundLabel: "دور الـ 32", stadium: "ملعب سوفي - إنجلوود" },
     { id: 102, team1: "البرازيل", team2: "اليابان", time: "2026-06-29T20:00:00+03:00", round: "round32", roundLabel: "دور الـ 32", stadium: "ملعب إن آر جي - هيوستن" },
     { id: 103, team1: "ألمانيا", team2: "باراغواي", time: "2026-06-29T23:30:00+03:00", round: "round32", roundLabel: "دور الـ 32", stadium: "ملعب جيليت - فوكسبورو" },
@@ -671,15 +674,21 @@ const matchesData = [
     { id: 114, team1: "أستراليا", team2: "مصر", time: "2026-07-03T21:00:00+03:00", round: "round32", roundLabel: "دور الـ 32", stadium: "ملعب آيه تي آند تي - أرلينغتون" },
     { id: 115, team1: "الأرجنتين", team2: "الرأس الأخضر", time: "2026-07-04T01:00:00+03:00", round: "round32", roundLabel: "دور الـ 32", stadium: "ملعب هارد روك - ميامي غاردنز" },
     { id: 116, team1: "كولومبيا", team2: "غانا", time: "2026-07-04T04:30:00+03:00", round: "round32", roundLabel: "دور الـ 32", stadium: "ملعب أروهيد - كانساس سيتي" },
-
-    // ===== المباريات الإضافية =====
     { id: 201, team1: "كندا", team2: "المغرب", time: "2026-07-04T20:00:00+03:00", round: "round16", roundLabel: "دور الـ 16", stadium: "هيوستن" },
     { id: 202, team1: "البرازيل", team2: "النرويج", time: "2026-07-05T23:00:00+03:00", round: "round16", roundLabel: "دور الـ 16", stadium: "نيويورك/نيوجيرسي" },
     { id: 203, team1: "المكسيك", team2: "إنجلترا", time: "2026-07-06T03:00:00+03:00", round: "round16", roundLabel: "دور الـ 16", stadium: "مدينة المكسيك" },
     { id: 204, team1: "البرتغال", team2: "إسبانيا", time: "2026-07-06T22:00:00+03:00", round: "round16", roundLabel: "دور الـ 16", stadium: "دالاس" },
     { id: 205, team1: "أمريكا", team2: "بلجيكا", time: "2026-07-07T03:00:00+03:00", round: "round16", roundLabel: "دور الـ 16", stadium: "سياتل" },
     { id: 206, team1: "الأرجنتين", team2: "مصر", time: "2026-07-07T19:00:00+03:00", round: "round16", roundLabel: "دور الـ 16", stadium: "أتلانتا" },
-    { id: 207, team1: "سويسرا", team2: "كولومبيا", time: "2026-07-07T23:00:00+03:00", round: "round16", roundLabel: "دور الـ 16", stadium: "فانكوفر" }
+    { id: 207, team1: "سويسرا", team2: "كولومبيا", time: "2026-07-07T23:00:00+03:00", round: "round16", roundLabel: "دور الـ 16", stadium: "فانكوفر" },
+    { id: 301, team1: "الفائز 101", team2: "الفائز 102", time: "2026-07-09T22:00:00+03:00", round: "quarter", roundLabel: "ربع النهائي", stadium: "نيويورك/نيوجيرسي" },
+    { id: 302, team1: "الفائز 103", team2: "الفائز 104", time: "2026-07-10T02:00:00+03:00", round: "quarter", roundLabel: "ربع النهائي", stadium: "دالاس" },
+    { id: 303, team1: "الفائز 105", team2: "الفائز 106", time: "2026-07-10T22:00:00+03:00", round: "quarter", roundLabel: "ربع النهائي", stadium: "كانساس سيتي" },
+    { id: 304, team1: "الفائز 107", team2: "الفائز 108", time: "2026-07-11T02:00:00+03:00", round: "quarter", roundLabel: "ربع النهائي", stadium: "ميامي" },
+    { id: 401, team1: "الفائز 301", team2: "الفائز 302", time: "2026-07-14T22:00:00+03:00", round: "semi", roundLabel: "نصف النهائي", stadium: "أتلانتا" },
+    { id: 402, team1: "الفائز 303", team2: "الفائز 304", time: "2026-07-15T02:00:00+03:00", round: "semi", roundLabel: "نصف النهائي", stadium: "دالاس" },
+    { id: 501, team1: "خاسر 401", team2: "خاسر 402", time: "2026-07-18T22:00:00+03:00", round: "third", roundLabel: "المركز الثالث", stadium: "ميامي" },
+    { id: 601, team1: "فائز 401", team2: "فائز 402", time: "2026-07-19T22:00:00+03:00", round: "final", roundLabel: "النهائي", stadium: "نيويورك/نيوجيرسي" }
 ];
 
 // ===== Final Groups =====
