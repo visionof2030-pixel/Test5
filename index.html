@@ -3684,7 +3684,7 @@
             <div class="news-ticker" id="newsTicker">
                 <span>🏆 كأس العالم 2026 — تابع المباريات وتوقع النتائج</span>
                 <span class="sep">|</span>
-                <span>🗳️ طريقة التوقع: اختر المباراة → أدخل اسمك → اختر الفائز (لا يوجد تعادل)</span>
+                <span>🗳️ طريقة التوقع: اختر المباراة → أدخل اسمك → اختر الفائز (في دور المجموعات يمكن اختيار التعادل)</span>
                 <span class="sep">|</span>
                 <span>⏰ يمكنك التوقع حتى 5 دقائق قبل بداية المباراة (بتوقيت السعودية)</span>
                 <span class="sep">|</span>
@@ -3887,6 +3887,7 @@
             <div class="modal-options" id="modalOptions">
                 <label><input type="radio" name="prediction" value="HOME" /><span class="opt-label">🏆 <span id="optTeam1">الفريق الأول</span></span><span class="opt-sub">فوز</span></label>
                 <label><input type="radio" name="prediction" value="AWAY" /><span class="opt-label">🏆 <span id="optTeam2">الفريق الثاني</span></span><span class="opt-sub">فوز</span></label>
+                <label id="drawOption" style="display:none;"><input type="radio" name="prediction" value="DRAW" /><span class="opt-label">🤝 تعادل</span><span class="opt-sub">تعادل</span></label>
             </div>
             <button class="modal-submit" id="modalSubmitBtn">💾 حفظ التوقع</button>
             <div class="modal-message" id="modalMessage"></div>
@@ -4229,7 +4230,25 @@
         }
 
         // ============================================================
-        //  دالة مساعدة لتحديد الفائز (مع ركلات الترجيح)
+        //  دالة تحديد نوع المباراة (دور مجموعات أم خروج مغلوب)
+        // ============================================================
+        function isKnockoutMatch(match) {
+            if (!match) return false;
+            const knockoutRounds = ['round32', 'round16', 'quarterfinal', 'semifinal', 'third', 'final'];
+            return knockoutRounds.includes(match.round) || 
+                   match.roundLabel?.includes('دور') || 
+                   match.roundLabel?.includes('ربع') ||
+                   match.roundLabel?.includes('نصف') ||
+                   match.roundLabel?.includes('المركز') ||
+                   match.roundLabel?.includes('النهائي');
+        }
+
+        function getMatchById(matchId) {
+            return matchesData.find(m => `${m.timeISO}_${m.team1}_${m.team2}` === matchId) || null;
+        }
+
+        // ============================================================
+        //  دالة مساعدة لتحديد الفائز (مع ركلات الترجيح) - محسنة
         // ============================================================
         function determineWinner(matchResult) {
             if (!matchResult) return null;
@@ -4241,7 +4260,7 @@
                 } else if (parseInt(matchResult.awayPenalty) > parseInt(matchResult.homePenalty)) {
                     return matchResult.awayAr;
                 }
-                return null;
+                return null; // تعادل في ركلات الترجيح (نادر)
             }
 
             // إذا كانت النتيجة غير متعادلة
@@ -4251,7 +4270,7 @@
                 return matchResult.awayAr;
             }
 
-            return null;
+            return null; // تعادل
         }
 
         // ============================================================
@@ -6134,7 +6153,7 @@
         }
 
         // ============================================================
-        //  نافذة التوقع (الخطوة الثانية) - تم إزالة التعادل
+        //  نافذة التوقع (الخطوة الثانية) - مع عرض خيار التعادل حسب نوع المباراة
         // ============================================================
         function openPredictionModal(matchId, team1, team2, timeISO, userName) {
             if (isMatchFinished(timeISO)) { showCopyToast('⛔ هذه المباراة انتهت، لا يمكن التوقع.'); return; }
@@ -6148,6 +6167,10 @@
             currentTimeISO = timeISO;
             currentUserName = userName || localStorage.getItem('lastUserName') || '';
 
+            // تحديد نوع المباراة
+            const match = getMatchById(matchId);
+            const isKnockout = isKnockoutMatch(match);
+
             document.getElementById('modalTitle').textContent = '📝 توقع نتيجة المباراة';
             document.getElementById('greetingName').textContent = currentUserName;
             document.getElementById('modalUserGreeting').style.display = 'block';
@@ -6158,6 +6181,17 @@
             document.getElementById('modalFlag1').textContent = getFlag(team1);
             document.getElementById('modalFlag2').textContent = getFlag(team2);
             document.getElementById('modalDateTime').textContent = `📅 ${getDateTimeDisplay(timeISO)} (بتوقيت السعودية)`;
+
+            // إظهار/إخفاء خيار التعادل
+            const drawOption = document.getElementById('drawOption');
+            if (isKnockout) {
+                drawOption.style.display = 'none';
+                // إلغاء تحديد التعادل إذا كان محدداً
+                const drawRadio = document.querySelector('input[name="prediction"][value="DRAW"]');
+                if (drawRadio) drawRadio.checked = false;
+            } else {
+                drawOption.style.display = 'block';
+            }
 
             const msgEl = document.getElementById('modalMessage');
             msgEl.textContent = '';
@@ -7002,7 +7036,7 @@
         }
 
         // ============================================================
-        //  دالة getPredictionStatus المحسنة - الإصلاح الأساسي
+        //  دالة getPredictionStatus المحسنة - مع دعم التعادل
         // ============================================================
         function getPredictionStatus(prediction) {
             if (!prediction || !prediction.match_id) {
@@ -7039,7 +7073,12 @@
             
             // إذا لم يتم تحديد فائز (تعادل)
             if (!correctResult) {
-                return { status: 'pending', text: '🤝 تعادل', color: 'var(--gold-light)' };
+                // التحقق مما إذا كان التوقع تعادلاً أم لا
+                if (prediction.prediction === 'DRAW') {
+                    return { status: 'correct', text: '✅ توقع صحيح (تعادل)', color: 'var(--success)' };
+                } else {
+                    return { status: 'wrong', text: `❌ خاطئ (النتيجة تعادل)`, color: 'var(--danger)' };
+                }
             }
             
             // مقارنة توقع المستخدم مع النتيجة الصحيحة
@@ -7100,12 +7139,14 @@
                 const team2 = parts.length > 2 ? parts[2] : '?';
                 
                 let predictionText = '';
-                if (p.prediction === team1) {
+                if (p.prediction === 'DRAW') {
+                    predictionText = `🤝 تعادل`;
+                } else if (p.prediction === team1) {
                     predictionText = `🏆 فوز ${getFlag(team1)} ${team1}`;
                 } else if (p.prediction === team2) {
                     predictionText = `🏆 فوز ${getFlag(team2)} ${team2}`;
                 } else {
-                    predictionText = `🤝 تعادل`;
+                    predictionText = `🔮 ${p.prediction}`;
                 }
                 
                 const status = getPredictionStatus(p);
@@ -7177,12 +7218,14 @@
                 const team1 = parts.length > 1 ? parts[1] : '?';
                 const team2 = parts.length > 2 ? parts[2] : '?';
                 let predText = '';
-                if (p.prediction === team1) {
+                if (p.prediction === 'DRAW') {
+                    predText = `تعادل`;
+                } else if (p.prediction === team1) {
                     predText = `فوز ${team1}`;
                 } else if (p.prediction === team2) {
                     predText = `فوز ${team2}`;
                 } else {
-                    predText = `تعادل`;
+                    predText = p.prediction;
                 }
                 const status = getPredictionStatus(p);
                 let statusClass = 'pending';
@@ -7245,8 +7288,39 @@
         }
 
         // ============================================================
-        //  لوحة المتصدرين (محسّنة)
+        //  لوحة المتصدرين - النظام الجديد (النقاط الأساسية + النقاط الجديدة)
         // ============================================================
+        // مفتاح تخزين النقاط الأساسية في localStorage
+        const BASE_POINTS_KEY = 'base_points_v1';
+
+        // الحصول على النقاط الأساسية المخزنة
+        function getBasePoints() {
+            try {
+                const stored = localStorage.getItem(BASE_POINTS_KEY);
+                if (stored) {
+                    return JSON.parse(stored);
+                }
+            } catch (e) {
+                console.warn('⚠️ فشل قراءة النقاط الأساسية:', e);
+            }
+            // النقاط الأساسية الافتراضية
+            const defaultBasePoints = {
+                "محمد": 47,
+                "عماد": 47,
+                "HamadAlahmadi": 42,
+                "فهد الخالدي": 42,
+                "Lody": 40,
+                "يسري": 40,
+                "أصيل": 36,
+                "ابو زياد": 35,
+                "نواف": 30,
+                "ابو راكان": 1
+            };
+            // حفظ النقاط الأساسية في localStorage
+            localStorage.setItem(BASE_POINTS_KEY, JSON.stringify(defaultBasePoints));
+            return defaultBasePoints;
+        }
+
         function setLeaderboardPeriod(period) {
             currentLeaderboardPeriod = period;
             document.querySelectorAll('.period-btn').forEach(btn => {
@@ -7262,7 +7336,7 @@
                 return;
             }
             
-            // جلب أحدث التوقعات
+            // جلب أحدث التوقعات من Supabase
             if (supabaseClient) {
                 try {
                     const { data, error } = await supabaseClient
@@ -7280,58 +7354,83 @@
             
             const predictions = state.predictions || [];
             const games = state.previousGamesData || [];
-            if (!predictions.length || !games.length) {
-                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد بيانات كافية</div>`;
-                return;
-            }
-
-            let filteredGames = games;
-            if (period === '24h') {
-                const nowTime = now();
-                const last24h = nowTime - 24 * 60 * 60 * 1000;
-                filteredGames = games.filter(g => {
-                    const ts = g.sortTimestamp || 0;
-                    return ts >= last24h && ts <= nowTime;
-                });
-            }
-
+            
+            // الحصول على النقاط الأساسية
+            const basePoints = getBasePoints();
+            
+            // حساب النقاط الإجمالية = النقاط الأساسية + النقاط الجديدة
             const scores = {};
-            for (let p of predictions) {
-                if (!scores[p.user_name]) {
-                    scores[p.user_name] = { name: p.user_name, points: 0, correct: 0, wrong: 0, total: 0 };
-                }
-                scores[p.user_name].total++;
-                const parts = (p.match_id || "").split("_");
-                if (parts.length < 3) continue;
-                const team1 = parts[1],
-                    team2 = parts[2];
+            let userList = Object.keys(basePoints);
+            
+            // إضافة المستخدمين الأساسيين
+            userList.forEach(userName => {
+                scores[userName] = {
+                    name: userName,
+                    basePoints: basePoints[userName] || 0,
+                    points: 0, // سيتم حسابها لاحقاً
+                    newPoints: 0, // النقاط الجديدة المكتسبة
+                    correct: 0,
+                    wrong: 0,
+                    total: 0
+                };
+            });
+            
+            // حساب التوقعات الصحيحة الجديدة لكل مستخدم
+            if (predictions.length > 0 && games.length > 0) {
+                // نأخذ التوقعات من تاريخ محدد (مثلاً من اليوم)
+                const startDate = new Date();
+                startDate.setHours(0, 0, 0, 0);
                 
-                // استخدام دالة findMatchResult المحسنة
-                const result = findMatchResult(team1, team2);
-                let winner = null;
-                if (result) {
-                    winner = determineWinner(result);
-                }
-                
-                if (winner) {
-                    const isCorrect = p.prediction === winner;
-                    if (isCorrect) {
-                        scores[p.user_name].points++;
+                for (let p of predictions) {
+                    if (!scores[p.user_name]) {
+                        // إذا كان مستخدم جديد ليس في القائمة الأساسية
+                        scores[p.user_name] = {
+                            name: p.user_name,
+                            basePoints: 0,
+                            points: 0,
+                            newPoints: 0,
+                            correct: 0,
+                            wrong: 0,
+                            total: 0
+                        };
+                    }
+                    
+                    scores[p.user_name].total++;
+                    
+                    // تحديد صحة التوقع
+                    const status = getPredictionStatus(p);
+                    if (status.status === 'correct') {
                         scores[p.user_name].correct++;
-                    } else {
+                        
+                        // التحقق مما إذا كان هذا التوقع جديد (بعد النقاط الأساسية)
+                        const predDate = new Date(p.created_at);
+                        // نأخذ التوقعات من اليوم فصاعداً كنقاط جديدة
+                        if (predDate >= startDate || !p.created_at) {
+                            scores[p.user_name].newPoints++;
+                        }
+                    } else if (status.status === 'wrong') {
                         scores[p.user_name].wrong++;
                     }
                 }
             }
             
+            // حساب النقاط الإجمالية = النقاط الأساسية + النقاط الجديدة
+            for (let [name, data] of Object.entries(scores)) {
+                data.points = data.basePoints + data.newPoints;
+            }
+            
+            // الترتيب حسب النقاط الإجمالية
             const board = Object.values(scores).sort((a, b) => b.points - a.points || (b.correct - a.correct));
+            
             if (!board.length) {
-                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات صحيحة</div>`;
+                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد بيانات</div>`;
                 return;
             }
+            
             document.getElementById('lbTotalPlayers').textContent = board.length;
-            document.getElementById('lbTotalPredictions').textContent = predictions.length;
+            document.getElementById('lbTotalPredictions').textContent = board.reduce((sum, p) => sum + p.total, 0);
 
+            // حساب الترتيب مع مراعاة التعادل
             let rank = 1;
             let i = 0;
             while (i < board.length) {
@@ -7340,14 +7439,14 @@
                 while (j < board.length && board[j].points === points) {
                     j++;
                 }
-                const groupSize = j - i;
                 for (let k = i; k < j; k++) {
                     board[k].rank = rank;
                 }
                 i = j;
-                rank += groupSize;
+                rank += (j - i + 1);
             }
 
+            // تخزين الترتيب السابق
             const prevRankKey = `prevRank_${period}`;
             let prevRank = {};
             try {
@@ -7362,9 +7461,11 @@
             localStorage.setItem(prevRankKey, JSON.stringify(currentRank));
 
             const topThree = board.slice(0, 3);
-            const rest = board.slice(3, 10);
+            const rest = board.slice(3, 15);
 
             let html = '';
+            
+            // عرض البطل (المركز الأول)
             if (topThree.length) {
                 const champ = topThree[0];
                 const accuracy = champ.total > 0 ? Math.round((champ.correct / champ.total) * 100) : 0;
@@ -7379,29 +7480,36 @@
                     arrow = ' <span class="arrow-unchanged">—</span>';
                 }
                 const medal = champ.rank === 1 ? '🥇' : champ.rank === 2 ? '🥈' : champ.rank === 3 ? '🥉' : `#${champ.rank}`;
+                
+                // عرض النقاط القديمة والجديدة
+                const newPointsDisplay = champ.newPoints > 0 ? ` (+${champ.newPoints} جديدة)` : '';
+                
                 html += `
-              <div class="champion-card" style="${isCurrentUser ? 'border-color:var(--gold);box-shadow:0 0 60px rgba(212,167,69,0.08);' : ''}" onclick="openPlayerPredictions('${champ.name}')">
-                <div class="rank-badge">${medal}</div>
-                <div class="avatar">${champ.name.charAt(0).toUpperCase()}</div>
-                <div class="info">
-                  <div class="name">${champ.name} ${isCurrentUser ? '👤' : ''}
-                    <button class="compare-btn" onclick="event.stopPropagation(); openCompareModal('${champ.name}')">📊 مقارنة</button>
-                  </div>
-                  <div class="stats-row">
-                    <span class="item">🏆 <strong>${champ.points}</strong> نقطة</span>
-                    <span class="item">✅ <strong style="color:var(--gold-light);">${champ.correct}</strong></span>
-                    <span class="item">📊 <strong style="font-size:0.7rem;">${champ.total}</strong></span>
-                    <span class="item">📊 <strong>${accuracy}%</strong> نجاح</span>
-                    <span class="item">${arrow}</span>
-                  </div>
-                  <div class="progress-wrapper">
-                    <div class="progress-label"><span>نسبة النجاح</span><span>${accuracy}%</span></div>
-                    <div class="progress-bar"><div class="fill" style="width:${Math.min(accuracy,100)}%;"></div></div>
-                  </div>
-                </div>
-              </div>
-            `;
+                    <div class="champion-card" style="${isCurrentUser ? 'border-color:var(--gold);box-shadow:0 0 60px rgba(212,167,69,0.08);' : ''}" onclick="openPlayerPredictions('${champ.name}')">
+                        <div class="rank-badge">${medal}</div>
+                        <div class="avatar">${champ.name.charAt(0).toUpperCase()}</div>
+                        <div class="info">
+                            <div class="name">${champ.name} ${isCurrentUser ? '👤' : ''}
+                                <button class="compare-btn" onclick="event.stopPropagation(); openCompareModal('${champ.name}')">📊 مقارنة</button>
+                            </div>
+                            <div class="stats-row">
+                                <span class="item">🏆 <strong>${champ.points}</strong> نقطة${newPointsDisplay}</span>
+                                <span class="item">✅ <strong style="color:var(--gold-light);">${champ.correct}</strong></span>
+                                <span class="item">📊 <strong style="font-size:0.7rem;">${champ.total}</strong></span>
+                                <span class="item">📊 <strong>${accuracy}%</strong> نجاح</span>
+                                <span class="item">${arrow}</span>
+                            </div>
+                            ${champ.newPoints > 0 ? `<div style="font-size:0.65rem;color:var(--success);margin-top:4px;">✨ نقاط جديدة مكتسبة: +${champ.newPoints}</div>` : ''}
+                            <div class="progress-wrapper">
+                                <div class="progress-label"><span>نسبة النجاح</span><span>${accuracy}%</span></div>
+                                <div class="progress-bar"><div class="fill" style="width:${Math.min(accuracy,100)}%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
+
+            // عرض باقي اللاعبين
             if (rest.length || topThree.length > 1) {
                 const allPlayers = [...topThree.slice(1), ...rest];
                 html += `<div class="players-list">`;
@@ -7440,30 +7548,33 @@
                     } else if (prevPos) {
                         arrow = ' —';
                     }
-                    const arrowClass = arrow.includes('▲') ? 'arrow-up' : (arrow.includes('▼') ? 'arrow-down' :
-                        'arrow-unchanged');
+                    const arrowClass = arrow.includes('▲') ? 'arrow-up' : (arrow.includes('▼') ? 'arrow-down' : 'arrow-unchanged');
+
+                    const newPointsDisplay = player.newPoints > 0 ? ` (+${player.newPoints})` : '';
 
                     html += `
-                <div class="player-card" style="${isCurrentUser ? 'border-color:rgba(212,167,69,0.30);' : ''}" onclick="openPlayerPredictions('${player.name}')">
-                  <div class="rank ${rankClass}">${medal}${tieBadge}</div>
-                  <div class="avatar-sm ${borderClass}">${player.name.charAt(0).toUpperCase()}</div>
-                  <div class="info-sm">
-                    <div class="name-sm">${player.name} ${isCurrentUser ? '👤' : ''}
-                      ${isTie ? `<span class="mini-badge gold">⚡ متعادل</span>` : ''}
-                    </div>
-                    <div class="sub-sm">
-                      <span>✅ <span style="color:var(--gold-light);">${player.correct}</span></span>
-                      <span>📊 <span style="font-size:0.65rem;">${player.total}</span></span>
-                      <span>📊 ${accuracy}%</span>
-                      <span class="${arrowClass}">${arrow.trim()}</span>
-                    </div>
-                    <div class="progress-mini"><div class="fill-mini" style="width:${Math.min(accuracy,100)}%;"></div></div>
-                  </div>
-                  <div class="points-sm">${player.points}</div>
-                  <button class="compare-btn" onclick="event.stopPropagation(); openCompareModal('${player.name}')">📊 مقارنة</button>
-                  ${isCurrentUser ? `<div class="current-user-indicator active"></div><div class="pulse-dot"></div>` : ''}
-                </div>
-              `;
+                        <div class="player-card" style="${isCurrentUser ? 'border-color:rgba(212,167,69,0.30);' : ''}" onclick="openPlayerPredictions('${player.name}')">
+                            <div class="rank ${rankClass}">${medal}${tieBadge}</div>
+                            <div class="avatar-sm ${borderClass}">${player.name.charAt(0).toUpperCase()}</div>
+                            <div class="info-sm">
+                                <div class="name-sm">${player.name} ${isCurrentUser ? '👤' : ''}
+                                    ${isTie ? `<span class="mini-badge gold">⚡ متعادل</span>` : ''}
+                                    ${player.points >= 40 ? `<span class="mini-badge gold">🏅 ممتاز</span>` : ''}
+                                </div>
+                                <div class="sub-sm">
+                                    <span>🏆 <span style="color:var(--gold-light);font-weight:800;">${player.points}</span>${newPointsDisplay}</span>
+                                    <span>✅ <span style="color:var(--success);">${player.correct}</span></span>
+                                    <span>📊 ${player.total}</span>
+                                    <span>🎯 ${accuracy}%</span>
+                                    <span class="${arrowClass}">${arrow.trim()}</span>
+                                </div>
+                                <div class="progress-mini"><div class="fill-mini" style="width:${Math.min(accuracy,100)}%;"></div></div>
+                            </div>
+                            <div class="points-sm">${player.points}</div>
+                            <button class="compare-btn" onclick="event.stopPropagation(); openCompareModal('${player.name}')">📊 مقارنة</button>
+                            ${isCurrentUser ? `<div class="current-user-indicator active"></div><div class="pulse-dot"></div>` : ''}
+                        </div>
+                    `;
                 });
                 html += `</div>`;
             }
@@ -7508,32 +7619,29 @@
             const predictions = state.predictions || [];
             const games = state.previousGamesData || [];
 
+            // الحصول على النقاط الأساسية
+            const basePoints = getBasePoints();
+
             for (let p of predictions) {
                 if (!stats[p.user_name]) {
-                    stats[p.user_name] = { name: p.user_name, points: 0, correct: 0, wrong: 0, total: 0, predictions: [] };
+                    stats[p.user_name] = { 
+                        name: p.user_name, 
+                        points: basePoints[p.user_name] || 0,
+                        correct: 0, 
+                        wrong: 0, 
+                        total: 0, 
+                        predictions: [] 
+                    };
                 }
                 stats[p.user_name].total++;
-                const parts = (p.match_id || "").split("_");
-                if (parts.length < 3) continue;
-                const team1 = parts[1],
-                    team2 = parts[2];
-                
-                const result = findMatchResult(team1, team2);
-                let winner = null;
-                if (result) {
-                    winner = determineWinner(result);
+                const status = getPredictionStatus(p);
+                if (status.status === 'correct') {
+                    stats[p.user_name].points++;
+                    stats[p.user_name].correct++;
+                } else if (status.status === 'wrong') {
+                    stats[p.user_name].wrong++;
                 }
-                
-                if (winner) {
-                    const isCorrect = p.prediction === winner;
-                    if (isCorrect) {
-                        stats[p.user_name].points++;
-                        stats[p.user_name].correct++;
-                    } else {
-                        stats[p.user_name].wrong++;
-                    }
-                }
-                stats[p.user_name].predictions.push({ matchId: p.match_id, prediction: p.prediction, correct: isCorrect });
+                stats[p.user_name].predictions.push({ matchId: p.match_id, prediction: p.prediction, correct: status.status === 'correct' });
             }
             return stats;
         }
@@ -7550,12 +7658,12 @@
                 const acc = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
                 name1.innerHTML = `👤 ${p1}`;
                 div1.innerHTML = `
-              <div class="stat-row"><span class="label">🏆 النقاط</span><span class="value gold">${s.points}</span></div>
-              <div class="stat-row"><span class="label">✅ صحيحة</span><span class="value green">${s.correct}</span></div>
-              <div class="stat-row"><span class="label">❌ خاطئة</span><span class="value red">${s.wrong}</span></div>
-              <div class="stat-row"><span class="label">📊 عدد التوقعات الكلي</span><span class="value">${s.total}</span></div>
-              <div class="stat-row"><span class="label">🎯 نسبة النجاح</span><span class="value gold">${acc}%</span></div>
-            `;
+                    <div class="stat-row"><span class="label">🏆 النقاط</span><span class="value gold">${s.points}</span></div>
+                    <div class="stat-row"><span class="label">✅ صحيحة</span><span class="value green">${s.correct}</span></div>
+                    <div class="stat-row"><span class="label">❌ خاطئة</span><span class="value red">${s.wrong}</span></div>
+                    <div class="stat-row"><span class="label">📊 عدد التوقعات الكلي</span><span class="value">${s.total}</span></div>
+                    <div class="stat-row"><span class="label">🎯 نسبة النجاح</span><span class="value gold">${acc}%</span></div>
+                `;
             } else {
                 name1.innerHTML = '👤 لاعب 1';
                 div1.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> اختر لاعباً</div>`;
@@ -7568,12 +7676,12 @@
                 const acc = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
                 name2.innerHTML = `👤 ${p2}`;
                 div2.innerHTML = `
-              <div class="stat-row"><span class="label">🏆 النقاط</span><span class="value gold">${s.points}</span></div>
-              <div class="stat-row"><span class="label">✅ صحيحة</span><span class="value green">${s.correct}</span></div>
-              <div class="stat-row"><span class="label">❌ خاطئة</span><span class="value red">${s.wrong}</span></div>
-              <div class="stat-row"><span class="label">📊 عدد التوقعات الكلي</span><span class="value">${s.total}</span></div>
-              <div class="stat-row"><span class="label">🎯 نسبة النجاح</span><span class="value gold">${acc}%</span></div>
-            `;
+                    <div class="stat-row"><span class="label">🏆 النقاط</span><span class="value gold">${s.points}</span></div>
+                    <div class="stat-row"><span class="label">✅ صحيحة</span><span class="value green">${s.correct}</span></div>
+                    <div class="stat-row"><span class="label">❌ خاطئة</span><span class="value red">${s.wrong}</span></div>
+                    <div class="stat-row"><span class="label">📊 عدد التوقعات الكلي</span><span class="value">${s.total}</span></div>
+                    <div class="stat-row"><span class="label">🎯 نسبة النجاح</span><span class="value gold">${acc}%</span></div>
+                `;
             } else {
                 name2.innerHTML = '👤 لاعب 2';
                 div2.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> اختر لاعباً</div>`;
@@ -7694,21 +7802,21 @@
                 playerName) + 1;
 
             detailsDiv.innerHTML = `
-            <div class="stat-item"><span class="label">👤 اللاعب</span><span class="value gold">${playerName}</span></div>
-            <div class="stat-item"><span class="label">🏆 الترتيب الحالي</span><span class="value gold">#${currentRank}</span></div>
-            <div class="stat-item"><span class="label">📊 عدد التوقعات الكلي</span><span class="value">${total}</span></div>
-            <div class="stat-item"><span class="label">✅ صحيحة</span><span class="value green">${correct}</span></div>
-            <div class="stat-item"><span class="label">❌ خاطئة</span><span class="value red">${wrong}</span></div>
-            <div class="stat-item"><span class="label">🎯 نسبة النجاح الإجمالية</span><span class="value gold">${overallAcc.toFixed(1)}%</span></div>
-            <div class="stat-item"><span class="label">🏆 النقاط</span><span class="value gold">${points}</span></div>
-            <div class="stat-item"><span class="label">📈 متوسط النقاط لكل توقع</span><span class="value gold">${avgPointsPerPred.toFixed(2)}</span></div>
-            <div class="stat-item"><span class="label">🔥 الأداء في آخر 5 توقعات</span><span class="value ${recentAcc >= 60 ? 'green' : 'red'}">${recentAcc.toFixed(0)}%</span></div>
-            <div class="prediction-trend">
-              <div class="trend-label">🔮 توقع الترتيب المستقبلي (بناءً على الأداء الحالي وعدد اللاعبين ${totalPlayers})</div>
-              <div class="trend-value">${predictedRank} 🏅</div>
-              ${predictedRank > currentRank ? `<div style="font-size:0.7rem;color:var(--success);">✅ من المتوقع أن يرتفع ترتيبك</div>` : (predictedRank < currentRank ? `<div style="font-size:0.7rem;color:var(--danger);">⚠️ من المتوقع أن ينخفض ترتيبك</div>` : `<div style="font-size:0.7rem;color:var(--text-secondary);">➖ من المتوقع أن يبقى ترتيبك كما هو</div>`)}
-            </div>
-          `;
+                <div class="stat-item"><span class="label">👤 اللاعب</span><span class="value gold">${playerName}</span></div>
+                <div class="stat-item"><span class="label">🏆 الترتيب الحالي</span><span class="value gold">#${currentRank}</span></div>
+                <div class="stat-item"><span class="label">📊 عدد التوقعات الكلي</span><span class="value">${total}</span></div>
+                <div class="stat-item"><span class="label">✅ صحيحة</span><span class="value green">${correct}</span></div>
+                <div class="stat-item"><span class="label">❌ خاطئة</span><span class="value red">${wrong}</span></div>
+                <div class="stat-item"><span class="label">🎯 نسبة النجاح الإجمالية</span><span class="value gold">${overallAcc.toFixed(1)}%</span></div>
+                <div class="stat-item"><span class="label">🏆 النقاط</span><span class="value gold">${points}</span></div>
+                <div class="stat-item"><span class="label">📈 متوسط النقاط لكل توقع</span><span class="value gold">${avgPointsPerPred.toFixed(2)}</span></div>
+                <div class="stat-item"><span class="label">🔥 الأداء في آخر 5 توقعات</span><span class="value ${recentAcc >= 60 ? 'green' : 'red'}">${recentAcc.toFixed(0)}%</span></div>
+                <div class="prediction-trend">
+                    <div class="trend-label">🔮 توقع الترتيب المستقبلي (بناءً على الأداء الحالي وعدد اللاعبين ${totalPlayers})</div>
+                    <div class="trend-value">${predictedRank} 🏅</div>
+                    ${predictedRank > currentRank ? `<div style="font-size:0.7rem;color:var(--success);">✅ من المتوقع أن يرتفع ترتيبك</div>` : (predictedRank < currentRank ? `<div style="font-size:0.7rem;color:var(--danger);">⚠️ من المتوقع أن ينخفض ترتيبك</div>` : `<div style="font-size:0.7rem;color:var(--text-secondary);">➖ من المتوقع أن يبقى ترتيبك كما هو</div>`)}
+                </div>
+            `;
             detailsDiv.style.display = 'block';
         }
 
@@ -7741,27 +7849,27 @@
             const sortedWrong = Object.entries(matchStats).sort((a, b) => b[1].wrong - a[1].wrong).slice(0, 5);
 
             let html = `
-            <div class="match-list">
-              <div class="list-title">✅ أكثر المباريات توقعاً صحيحاً</div>
-              ${sortedCorrect.length === 0 ? '<div class="empty-state" style="padding:10px;">لا توجد بيانات</div>' : ''}
-              ${sortedCorrect.map(([match, stats]) => `
-                <div class="match-item">
-                  <span class="teams">${match}</span>
-                  <span class="count correct">${stats.correct} صحيح</span>
+                <div class="match-list">
+                    <div class="list-title">✅ أكثر المباريات توقعاً صحيحاً</div>
+                    ${sortedCorrect.length === 0 ? '<div class="empty-state" style="padding:10px;">لا توجد بيانات</div>' : ''}
+                    ${sortedCorrect.map(([match, stats]) => `
+                        <div class="match-item">
+                            <span class="teams">${match}</span>
+                            <span class="count correct">${stats.correct} صحيح</span>
+                        </div>
+                    `).join('')}
                 </div>
-              `).join('')}
-            </div>
-            <div class="match-list">
-              <div class="list-title">❌ أكثر المباريات توقعاً خاطئاً</div>
-              ${sortedWrong.length === 0 ? '<div class="empty-state" style="padding:10px;">لا توجد بيانات</div>' : ''}
-              ${sortedWrong.map(([match, stats]) => `
-                <div class="match-item">
-                  <span class="teams">${match}</span>
-                  <span class="count wrong">${stats.wrong} خاطئ</span>
+                <div class="match-list">
+                    <div class="list-title">❌ أكثر المباريات توقعاً خاطئاً</div>
+                    ${sortedWrong.length === 0 ? '<div class="empty-state" style="padding:10px;">لا توجد بيانات</div>' : ''}
+                    ${sortedWrong.map(([match, stats]) => `
+                        <div class="match-item">
+                            <span class="teams">${match}</span>
+                            <span class="count wrong">${stats.wrong} خاطئ</span>
+                        </div>
+                    `).join('')}
                 </div>
-              `).join('')}
-            </div>
-          `;
+            `;
 
             grid.innerHTML = html;
         }
@@ -7772,11 +7880,11 @@
 
             if (!predictions.length || !games.length) {
                 document.getElementById('analyticsContent').innerHTML = `
-              <div class="empty-state"><span class="icon">📊</span> لا توجد بيانات كافية للتحليل</div>
-              <div style="text-align:center;margin-top:12px;">
-                <button class="tab-btn" onclick="document.getElementById('analyticsModal').classList.remove('active');document.body.style.overflow='';" style="background:var(--gold-glow);border-color:var(--border-gold);color:var(--gold-light);">إغلاق</button>
-              </div>
-            `;
+                    <div class="empty-state"><span class="icon">📊</span> لا توجد بيانات كافية للتحليل</div>
+                    <div style="text-align:center;margin-top:12px;">
+                        <button class="tab-btn" onclick="document.getElementById('analyticsModal').classList.remove('active');document.body.style.overflow='';" style="background:var(--gold-glow);border-color:var(--border-gold);color:var(--gold-light);">إغلاق</button>
+                    </div>
+                `;
                 return;
             }
 
@@ -7793,27 +7901,9 @@
 
             const userPoints = {};
             for (let p of predictions) {
-                const parts = p.match_id ? p.match_id.split('_') : [];
-                if (parts.length < 3) continue;
-                const team1 = parts[1],
-                    team2 = parts[2];
-                const result = findMatchResult(team1, team2);
-                let winner = null;
-                if (result) {
-                    winner = determineWinner(result);
-                }
-                if (!winner) {
-                    const match = games.find(g =>
-                        (g.homeAr === team1 && g.awayAr === team2) ||
-                        (g.homeAr === team2 && g.awayAr === team1)
-                    );
-                    if (!match) continue;
-                    winner = match.homeScore > match.awayScore ? match.homeAr :
-                        match.awayScore > match.homeScore ? match.awayAr : "DRAW";
-                }
-                const isCorrect = p.prediction === winner;
+                const status = getPredictionStatus(p);
                 if (!userPoints[p.user_name]) userPoints[p.user_name] = [];
-                userPoints[p.user_name].push({ matchId: p.match_id, correct: isCorrect, time: p.created_at });
+                userPoints[p.user_name].push({ matchId: p.match_id, correct: status.status === 'correct', time: p.created_at });
             }
             const cumulativePoints = {};
             for (let [user, preds] of Object.entries(userPoints)) {
@@ -7844,28 +7934,10 @@
 
             const accuracyStats = {};
             for (let p of predictions) {
-                const parts = p.match_id ? p.match_id.split('_') : [];
-                if (parts.length < 3) continue;
-                const team1 = parts[1],
-                    team2 = parts[2];
-                const result = findMatchResult(team1, team2);
-                let winner = null;
-                if (result) {
-                    winner = determineWinner(result);
-                }
-                if (!winner) {
-                    const match = games.find(g =>
-                        (g.homeAr === team1 && g.awayAr === team2) ||
-                        (g.homeAr === team2 && g.awayAr === team1)
-                    );
-                    if (!match) continue;
-                    winner = match.homeScore > match.awayScore ? match.homeAr :
-                        match.awayScore > match.homeScore ? match.awayAr : "DRAW";
-                }
-                const isCorrect = p.prediction === winner;
+                const status = getPredictionStatus(p);
                 if (!accuracyStats[p.user_name]) accuracyStats[p.user_name] = { correct: 0, total: 0 };
                 accuracyStats[p.user_name].total++;
-                if (isCorrect) accuracyStats[p.user_name].correct++;
+                if (status.status === 'correct') accuracyStats[p.user_name].correct++;
             }
             const topAcc = Object.entries(accuracyStats)
                 .filter(([_, v]) => v.total >= 2)
@@ -8025,39 +8097,39 @@
             });
 
             document.getElementById('analyticsContent').innerHTML = `
-            <div class="analytics-grid">
-              <div class="chart-box full-width">
-                <div class="chart-title">📊 أكثر اللاعبين توقعاً</div>
-                <canvas id="chartPlayerDistribution"></canvas>
-              </div>
-              <div class="chart-box full-width">
-                <div class="chart-title">📈 تطور نقاط أفضل 5 لاعبين</div>
-                <canvas id="chartPoints"></canvas>
-              </div>
-              <div class="chart-box full-width">
-                <div class="chart-title">🔥 أكثر المباريات توقعاً</div>
-                <canvas id="chartPopular"></canvas>
-              </div>
-              <div class="chart-box full-width">
-                <div class="chart-title">🎯 نسبة التوقعات الصحيحة (أفضل 5)</div>
-                <canvas id="chartAccuracy"></canvas>
-              </div>
-            </div>
-            <div class="player-analytics-section" id="playerAnalyticsSection">
-              <div class="select-player">
-                <select id="playerAnalyticsSelect" onchange="updatePlayerAnalytics()">
-                  <option value="">-- اختر لاعباً --</option>
-                </select>
-              </div>
-              <div id="playerAnalyticsDetails" class="player-analytics-details" style="display:none;"></div>
-            </div>
-            <div class="match-analytics-section" id="matchAnalyticsSection">
-              <div class="match-analytics-grid" id="matchAnalyticsGrid"></div>
-            </div>
-            <div style="text-align:center;margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-              <button class="tab-btn" onclick="document.getElementById('analyticsModal').classList.remove('active');document.body.style.overflow='';" style="background:var(--gold-glow);border-color:var(--border-gold);color:var(--gold-light);">إغلاق</button>
-            </div>
-          `;
+                <div class="analytics-grid">
+                    <div class="chart-box full-width">
+                        <div class="chart-title">📊 أكثر اللاعبين توقعاً</div>
+                        <canvas id="chartPlayerDistribution"></canvas>
+                    </div>
+                    <div class="chart-box full-width">
+                        <div class="chart-title">📈 تطور نقاط أفضل 5 لاعبين</div>
+                        <canvas id="chartPoints"></canvas>
+                    </div>
+                    <div class="chart-box full-width">
+                        <div class="chart-title">🔥 أكثر المباريات توقعاً</div>
+                        <canvas id="chartPopular"></canvas>
+                    </div>
+                    <div class="chart-box full-width">
+                        <div class="chart-title">🎯 نسبة التوقعات الصحيحة (أفضل 5)</div>
+                        <canvas id="chartAccuracy"></canvas>
+                    </div>
+                </div>
+                <div class="player-analytics-section" id="playerAnalyticsSection">
+                    <div class="select-player">
+                        <select id="playerAnalyticsSelect" onchange="updatePlayerAnalytics()">
+                            <option value="">-- اختر لاعباً --</option>
+                        </select>
+                    </div>
+                    <div id="playerAnalyticsDetails" class="player-analytics-details" style="display:none;"></div>
+                </div>
+                <div class="match-analytics-section" id="matchAnalyticsSection">
+                    <div class="match-analytics-grid" id="matchAnalyticsGrid"></div>
+                </div>
+                <div style="text-align:center;margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+                    <button class="tab-btn" onclick="document.getElementById('analyticsModal').classList.remove('active');document.body.style.overflow='';" style="background:var(--gold-glow);border-color:var(--border-gold);color:var(--gold-light);">إغلاق</button>
+                </div>
+            `;
 
             setTimeout(() => {
                 const ctx1b = document.getElementById('chartPlayerDistribution').getContext('2d');
@@ -8254,19 +8326,10 @@
 
                 let correct = 0,
                     wrong = 0;
-                const result = findMatchResult(game.homeAr, game.awayAr);
-                let winner = null;
-                if (result) {
-                    winner = determineWinner(result);
-                }
-                if (!winner) {
-                    winner = game.homeScore > game.awayScore ? game.homeAr :
-                        game.awayScore > game.homeScore ? game.awayAr : "DRAW";
-                }
-
                 for (let p of matchPredictions) {
-                    if (p.prediction === winner) correct++;
-                    else wrong++;
+                    const status = getPredictionStatus(p);
+                    if (status.status === 'correct') correct++;
+                    else if (status.status === 'wrong') wrong++;
                 }
 
                 return {
@@ -8282,11 +8345,11 @@
             countSpan.textContent = archiveData.length;
 
             let html = `<div class="archive-summary">
-            <span class="item">📊 إجمالي المباريات: <strong>${archiveData.length}</strong></span>
-            <span class="item">✅ إجمالي التوقعات الصحيحة: <strong class="highlight">${archiveData.reduce((sum, m) => sum + m.correct, 0)}</strong></span>
-            <span class="item">📈 متوسط الدقة: <strong class="highlight">${Math.round(archiveData.reduce((sum, m) => sum + m.accuracy, 0) / archiveData.length)}%</strong></span>
-          </div>
-          <div class="archive-list">`;
+                <span class="item">📊 إجمالي المباريات: <strong>${archiveData.length}</strong></span>
+                <span class="item">✅ إجمالي التوقعات الصحيحة: <strong class="highlight">${archiveData.reduce((sum, m) => sum + m.correct, 0)}</strong></span>
+                <span class="item">📈 متوسط الدقة: <strong class="highlight">${Math.round(archiveData.reduce((sum, m) => sum + m.accuracy, 0) / archiveData.length)}%</strong></span>
+            </div>
+            <div class="archive-list">`;
 
             archiveData.forEach(m => {
                 let penaltyHtml = '';
@@ -8295,20 +8358,20 @@
                         `<span class="score-penalty-badge">⚽ ركلات ترجيح: ${m.homePenalty} — ${m.awayPenalty}</span>`;
                 }
                 html += `
-              <div class="archive-item" onclick="openPreviousMatchPredictions('${m.homeAr}', '${m.awayAr}', ${m.homeScore}, ${m.awayScore})">
-                <div class="match-info">
-                  <span class="flag">${getFlag(m.homeAr)}</span> ${m.homeAr}
-                  <span class="score">${m.homeScore} - ${m.awayScore} ${penaltyHtml}</span>
-                  <span class="flag">${getFlag(m.awayAr)}</span> ${m.awayAr}
-                </div>
-                <div class="stats">
-                  <span class="correct">✅ ${m.correct}</span>
-                  <span class="wrong">❌ ${m.wrong}</span>
-                  <span class="accuracy">${m.accuracy}%</span>
-                  <span style="color:var(--text-secondary);font-size:0.6rem;">${m.total} توقع</span>
-                </div>
-              </div>
-            `;
+                    <div class="archive-item" onclick="openPreviousMatchPredictions('${m.homeAr}', '${m.awayAr}', ${m.homeScore}, ${m.awayScore})">
+                        <div class="match-info">
+                            <span class="flag">${getFlag(m.homeAr)}</span> ${m.homeAr}
+                            <span class="score">${m.homeScore} - ${m.awayScore} ${penaltyHtml}</span>
+                            <span class="flag">${getFlag(m.awayAr)}</span> ${m.awayAr}
+                        </div>
+                        <div class="stats">
+                            <span class="correct">✅ ${m.correct}</span>
+                            <span class="wrong">❌ ${m.wrong}</span>
+                            <span class="accuracy">${m.accuracy}%</span>
+                            <span style="color:var(--text-secondary);font-size:0.6rem;">${m.total} توقع</span>
+                        </div>
+                    </div>
+                `;
             });
 
             html += `</div>`;
@@ -8391,11 +8454,11 @@
                     const team2 = parts.length > 2 ? parts[2] : '?';
                     const preds = d.predictions.map(p => p === 'DRAW' ? 'تعادل' : p).join(' / ');
                     html += `<tr>
-                <td class="dup-user">${d.user_name}</td>
-                <td class="dup-match">${getFlag(team1)} ${team1} 🆚 ${getFlag(team2)} ${team2}</td>
-                <td class="dup-count">${d.count}</td>
-                <td class="dup-preds">${preds}</td>
-              </tr>`;
+                        <td class="dup-user">${d.user_name}</td>
+                        <td class="dup-match">${getFlag(team1)} ${team1} 🆚 ${getFlag(team2)} ${team2}</td>
+                        <td class="dup-count">${d.count}</td>
+                        <td class="dup-preds">${preds}</td>
+                    </tr>`;
                 }
                 html += `</tbody></table>`;
                 container.innerHTML = html;
@@ -8478,19 +8541,19 @@
 
                 const total = results.length;
                 content.innerHTML = `
-              <div style="text-align:center;margin-bottom:16px;">
-                <div style="font-size:1.2rem;font-weight:800;color:var(--gold-light);">
-                  ${pass} ✅ نجاح / ${fail} ❌ فشل
-                </div>
-                <div style="font-size:0.8rem;color:var(--text-secondary);">من أصل ${total} اختبار</div>
-              </div>
-              <div style="max-height:300px;overflow-y:auto;text-align:right;">
-                ${results.map(r => `<div style="padding:4px 8px;border-bottom:1px solid var(--border-subtle);font-size:0.8rem;">${r}</div>`).join('')}
-              </div>
-              <div style="text-align:center;margin-top:16px;">
-                <button class="tab-btn" onclick="document.getElementById('testResultsModal').classList.remove('active');document.body.style.overflow='';" style="background:var(--gold-glow);border-color:var(--border-gold);color:var(--gold-light);">إغلاق</button>
-              </div>
-            `;
+                    <div style="text-align:center;margin-bottom:16px;">
+                        <div style="font-size:1.2rem;font-weight:800;color:var(--gold-light);">
+                            ${pass} ✅ نجاح / ${fail} ❌ فشل
+                        </div>
+                        <div style="font-size:0.8rem;color:var(--text-secondary);">من أصل ${total} اختبار</div>
+                    </div>
+                    <div style="max-height:300px;overflow-y:auto;text-align:right;">
+                        ${results.map(r => `<div style="padding:4px 8px;border-bottom:1px solid var(--border-subtle);font-size:0.8rem;">${r}</div>`).join('')}
+                    </div>
+                    <div style="text-align:center;margin-top:16px;">
+                        <button class="tab-btn" onclick="document.getElementById('testResultsModal').classList.remove('active');document.body.style.overflow='';" style="background:var(--gold-glow);border-color:var(--border-gold);color:var(--gold-light);">إغلاق</button>
+                    </div>
+                `;
             }, 500);
         }
         document.getElementById('testResultsCloseBtn').addEventListener('click', function() {
@@ -8856,6 +8919,10 @@
             currentTimeISO = timeISO;
             currentUserName = savedUserName;
 
+            // تحديد نوع المباراة
+            const match = getMatchById(matchId);
+            const isKnockout = isKnockoutMatch(match);
+
             document.getElementById('modalTitle').textContent = '✏️ تعديل توقع المباراة';
             document.getElementById('greetingName').textContent = savedUserName;
             document.getElementById('modalUserGreeting').style.display = 'block';
@@ -8867,15 +8934,27 @@
             document.getElementById('modalFlag2').textContent = getFlag(team2);
             document.getElementById('modalDateTime').textContent = `📅 ${getDateTimeDisplay(timeISO)} (بتوقيت السعودية)`;
 
+            // إظهار/إخفاء خيار التعادل
+            const drawOption = document.getElementById('drawOption');
+            if (isKnockout) {
+                drawOption.style.display = 'none';
+                const drawRadio = document.querySelector('input[name="prediction"][value="DRAW"]');
+                if (drawRadio) drawRadio.checked = false;
+            } else {
+                drawOption.style.display = 'block';
+            }
+
             const currentPrediction = existing.prediction;
             document.querySelectorAll('input[name="prediction"]').forEach(el => {
                 const val = el.value;
                 if (val === 'HOME' && currentPrediction === team1) el.checked = true;
                 else if (val === 'AWAY' && currentPrediction === team2) el.checked = true;
+                else if (val === 'DRAW' && currentPrediction === 'DRAW') el.checked = true;
             });
 
             const msgEl = document.getElementById('modalMessage');
-            msgEl.textContent = `✏️ تعديل توقعك الحالي: ${currentPrediction === 'DRAW' ? 'تعادل' : currentPrediction}`;
+            let predDisplay = currentPrediction === 'DRAW' ? 'تعادل' : currentPrediction;
+            msgEl.textContent = `✏️ تعديل توقعك الحالي: ${predDisplay}`;
             msgEl.className = 'modal-message info';
 
             document.getElementById('modalSubmitBtn').disabled = false;
@@ -8930,8 +9009,7 @@
             if (!selected) { msgEl.textContent = '⚠️ الرجاء اختيار توقع';
                 msgEl.className = 'modal-message warning'; return; }
 
-            let prediction = selected.value === 'HOME' ? currentTeam1 : (selected.value === 'AWAY' ? currentTeam2 :
-                'DRAW');
+            let prediction = selected.value;
 
             if (isMatchFinished(currentTimeISO)) { msgEl.textContent = '⛔ هذه المباراة انتهت، لا يمكن حفظ التوقع.';
                 msgEl.className = 'modal-message error'; return; }
@@ -8973,7 +9051,7 @@
         });
 
         // ============================================================
-        //  نافذة استعراض التوقعات (مع نسبة الفوز - تم إزالة التعادل)
+        //  نافذة استعراض التوقعات (مع نسبة الفوز - مع دعم التعادل)
         // ============================================================
         async function openViewPredictionsModal(matchId, team1, team2) {
             document.getElementById('viewTeam1').textContent = team1;
@@ -8991,10 +9069,12 @@
             countSpan.textContent = predictions.length;
 
             let homeCount = 0,
-                awayCount = 0;
+                awayCount = 0,
+                drawCount = 0;
             for (let p of predictions) {
                 if (p.prediction === team1) homeCount++;
                 else if (p.prediction === team2) awayCount++;
+                else if (p.prediction === 'DRAW') drawCount++;
             }
             const totalPreds = predictions.length;
             const homePercent = totalPreds > 0 ? (homeCount / totalPreds) * 100 : 0;
@@ -9024,8 +9104,12 @@
             } else {
                 let html = '';
                 predictions.forEach((p, idx) => {
-                    let text = p.prediction === 'DRAW' ? '🤝 تعادل الفريقين' :
-                        `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
+                    let text = '';
+                    if (p.prediction === 'DRAW') {
+                        text = '🤝 تعادل الفريقين';
+                    } else {
+                        text = `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
+                    }
                     const status = getPredictionStatus(p);
                     let statusText = '⏳ قيد الانتظار';
                     let statusClass = 'pending';
@@ -9033,13 +9117,13 @@
                         statusClass = 'correct'; } else if (status.status === 'wrong') { statusText = '❌ خاطئ';
                         statusClass = 'wrong'; }
                     html += `
-                <div class="prediction-card ${statusClass}" onclick="openPlayerPredictions('${p.user_name || ''}')" style="cursor:pointer;">
-                  <div class="user"><div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div><span class="name-p">${p.user_name || 'مجهول'}</span></div>
-                  <div class="prediction-text">🔮 ${text}</div>
-                  <span class="status-badge ${statusClass}">${statusText}</span>
-                  <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف'}</div>
-                </div>
-              `;
+                        <div class="prediction-card ${statusClass}" onclick="openPlayerPredictions('${p.user_name || ''}')" style="cursor:pointer;">
+                            <div class="user"><div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div><span class="name-p">${p.user_name || 'مجهول'}</span></div>
+                            <div class="prediction-text">🔮 ${text}</div>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                            <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف'}</div>
+                        </div>
+                    `;
                 });
                 listContainer.innerHTML = html;
             }
