@@ -1757,7 +1757,7 @@
             transform: translateY(-4px);
             border-color: var(--gold);
         }
-        
+
         /* تنسيق الفرق في المباراة */
         .match-teams {
             display: flex;
@@ -1814,7 +1814,7 @@
                 box-shadow: 0 0 30px rgba(231, 76, 60, 0.20);
             }
         }
-        
+
         /* بار نسبة الفوز */
         .win-probability {
             margin: 8px 0 6px 0;
@@ -1880,7 +1880,7 @@
             font-weight: 700;
             color: var(--text-primary);
         }
-        
+
         /* تنسيق معلومات الفرق في البطاقة */
         .team-stats-info {
             display: flex;
@@ -1934,7 +1934,7 @@
         .team-stat-item .stat-value .streak .s-draw {
             color: var(--gold-light);
         }
-        
+
         .team-top-scorers {
             display: flex;
             gap: 6px;
@@ -1954,7 +1954,7 @@
             color: var(--gold-light);
             font-weight: 700;
         }
-        
+
         .match-meta {
             display: flex;
             justify-content: space-between;
@@ -4255,7 +4255,7 @@
         }
 
         // ============================================================
-        //  دالة العثور على نتيجة المباراة
+        //  دالة العثور على نتيجة المباراة (محسنة)
         // ============================================================
         function findMatchResult(team1, team2) {
             // البحث في البيانات المحملة
@@ -4369,6 +4369,8 @@
             ]);
             state.loaded = true;
 
+            // تحديث جميع التوقعات فوراً
+            await renderAllPredictions();
             updateScorers();
             renderLeaderboard('all');
             renderUpcoming();
@@ -4376,7 +4378,6 @@
             renderTeamStats();
             renderScorers();
             renderBracket();
-            renderAllPredictions();
             initTabs();
             checkUrlForMatch();
             startAutoUpdate();
@@ -7000,57 +7001,141 @@
                     `<div class="empty-state"><span class="icon">⚠️</span> خطأ في حساب الترتيب</div>`; }
         }
 
+        // ============================================================
+        //  دالة getPredictionStatus المحسنة - الإصلاح الأساسي
+        // ============================================================
         function getPredictionStatus(prediction) {
+            if (!prediction || !prediction.match_id) {
+                return { status: 'pending', text: '⏳ مباراة غير معروفة', color: 'var(--gold-light)' };
+            }
+            
             const parts = prediction.match_id.split('_');
-            if (parts.length < 3) return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
-            const team1 = parts[1],
-                team2 = parts[2];
+            if (parts.length < 3) {
+                return { status: 'pending', text: '⏳ بيانات غير مكتملة', color: 'var(--gold-light)' };
+            }
+            
+            const team1 = parts[1];
+            const team2 = parts[2];
+            
+            // التحقق أولاً من وجود نتيجة للمباراة
             const result = findMatchResult(team1, team2);
-            if (!result) return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
+            
+            // إذا لم توجد نتيجة، تحقق مما إذا كانت المباراة قد انتهت
+            if (!result) {
+                // نبحث عن المباراة في البيانات
+                const match = matchesData.find(m => 
+                    (m.team1 === team1 && m.team2 === team2) || 
+                    (m.team1 === team2 && m.team2 === team1)
+                );
+                
+                if (match && isMatchFinished(match.timeISO)) {
+                    return { status: 'pending', text: '⏳ لم يتم تحديد النتيجة بعد', color: 'var(--gold-light)' };
+                }
+                return { status: 'pending', text: '⏳ المباراة لم تلعب بعد', color: 'var(--gold-light)' };
+            }
+            
+            // تحديد الفائز
             const correctResult = determineWinner(result);
-            if (!correctResult) return { status: 'pending', text: '⏳ تعادل', color: 'var(--gold-light)' };
+            
+            // إذا لم يتم تحديد فائز (تعادل)
+            if (!correctResult) {
+                return { status: 'pending', text: '🤝 تعادل', color: 'var(--gold-light)' };
+            }
+            
+            // مقارنة توقع المستخدم مع النتيجة الصحيحة
             const isCorrect = prediction.prediction === correctResult;
-            if (isCorrect) return { status: 'correct', text: '✅ توقع صحيح', color: 'var(--success)' };
-            else return { status: 'wrong', text: '❌ توقع خاطئ', color: 'var(--danger)' };
+            
+            if (isCorrect) {
+                return { status: 'correct', text: '✅ توقع صحيح', color: 'var(--success)' };
+            } else {
+                return { status: 'wrong', text: `❌ خاطئ (الفائز: ${correctResult})`, color: 'var(--danger)' };
+            }
         }
 
+        // ============================================================
+        //  دوال عرض جميع التوقعات - المحسنة
+        // ============================================================
         async function renderAllPredictions() {
             const container = document.getElementById('allPredictions');
             const countSpan = document.getElementById('predictionsCount');
-            let predictions = state.predictions;
-            if (!predictions || !predictions.length) {
-                await getAllPredictions();
-                predictions = state.predictions;
+            
+            // جلب أحدث التوقعات من Supabase
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from("predictions")
+                        .select("*")
+                        .order("created_at", { ascending: false })
+                        .limit(200);
+                    if (!error && data) {
+                        state.predictions = data;
+                        setCache("predictions", data);
+                    }
+                } catch (e) {
+                    console.warn("⚠️ فشل جلب أحدث التوقعات:", e);
+                }
             }
-            allPredictionsCache = predictions;
+            
+            let predictions = state.predictions || [];
             countSpan.textContent = predictions.length;
-            if (!predictions || !predictions.length) { container.innerHTML =
-                    `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات بعد</div>`; return; }
-            const sorted = [...predictions].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            container.innerHTML = sorted.slice(0, 20).map(p => {
-                const parts = p.match_id.split('_');
-                const team1 = parts[1] || '?',
-                    team2 = parts[2] || '?';
-                let predictionText = p.prediction === 'DRAW' ? '🤝 تعادل' : `🏆 فوز ${getFlag(p.prediction)} ${p.prediction}`;
+            
+            if (!predictions || predictions.length === 0) {
+                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات بعد</div>`;
+                return;
+            }
+            
+            // ترتيب التوقعات من الأحدث إلى الأقدم
+            const sorted = [...predictions].sort((a, b) => {
+                const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+                const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+                return dateB - dateA;
+            });
+            
+            // عرض أول 100 توقع
+            const displayPredictions = sorted.slice(0, 100);
+            
+            container.innerHTML = displayPredictions.map(p => {
+                const parts = p.match_id ? p.match_id.split('_') : [];
+                const team1 = parts.length > 1 ? parts[1] : '?';
+                const team2 = parts.length > 2 ? parts[2] : '?';
+                
+                let predictionText = '';
+                if (p.prediction === team1) {
+                    predictionText = `🏆 فوز ${getFlag(team1)} ${team1}`;
+                } else if (p.prediction === team2) {
+                    predictionText = `🏆 فوز ${getFlag(team2)} ${team2}`;
+                } else {
+                    predictionText = `🤝 تعادل`;
+                }
+                
                 const status = getPredictionStatus(p);
-                let cardClass = '',
-                    badgeClass = '';
-                if (status.status === 'correct') { cardClass = 'correct';
-                    badgeClass = 'correct'; } else if (status.status === 'wrong') { cardClass = 'wrong';
-                    badgeClass = 'wrong'; } else { cardClass = 'pending';
-                    badgeClass = 'pending'; }
+                let cardClass = 'pending';
+                let badgeClass = 'pending';
+                if (status.status === 'correct') {
+                    cardClass = 'correct';
+                    badgeClass = 'correct';
+                } else if (status.status === 'wrong') {
+                    cardClass = 'wrong';
+                    badgeClass = 'wrong';
+                }
+                
+                const timeStr = p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف';
+                
                 return `<div class="prediction-card ${cardClass}" onclick="openPlayerPredictions('${p.user_name || ''}')" style="cursor:pointer;">
-              <div class="user"><div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div><span class="name-p">${p.user_name || 'مجهول'}</span></div>
-              <div class="prediction-text">${team1} 🆚 ${team2}</div>
-              <div class="prediction-text" style="color:var(--gold-light);">🔮 ${predictionText}</div>
-              <span class="status-badge ${badgeClass}">${status.text}</span>
-              <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${p.created_at ? formatDate(p.created_at) : 'تاريخ غير معروف'}</div>
-            </div>`;
+                    <div class="user">
+                        <div class="avatar-p">${p.user_name ? p.user_name.charAt(0).toUpperCase() : '👤'}</div>
+                        <span class="name-p">${p.user_name || 'مجهول'}</span>
+                    </div>
+                    <div class="prediction-text">${getFlag(team1)} ${team1} 🆚 ${getFlag(team2)} ${team2}</div>
+                    <div class="prediction-text" style="color:var(--gold-light);">🔮 ${predictionText}</div>
+                    <span class="status-badge ${badgeClass}">${status.text}</span>
+                    <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:4px;">🕒 ${timeStr}</div>
+                </div>`;
             }).join('');
         }
 
         // ============================================================
-        //  عرض جميع توقعات اللاعب
+        //  عرض جميع توقعات اللاعب (محسّن)
         // ============================================================
         async function openPlayerPredictions(userName) {
             if (!userName) { showCopyToast('⚠️ اسم المستخدم غير معروف'); return; }
@@ -7088,10 +7173,17 @@
 
             let html = '';
             predictions.forEach((p, idx) => {
-                const parts = p.match_id.split('_');
-                const team1 = parts[1] || '?';
-                const team2 = parts[2] || '?';
-                const predText = p.prediction === 'DRAW' ? 'تعادل' : `فوز ${p.prediction}`;
+                const parts = p.match_id ? p.match_id.split('_') : [];
+                const team1 = parts.length > 1 ? parts[1] : '?';
+                const team2 = parts.length > 2 ? parts[2] : '?';
+                let predText = '';
+                if (p.prediction === team1) {
+                    predText = `فوز ${team1}`;
+                } else if (p.prediction === team2) {
+                    predText = `فوز ${team2}`;
+                } else {
+                    predText = `تعادل`;
+                }
                 const status = getPredictionStatus(p);
                 let statusClass = 'pending';
                 let statusText = '⏳ لم تحدد';
@@ -7153,7 +7245,7 @@
         }
 
         // ============================================================
-        //  لوحة المتصدرين
+        //  لوحة المتصدرين (محسّنة)
         // ============================================================
         function setLeaderboardPeriod(period) {
             currentLeaderboardPeriod = period;
@@ -7169,10 +7261,27 @@
                 container.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> جاري التحميل...</div>`;
                 return;
             }
-            const predictions = state.predictions;
-            const games = state.previousGamesData;
+            
+            // جلب أحدث التوقعات
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from("predictions")
+                        .select("*")
+                        .order("created_at", { ascending: false })
+                        .limit(500);
+                    if (!error && data) {
+                        state.predictions = data;
+                    }
+                } catch (e) {
+                    console.warn("⚠️ فشل جلب التوقعات للترتيب:", e);
+                }
+            }
+            
+            const predictions = state.predictions || [];
+            const games = state.previousGamesData || [];
             if (!predictions.length || !games.length) {
-                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد بيانات</div>`;
+                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد بيانات كافية</div>`;
                 return;
             }
 
@@ -7196,28 +7305,25 @@
                 if (parts.length < 3) continue;
                 const team1 = parts[1],
                     team2 = parts[2];
-                const match = filteredGames.find(g =>
-                    (g.homeAr === team1 && g.awayAr === team2) ||
-                    (g.homeAr === team2 && g.awayAr === team1)
-                );
-                if (!match) continue;
+                
+                // استخدام دالة findMatchResult المحسنة
                 const result = findMatchResult(team1, team2);
                 let winner = null;
                 if (result) {
                     winner = determineWinner(result);
                 }
-                if (!winner) {
-                    winner = match.homeScore > match.awayScore ? match.homeAr :
-                        match.awayScore > match.homeScore ? match.awayAr : "DRAW";
-                }
-                const isCorrect = p.prediction === winner;
-                if (isCorrect) {
-                    scores[p.user_name].points++;
-                    scores[p.user_name].correct++;
-                } else {
-                    scores[p.user_name].wrong++;
+                
+                if (winner) {
+                    const isCorrect = p.prediction === winner;
+                    if (isCorrect) {
+                        scores[p.user_name].points++;
+                        scores[p.user_name].correct++;
+                    } else {
+                        scores[p.user_name].wrong++;
+                    }
                 }
             }
+            
             const board = Object.values(scores).sort((a, b) => b.points - a.points || (b.correct - a.correct));
             if (!board.length) {
                 container.innerHTML = `<div class="empty-state"><span class="icon">📭</span> لا توجد توقعات صحيحة</div>`;
@@ -7399,8 +7505,8 @@
 
         function getAllPlayersStats() {
             const stats = {};
-            const predictions = state.predictions;
-            const games = state.previousGamesData;
+            const predictions = state.predictions || [];
+            const games = state.previousGamesData || [];
 
             for (let p of predictions) {
                 if (!stats[p.user_name]) {
@@ -7411,26 +7517,21 @@
                 if (parts.length < 3) continue;
                 const team1 = parts[1],
                     team2 = parts[2];
-                const match = games.find(g =>
-                    (g.homeAr === team1 && g.awayAr === team2) ||
-                    (g.homeAr === team2 && g.awayAr === team1)
-                );
-                if (!match) continue;
+                
                 const result = findMatchResult(team1, team2);
                 let winner = null;
                 if (result) {
                     winner = determineWinner(result);
                 }
-                if (!winner) {
-                    winner = match.homeScore > match.awayScore ? match.homeAr :
-                        match.awayScore > match.homeScore ? match.awayAr : "DRAW";
-                }
-                const isCorrect = p.prediction === winner;
-                if (isCorrect) {
-                    stats[p.user_name].points++;
-                    stats[p.user_name].correct++;
-                } else {
-                    stats[p.user_name].wrong++;
+                
+                if (winner) {
+                    const isCorrect = p.prediction === winner;
+                    if (isCorrect) {
+                        stats[p.user_name].points++;
+                        stats[p.user_name].correct++;
+                    } else {
+                        stats[p.user_name].wrong++;
+                    }
                 }
                 stats[p.user_name].predictions.push({ matchId: p.match_id, prediction: p.prediction, correct: isCorrect });
             }
@@ -7623,7 +7724,7 @@
 
             const matchStats = {};
             for (let p of predictions) {
-                const parts = p.match_id.split('_');
+                const parts = p.match_id ? p.match_id.split('_') : [];
                 if (parts.length < 3) continue;
                 const team1 = parts[1],
                     team2 = parts[2];
@@ -7692,7 +7793,7 @@
 
             const userPoints = {};
             for (let p of predictions) {
-                const parts = p.match_id.split('_');
+                const parts = p.match_id ? p.match_id.split('_') : [];
                 if (parts.length < 3) continue;
                 const team1 = parts[1],
                     team2 = parts[2];
@@ -7729,7 +7830,7 @@
 
             const matchPredCount = {};
             for (let p of predictions) {
-                const parts = p.match_id.split('_');
+                const parts = p.match_id ? p.match_id.split('_') : [];
                 if (parts.length < 3) continue;
                 const key = `${parts[1]} 🆚 ${parts[2]}`;
                 if (!matchPredCount[key]) matchPredCount[key] = 0;
@@ -7743,7 +7844,7 @@
 
             const accuracyStats = {};
             for (let p of predictions) {
-                const parts = p.match_id.split('_');
+                const parts = p.match_id ? p.match_id.split('_') : [];
                 if (parts.length < 3) continue;
                 const team1 = parts[1],
                     team2 = parts[2];
@@ -8145,7 +8246,7 @@
             const predictions = state.predictions || [];
             const archiveData = games.map(game => {
                 const matchPredictions = predictions.filter(p => {
-                    const parts = p.match_id.split('_');
+                    const parts = p.match_id ? p.match_id.split('_') : [];
                     if (parts.length < 3) return false;
                     return (parts[1] === game.homeAr && parts[2] === game.awayAr) ||
                         (parts[1] === game.awayAr && parts[2] === game.homeAr);
@@ -8285,9 +8386,9 @@
                     `<table class="duplicates-table"><thead><tr><th>المستخدم</th><th>المباراة</th><th>التكرار</th><th>التوقعات</th></tr></thead><tbody>`;
                 for (let key of dupKeys) {
                     const d = duplicates[key];
-                    const parts = d.match_id.split('_');
-                    const team1 = parts[1] || '?';
-                    const team2 = parts[2] || '?';
+                    const parts = d.match_id ? d.match_id.split('_') : [];
+                    const team1 = parts.length > 1 ? parts[1] : '?';
+                    const team2 = parts.length > 2 ? parts[2] : '?';
                     const preds = d.predictions.map(p => p === 'DRAW' ? 'تعادل' : p).join(' / ');
                     html += `<tr>
                 <td class="dup-user">${d.user_name}</td>
