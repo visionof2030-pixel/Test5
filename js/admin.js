@@ -765,4 +765,241 @@ function updatePlayerAnalytics() {
         return { name: p.name, futurePoints: pFuture };
     }).sort((a, b) => b.futurePoints - a.futurePoints);
 
-    const predictedRank = futureRanks.find
+    const predictedRank = futureRanks.findIndex(p => p.name === playerName) + 1;
+    const currentRank = Object.values(allStats).sort((a, b) => b.points - a.points).findIndex(p => p.name === playerName) + 1;
+
+    detailsDiv.innerHTML = `
+            <div class="stat-item"><span class="label">👤 اللاعب</span><span class="value gold">${playerName}</span></div>
+            <div class="stat-item"><span class="label">🏆 الترتيب الحالي</span><span class="value gold">#${currentRank}</span></div>
+            <div class="stat-item"><span class="label">📊 عدد التوقعات الكلي</span><span class="value">${total}</span></div>
+            <div class="stat-item"><span class="label">✅ صحيحة</span><span class="value green">${correct}</span></div>
+            <div class="stat-item"><span class="label">❌ خاطئة</span><span class="value red">${wrong}</span></div>
+            <div class="stat-item"><span class="label">🎯 نسبة النجاح الإجمالية</span><span class="value gold">${overallAcc.toFixed(1)}%</span></div>
+            <div class="stat-item"><span class="label">🏆 النقاط</span><span class="value gold">${points}</span></div>
+            <div class="stat-item"><span class="label">📈 متوسط النقاط لكل توقع</span><span class="value gold">${avgPointsPerPred.toFixed(2)}</span></div>
+            <div class="stat-item"><span class="label">🔥 الأداء في آخر 5 توقعات</span><span class="value ${recentAcc >= 60 ? 'green' : 'red'}">${recentAcc.toFixed(0)}%</span></div>
+            <div class="prediction-trend">
+              <div class="trend-label">🔮 توقع الترتيب المستقبلي (بناءً على الأداء الحالي وعدد اللاعبين ${totalPlayers})</div>
+              <div class="trend-value">${predictedRank} 🏅</div>
+              ${predictedRank > currentRank ? `<div style="font-size:0.7rem;color:var(--success);">✅ من المتوقع أن يرتفع ترتيبك</div>` : (predictedRank < currentRank ? `<div style="font-size:0.7rem;color:var(--danger);">⚠️ من المتوقع أن ينخفض ترتيبك</div>` : `<div style="font-size:0.7rem;color:var(--text-secondary);">➖ من المتوقع أن يبقى ترتيبك كما هو</div>`)}
+            </div>
+          `;
+    detailsDiv.style.display = 'block';
+}
+
+function getAllPlayersStats() {
+    const stats = {};
+    const predictions = state ? state.predictions : [];
+
+    for (let p of predictions) {
+        if (!stats[p.user_name]) {
+            stats[p.user_name] = { name: p.user_name, points: 0, correct: 0, wrong: 0, total: 0, predictions: [] };
+        }
+        stats[p.user_name].total++;
+        const parts = (p.match_id || "").split("_");
+        if (parts.length < 3) continue;
+        const team1 = parts[1],
+            team2 = parts[2];
+
+        const result = findMatchResult(team1, team2);
+        let winner = null;
+        if (result) {
+            winner = determineWinner(result);
+        }
+        let isCorrect = false;
+        if (winner === null && result) {
+            isCorrect = p.prediction === 'DRAW';
+        } else if (winner) {
+            isCorrect = p.prediction === winner;
+        }
+        if (isCorrect) {
+            stats[p.user_name].points++;
+            stats[p.user_name].correct++;
+        } else {
+            stats[p.user_name].wrong++;
+        }
+        stats[p.user_name].predictions.push({ matchId: p.match_id, prediction: p.prediction, correct: isCorrect });
+    }
+    return stats;
+}
+
+function openCompareModal(selectedPlayer) {
+    const modal = document.getElementById('compareModal');
+    if (!modal) return;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    const players = Object.keys(getAllPlayersStats());
+    const select1 = document.getElementById('compareSelect1');
+    const select2 = document.getElementById('compareSelect2');
+
+    if (select1) {
+        select1.innerHTML = '<option value="">اختر لاعباً</option>';
+        players.forEach(p => {
+            select1.innerHTML += `<option value="${p}">${p}</option>`;
+        });
+    }
+
+    if (select2) {
+        select2.innerHTML = '<option value="">اختر لاعباً</option>';
+        players.forEach(p => {
+            select2.innerHTML += `<option value="${p}">${p}</option>`;
+        });
+    }
+
+    if (selectedPlayer && select1) {
+        select1.value = selectedPlayer;
+        const other = players.find(p => p !== selectedPlayer) || '';
+        if (select2) select2.value = other;
+    }
+
+    renderCompare();
+}
+
+function closeCompareModal() {
+    document.getElementById('compareModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function renderCompare() {
+    const p1 = document.getElementById('compareSelect1') ? document.getElementById('compareSelect1').value : '';
+    const p2 = document.getElementById('compareSelect2') ? document.getElementById('compareSelect2').value : '';
+    const stats = getAllPlayersStats();
+
+    const div1 = document.getElementById('compareStats1');
+    const name1 = document.getElementById('compareName1');
+
+    if (p1 && stats[p1]) {
+        const s = stats[p1];
+        const acc = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+        if (name1) name1.innerHTML = `👤 ${p1}`;
+        if (div1) {
+            div1.innerHTML = `
+              <div class="stat-row"><span class="label">🏆 النقاط</span><span class="value gold">${s.points}</span></div>
+              <div class="stat-row"><span class="label">✅ صحيحة</span><span class="value green">${s.correct}</span></div>
+              <div class="stat-row"><span class="label">❌ خاطئة</span><span class="value red">${s.wrong}</span></div>
+              <div class="stat-row"><span class="label">📊 عدد التوقعات الكلي</span><span class="value">${s.total}</span></div>
+              <div class="stat-row"><span class="label">🎯 نسبة النجاح</span><span class="value gold">${acc}%</span></div>
+            `;
+        }
+    } else {
+        if (name1) name1.innerHTML = '👤 لاعب 1';
+        if (div1) div1.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> اختر لاعباً</div>`;
+    }
+
+    const div2 = document.getElementById('compareStats2');
+    const name2 = document.getElementById('compareName2');
+
+    if (p2 && stats[p2]) {
+        const s = stats[p2];
+        const acc = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+        if (name2) name2.innerHTML = `👤 ${p2}`;
+        if (div2) {
+            div2.innerHTML = `
+              <div class="stat-row"><span class="label">🏆 النقاط</span><span class="value gold">${s.points}</span></div>
+              <div class="stat-row"><span class="label">✅ صحيحة</span><span class="value green">${s.correct}</span></div>
+              <div class="stat-row"><span class="label">❌ خاطئة</span><span class="value red">${s.wrong}</span></div>
+              <div class="stat-row"><span class="label">📊 عدد التوقعات الكلي</span><span class="value">${s.total}</span></div>
+              <div class="stat-row"><span class="label">🎯 نسبة النجاح</span><span class="value gold">${acc}%</span></div>
+            `;
+        }
+    } else {
+        if (name2) name2.innerHTML = '👤 لاعب 2';
+        if (div2) div2.innerHTML = `<div class="empty-state"><span class="icon">⏳</span> اختر لاعباً</div>`;
+    }
+}
+
+// ربط أحداث لوحة الإدارة
+document.addEventListener('DOMContentLoaded', function() {
+    // زر كلمة السر
+    const submitBtn = document.getElementById('passwordSubmitBtn');
+    if (submitBtn) submitBtn.addEventListener('click', checkPassword);
+
+    const passwordInput = document.getElementById('passwordInput');
+    if (passwordInput) {
+        passwordInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') checkPassword();
+            if (e.key === 'Escape') hidePasswordOverlay();
+        });
+    }
+
+    const closeBtn = document.getElementById('passwordCloseBtn');
+    if (closeBtn) closeBtn.addEventListener('click', hidePasswordOverlay);
+
+    const overlay = document.getElementById('passwordOverlay');
+    if (overlay) {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) hidePasswordOverlay();
+        });
+    }
+
+    // زر تحليل
+    const analyticsBtn = document.querySelector('.admin-btn[onclick="openAnalytics()"]');
+    if (analyticsBtn) analyticsBtn.addEventListener('click', openAnalytics);
+
+    // زر مقارنة
+    const compareBtn = document.querySelector('.admin-btn[onclick="openCompareModal()"]');
+    if (compareBtn) compareBtn.addEventListener('click', openCompareModal);
+
+    // إغلاق نافذة التحليلات
+    const analyticsClose = document.getElementById('analyticsCloseBtn');
+    if (analyticsClose) {
+        analyticsClose.addEventListener('click', function() {
+            document.getElementById('analyticsModal').classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+
+    const analyticsModal = document.getElementById('analyticsModal');
+    if (analyticsModal) {
+        analyticsModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                document.getElementById('analyticsModal').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    // إغلاق نافذة المقارنة
+    const compareClose = document.getElementById('compareModalCloseBtn');
+    if (compareClose) compareClose.addEventListener('click', closeCompareModal);
+
+    const compareModal = document.getElementById('compareModal');
+    if (compareModal) {
+        compareModal.addEventListener('click', function(e) {
+            if (e.target === this) closeCompareModal();
+        });
+    }
+
+    // إغلاق نافذة الاختبارات
+    const testClose = document.getElementById('testResultsCloseBtn');
+    if (testClose) {
+        testClose.addEventListener('click', function() {
+            document.getElementById('testResultsModal').classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+
+    // زر إظهار كلمة السر عند النقر على الفوتر
+    const footer = document.getElementById('footerTrigger');
+    if (footer) {
+        footer.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (isAuthorized) {
+                const shareContainer = document.getElementById('shareAllContainer');
+                const adminControls = document.getElementById('adminControls');
+                if (shareContainer) shareContainer.classList.toggle('visible');
+                if (adminControls) adminControls.classList.toggle('visible');
+                if (shareContainer && shareContainer.classList.contains('visible')) {
+                    updateShareAllCount();
+                    showCopyToast('🔓 تم إظهار لوحة الإدارة');
+                } else {
+                    showCopyToast('🔒 تم إخفاء لوحة الإدارة');
+                }
+            } else {
+                showPasswordOverlay();
+            }
+        });
+    }
+});
