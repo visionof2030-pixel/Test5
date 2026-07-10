@@ -1,0 +1,421 @@
+/* ============================================================
+   ستايل المباريات
+   ============================================================ */
+
+/* تنسيق الفرق في المباراة */
+.match-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.20);
+    padding: 12px 16px;
+    border-radius: 60px;
+    backdrop-filter: blur(4px);
+}
+
+.match-team {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex: 1;
+    justify-content: center;
+}
+
+.match-team .flag {
+    font-size: 1.3rem;
+}
+
+.match-score {
+    background: var(--gold-gradient);
+    padding: 2px 18px;
+    border-radius: 40px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: #0a0e1a;
+    min-width: 50px;
+    text-align: center;
+}
+
+.match-score.live {
+    background: linear-gradient(135deg, var(--danger), #c0392b);
+    animation: pulseScore 1.2s infinite;
+    color: #fff;
+}
+
+.match-score.finished {
+    background: linear-gradient(135deg, var(--success), #27ae60);
+    color: #fff;
+}
+
+.match-score.upcoming {
+    background: var(--gold-gradient);
+    color: #0a0e1a;
+}
+
+@keyframes pulseScore {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(231, 76, 60, 0.20); }
+}
+
+/* بار نسبة الفوز */
+.win-probability {
+    margin: 8px 0 6px 0;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: var(--radius-sm);
+}
+
+.win-probability .prob-title {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.win-probability .prob-bar {
+    display: flex;
+    height: 18px;
+    border-radius: 30px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.04);
+    margin-bottom: 4px;
+}
+
+.win-probability .prob-bar .segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.5rem;
+    font-weight: 700;
+    color: #0a0e1a;
+    transition: width 0.6s ease;
+    height: 100%;
+}
+
+.win-probability .prob-bar .segment.home {
+    background: var(--success);
+}
+
+.win-probability .prob-bar .segment.away {
+    background: var(--danger);
+}
+
+.win-probability .prob-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.win-probability .prob-labels .label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.win-probability .prob-labels .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.win-probability .prob-labels .dot.home {
+    background: var(--success);
+}
+
+.win-probability .prob-labels .dot.away {
+    background: var(--danger);
+}
+
+.win-probability .prob-labels .percent {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* تنسيق معلومات الفرق في البطاقة */
+.team-stats-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+}
+
+.team-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+}
+
+.team-stat-item .stat-label {
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.team-stat-item .stat-value {
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.team-stat-item .stat-value.win {
+    color: var(--success);
+}
+
+.team-stat-item .stat-value.loss {
+    color: var(--danger);
+}
+
+.team-stat-item .stat-value.draw {
+    color: var(--gold-light);
+}
+
+.team-stat-item .stat-value .streak {
+    display: flex;
+    gap: 2px;
+    font-size: 0.45rem;
+}
+
+.team-stat-item .stat-value .streak .s-win {
+    color: var(--success);
+}
+
+.team-stat-item .stat-value .streak .s-loss {
+    color: var(--danger);
+}
+
+.team-stat-item .stat-value .streak .s-draw {
+    color: var(--gold-light);
+}
+
+.team-top-scorers {
+    display: flex;
+    gap: 6px;
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.team-top-scorers .scorer {
+    background: var(--gold-glow);
+    padding: 1px 8px;
+    border-radius: 20px;
+    border: 1px solid var(--border-gold);
+}
+
+.team-top-scorers .scorer .goals {
+    color: var(--gold-light);
+    font-weight: 700;
+}
+
+.match-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.match-meta .tag {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 4px 16px;
+    border-radius: 40px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+}
+
+.match-meta .tag.finished-tag {
+    color: var(--success);
+    background: var(--success-bg);
+    border-color: rgba(46, 204, 113, 0.10);
+}
+
+.match-meta .stadium-tag {
+    color: var(--info);
+    background: var(--info-bg);
+    border-color: rgba(74, 158, 255, 0.10);
+}
+
+.match-meta .timer {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.match-meta .timer.live {
+    color: var(--danger);
+    animation: pulseText 1s infinite;
+}
+
+@keyframes pulseText {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.score-penalty-badge {
+    font-size: 0.7rem;
+    color: var(--gold);
+    background: var(--gold-glow);
+    padding: 1px 14px;
+    border-radius: 30px;
+    border: 1px solid var(--border-gold);
+    display: inline-block;
+    margin-right: 6px;
+}
+
+/* أزرار التوقع */
+.predict-btn-wrap {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+}
+
+.predict-btn-wrap .predict-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 0.7rem;
+    border-radius: 60px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid var(--border-gold);
+    background: rgba(212, 167, 69, 0.06);
+    color: var(--gold-light);
+    min-width: 80px;
+}
+
+.predict-btn-wrap .predict-btn:hover:not(:disabled) {
+    background: rgba(212, 167, 69, 0.14);
+    transform: translateY(-2px);
+}
+
+.predict-btn-wrap .predict-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(100, 100, 100, 0.08);
+    color: var(--text-muted);
+    border-color: var(--border-subtle);
+    transform: none !important;
+}
+
+.predict-btn-wrap .predict-btn.submitted {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: rgba(100, 100, 100, 0.08);
+    color: var(--text-muted);
+    border-color: var(--border-subtle);
+}
+
+.predict-btn-wrap .predict-btn.submitted::after {
+    content: " ✅";
+}
+
+.predict-btn-wrap .edit-btn {
+    flex: 0 1 auto;
+    justify-content: center;
+    padding: 10px 18px;
+    font-size: 0.65rem;
+    border-radius: 60px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid rgba(46, 204, 113, 0.20);
+    background: var(--success-bg);
+    color: var(--success);
+    min-width: 60px;
+    display: none;
+}
+
+.predict-btn-wrap .edit-btn.visible {
+    display: inline-flex;
+}
+
+.predict-btn-wrap .edit-btn:hover:not(:disabled) {
+    background: rgba(46, 204, 113, 0.16);
+    transform: translateY(-2px);
+}
+
+.predict-btn-wrap .edit-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.predict-btn-wrap .view-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 0.7rem;
+    border-radius: 60px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid rgba(74, 158, 255, 0.10);
+    background: rgba(74, 158, 255, 0.04);
+    color: var(--info);
+}
+
+.predict-btn-wrap .view-btn:hover {
+    background: rgba(74, 158, 255, 0.10);
+    border-color: rgba(74, 158, 255, 0.20);
+}
+
+.predict-btn-wrap .share-link-btn {
+    background: rgba(74, 158, 255, 0.06);
+    border: 1px solid rgba(74, 158, 255, 0.10);
+    color: var(--info);
+    padding: 6px 14px;
+    border-radius: 40px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.predict-btn-wrap .share-link-btn:hover {
+    background: rgba(74, 158, 255, 0.10);
+    border-color: rgba(74, 158, 255, 0.20);
+    transform: translateY(-2px);
+}
+
+.predict-btn-wrap .btn-group {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+}
+
+.predict-btn-wrap .btn-group .predict-btn {
+    flex: 1;
+}
+
+.predict-btn-wrap .btn-group .edit-btn {
+    flex: 0 1 auto;
+}
