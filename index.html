@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="css/bracket.css" />
     <link rel="stylesheet" href="css/tables.css" />
     <link rel="stylesheet" href="css/responsive.css" />
-    <link rel="stylesheet" href="css/leaderboard.css" />
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -58,6 +57,11 @@
                 <span class="sep">|</span>
                 <span id="todayHighlights">📅 جاري تحميل توقعات اليوم...</span>
             </div>
+        </div>
+
+        <!-- ===== لوحة المتصدرين — iframe ===== -->
+        <div class="leaderboard-iframe-section" id="leaderboardIframeSection">
+            <iframe src="https://visionof2030-pixel.github.io/LeaderBoard/" loading="lazy" allow="autoplay; encrypted-media" title="لوحة المتصدرين"></iframe>
         </div>
 
         <div class="controls-bar">
@@ -115,7 +119,6 @@
                 <button class="tab-btn" data-tab="scorers">🏅 الهدافين</button>
                 <button class="tab-btn" data-tab="stats">📊 إحصائيات الفرق</button>
                 <button class="tab-btn" data-tab="predictions">🗳️ جميع التوقعات</button>
-                <button class="tab-btn" data-tab="leaderboard">🏆 المتصدرون</button>
             </div>
             <div class="day-filter-tabs visible" id="dayFilterTabs">
                 <button class="day-btn active" data-day="all">📅 الكل</button>
@@ -160,25 +163,6 @@
         <div id="predictionsTab" class="tab-content">
             <div class="section-title">🗳️ جميع التوقعات <span class="badge-count" id="predictionsCount">0</span></div>
             <div id="allPredictions" class="predictions-grid"><div class="empty-state"><span class="icon">⏳</span> جاري تحميل التوقعات...</div></div>
-        </div>
-
-        <!-- ===== تبويب لوحة المتصدرين ===== -->
-        <div id="leaderboardTab" class="tab-content">
-            <div class="leaderboard-section" id="leaderboardSection">
-                <div class="lb-header">
-                    <div class="lb-stats">
-                        <span class="stat">👥 <span class="num" id="lbTotalPlayers">0</span></span>
-                        <span class="stat">📊 <span class="num" id="lbTotalPredictions">0</span></span>
-                    </div>
-                </div>
-                <div class="lb-period-tabs">
-                    <button class="period-btn active" data-period="all">📊 عام</button>
-                    <button class="period-btn" data-period="24h">🕒 24 ساعة</button>
-                </div>
-                <div id="leaderboardContainer">
-                    <div class="empty-state"><span class="icon">⏳</span> جاري تحميل الترتيب...</div>
-                </div>
-            </div>
         </div>
 
         <footer class="footer" id="footerTrigger">🏆 كأس العالم 2026 · غرفة معلمي سعيد بن العاص</footer>
@@ -262,36 +246,14 @@
     <div class="modal-overlay" id="playerPredictionsModal">
         <div class="modal-content">
             <button class="modal-close" id="playerModalCloseBtn">✕</button>
-            <div class="modal-title" id="playerModalTitle">📋 توقعات اللاعب</div>
-            <div id="playerModalSubtitle" class="modal-subtitle"></div>
-            <div class="player-stats-grid" id="playerStatsGrid">
-                <div class="stat-box">
-                    <div class="stat-value gold" id="playerPoints">0</div>
-                    <div class="stat-label">🏆 النقاط</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value green" id="playerCorrect">0</div>
-                    <div class="stat-label">✅ صحيحة</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value red" id="playerWrong">0</div>
-                    <div class="stat-label">❌ خاطئة</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="playerTotal">0</div>
-                    <div class="stat-label">📊 إجمالي</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value gold" id="playerAccuracy">0%</div>
-                    <div class="stat-label">🎯 النجاح</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="playerRank">-</div>
-                    <div class="stat-label">🏅 الترتيب</div>
-                </div>
+            <div class="modal-title">📋 جميع توقعات <span id="playerModalName"></span></div>
+            <div style="text-align:center;font-size:0.8rem;color:var(--text-secondary);margin:4px 0 12px;">
+                ✅ صحيح: <span id="playerCorrectCount" style="color:var(--success);font-weight:800;">0</span> |
+                ❌ خاطئ: <span id="playerWrongCount" style="color:var(--danger);font-weight:800;">0</span> |
+                📊 عدد التوقعات الكلي: <span id="playerTotalCount" style="color:var(--gold-light);font-weight:800;">0</span>
             </div>
-            <div class="predictions-list" id="playerPredictionsList">
-                <div class="empty-state"><span class="icon">⏳</span> جاري التحميل...</div>
+            <div id="playerPredictionsList" style="max-height:500px;overflow-y:auto;padding:4px 0;">
+                <div class="empty-state"><span class="icon">📭</span> لا توجد توقعات لهذا اللاعب</div>
             </div>
         </div>
     </div>
@@ -439,7 +401,6 @@
     <script src="js/archive.js"></script>
     <script src="js/share.js"></script>
     <script src="js/modal.js"></script>
-    <script src="js/leaderboard.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
