@@ -70,6 +70,12 @@ async function init() {
         await loadUserPredictions(lastUser);
     }
     
+    // ===== تشغيل لوحة المتصدرين =====
+    if (typeof initLeaderboard === 'function') {
+        console.log("🏆 تشغيل لوحة المتصدرين...");
+        initLeaderboard();
+    }
+    
     console.log("✅ INIT DONE (محسن)");
 }
 
@@ -101,6 +107,11 @@ function initTabs() {
             if (id === 'scorers') renderScorers();
             if (id === 'stats') renderTeamStats();
             if (id === 'predictions') renderAllPredictions();
+            if (id === 'leaderboard') {
+                if (typeof leaderboard !== 'undefined' && leaderboard.render) {
+                    setTimeout(() => leaderboard.render('all'), 100);
+                }
+            }
         });
     });
     
@@ -129,6 +140,9 @@ function startAutoUpdate() {
         if (activeTab === 'scorers') renderScorers();
         if (activeTab === 'stats') renderTeamStats();
         if (activeTab === 'predictions') await renderAllPredictions();
+        if (activeTab === 'leaderboard' && typeof leaderboard !== 'undefined' && leaderboard.render) {
+            leaderboard.render('all');
+        }
         updateShareAllCount();
         updateNewsTicker();
     }, 30000);
@@ -422,3 +436,4 @@ window.parseScorersWithMinutes = parseScorersWithMinutes;
 window.extractPenaltyData = extractPenaltyData;
 window.normalizeName = normalizeName;
 window.groupLetters = groupLetters;
+window.supabaseClient = supabaseClient;
