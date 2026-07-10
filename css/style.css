@@ -1044,34 +1044,6 @@ body {
 }
 
 /* ============================================================
-   لوحة المتصدرين — iframe
-   ============================================================ */
-.leaderboard-iframe-section {
-    background: var(--bg-card);
-    border: 1px solid var(--border-gold);
-    border-radius: var(--radius-lg);
-    padding: 12px;
-    margin: 0 0 28px 0;
-    box-shadow: var(--shadow-card), var(--shadow-glow);
-    transition: var(--transition);
-    backdrop-filter: blur(12px);
-    position: relative;
-    overflow: hidden;
-}
-.leaderboard-iframe-section iframe {
-    width: 100%;
-    height: 650px;
-    border: none;
-    border-radius: var(--radius-md);
-    background: #0a0e17;
-}
-@media (max-width: 640px) {
-    .leaderboard-iframe-section iframe {
-        height: 500px;
-    }
-}
-
-/* ============================================================
    المباريات - مع إضافة معلومات الفرق
    ============================================================ */
 .matches-grid {
@@ -2660,7 +2632,157 @@ body {
 }
 
 /* ============================================================
-   استجابة
+   ستايلات إضافية للوحة المتصدرين ومودال اللاعب
+   ============================================================ */
+
+/* مودال اللاعب - ستايلات مدمجة مع المشروع */
+.modal-subtitle {
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.player-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    border: 1px solid var(--border-subtle);
+}
+
+.player-stats-grid .stat-box {
+    text-align: center;
+}
+
+.player-stats-grid .stat-box .stat-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.player-stats-grid .stat-box .stat-value.gold {
+    color: var(--gold-light);
+}
+
+.player-stats-grid .stat-box .stat-value.green {
+    color: var(--success);
+}
+
+.player-stats-grid .stat-box .stat-value.red {
+    color: var(--danger);
+}
+
+.player-stats-grid .stat-box .stat-label {
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.predictions-list {
+    max-height: 350px;
+    overflow-y: auto;
+    padding: 3px 0;
+}
+
+.player-prediction-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition);
+}
+
+.player-prediction-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--border-gold);
+}
+
+.player-prediction-item .num {
+    font-weight: 800;
+    color: var(--text-secondary);
+    min-width: 28px;
+    font-size: 0.65rem;
+}
+
+.player-prediction-item .match-info {
+    flex: 1;
+}
+
+.player-prediction-item .match-info .teams {
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.player-prediction-item .match-info .teams .flag {
+    font-size: 0.95rem;
+}
+
+.player-prediction-item .match-info .pred {
+    font-size: 0.6rem;
+    color: var(--gold-light);
+    font-weight: 600;
+}
+
+.player-prediction-item .match-info .status {
+    font-size: 0.5rem;
+    padding: 1px 10px;
+    border-radius: 40px;
+    font-weight: 700;
+    display: inline-block;
+    margin-top: 2px;
+}
+
+.player-prediction-item .match-info .status.correct {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.player-prediction-item .match-info .status.wrong {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+.player-prediction-item .match-info .status.pending {
+    background: var(--gold-glow);
+    color: var(--gold-light);
+}
+
+.player-prediction-item .time {
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+    font-family: monospace;
+    white-space: nowrap;
+}
+
+/* ============================================================
+   استجابة المودال
+   ============================================================ */
+@media (max-width: 640px) {
+    .player-stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        padding: 8px;
+    }
+    
+    .player-prediction-item {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    
+    .modal-content .player-prediction-item {
+        font-size: 0.65rem !important;
+        padding: 6px 8px !important;
+    }
+}
+
+/* ============================================================
+   استجابة عامة
    ============================================================ */
 @media (max-width: 640px) {
     .top-bar {
@@ -2741,13 +2863,6 @@ body {
     }
     .day-filter-tabs {
         justify-content: center;
-    }
-    .leaderboard-iframe-section {
-        padding: 6px;
-        margin: 0 0 20px 0;
-    }
-    .leaderboard-iframe-section iframe {
-        height: 500px;
     }
     .matches-grid {
         grid-template-columns: 1fr;
@@ -2918,11 +3033,13 @@ body {
         font-size: 0.65rem;
     }
 }
+
 @media (min-width: 768px) {
     .matches-grid {
         grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
     }
 }
+
 @media (min-width: 1024px) {
     .matches-grid {
         grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
