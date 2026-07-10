@@ -1,0 +1,175 @@
+/* ============================================================
+   ستايل الجداول
+   ============================================================ */
+
+/* جداول المجموعات */
+.standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.65rem;
+}
+
+.standings-table th {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-secondary);
+    padding: 8px 4px;
+    text-align: center;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.standings-table td {
+    padding: 6px 4px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.standings-table .team-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: flex-start;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.standings-table .team-cell span:last-child {
+    color: var(--text-primary);
+}
+
+.standings-table td:last-child {
+    color: var(--gold);
+    font-weight: 800;
+}
+
+/* جدول الهدافين */
+.scorers-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+}
+
+.scorers-table th {
+    background: var(--gold-glow);
+    color: var(--gold-light);
+    padding: 14px 12px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border-bottom: 2px solid var(--border-gold);
+}
+
+.scorers-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+}
+
+.scorers-table .medal {
+    font-size: 1.2rem;
+}
+
+.scorers-table .player-name {
+    font-weight: 700;
+    color: var(--gold-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+
+.scorers-table .goals {
+    font-weight: 800;
+    color: var(--gold);
+    font-size: 1.1rem;
+}
+
+.scorers-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* جدول إحصائيات الفرق */
+.team-stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    font-size: 0.7rem;
+}
+
+.team-stats-table th {
+    background: var(--gold-glow);
+    color: var(--gold-light);
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 2px solid var(--border-gold);
+}
+
+.team-stats-table td {
+    padding: 8px 6px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.team-stats-table .team-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.team-stats-table .stat-highlight {
+    color: var(--gold-light);
+    font-weight: 800;
+}
+
+/* جدول التوقعات المكررة */
+.duplicates-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.7rem;
+}
+
+.duplicates-table th {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-secondary);
+    padding: 8px 6px;
+    text-align: center;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.duplicates-table td {
+    padding: 6px 4px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 0.65rem;
+}
+
+.duplicates-table .dup-user {
+    font-weight: 700;
+    color: var(--gold-light);
+}
+
+.duplicates-table .dup-match {
+    color: var(--text-secondary);
+}
+
+.duplicates-table .dup-preds {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+}
+
+.duplicates-table .dup-count {
+    font-weight: 800;
+    color: var(--danger);
+}
